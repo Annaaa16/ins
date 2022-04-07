@@ -1,35 +1,20 @@
 import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-micro';
-import { buildSchema, Field, ID, ObjectType, Query, Resolver } from 'type-graphql';
+import { buildSchema } from 'type-graphql';
 import Cors from 'micro-cors';
+
+import UserResolver from '~/db/resolvers/user';
+import connectToDb from '~/db/connectToDb';
+
+connectToDb();
 
 const cors = Cors();
 
-@ObjectType()
-class Dog {
-  @Field(() => ID)
-  name!: string;
-}
-
-@Resolver()
-class DogsResolver {
-  @Query(() => [Dog])
-  dogs(): Dog[] {
-    return [{ name: 'Hung' }];
-  }
-}
-
 const server = new ApolloServer({
   schema: await buildSchema({
-    resolvers: [DogsResolver],
+    resolvers: [UserResolver],
   }),
 });
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 
 const startServer = server.start();
 
@@ -44,3 +29,9 @@ export default cors(async (req, res) => {
 
   await server.createHandler({ path: '/api/graphql' })(req, res);
 });
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
