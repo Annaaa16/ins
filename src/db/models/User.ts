@@ -1,24 +1,7 @@
-import { getModelForClass, prop } from '@typegoose/typegoose';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { getModelForClass } from '@typegoose/typegoose';
 
-@ObjectType()
-class User {
-  @Field((_type) => ID)
-  readonly _id!: string;
+import { default as UserEntity } from '../entities/User';
 
-  @Field((_type) => String)
-  @prop({ type: () => String, required: true, unique: true })
-  email!: string;
-
-  @Field((_type) => String)
-  @prop({ type: () => String, required: true, unique: true })
-  username!: string;
-
-  @Field((_type) => String)
-  @prop({ type: () => String, required: true })
-  password!: string;
-}
-
-export const UserModel = getModelForClass(User);
+const User = getModelForClass(UserEntity);
 
 export default User;

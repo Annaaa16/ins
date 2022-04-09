@@ -2,10 +2,10 @@ import bcrypt from 'bcrypt';
 
 import { SALT_ROUNDS } from '~/constants';
 
-const hashPassword = (password: string) => {
+const hashData = (data: string) => {
   const salt = bcrypt.genSaltSync(SALT_ROUNDS);
 
-  return bcrypt.hashSync(password, salt);
+  return bcrypt.hashSync(data.toString(), salt);
 };
 
-export default hashPassword;
+export default hashData;

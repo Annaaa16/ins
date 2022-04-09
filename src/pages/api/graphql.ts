@@ -3,17 +3,24 @@ import { ApolloServer } from 'apollo-server-micro';
 import { buildSchema } from 'type-graphql';
 import Cors from 'micro-cors';
 
+// types
+import { Context } from '~/types/context';
+
 import UserResolver from '~/db/resolvers/user';
 import connectToDb from '~/db/connectToDb';
 
 connectToDb();
 
-const cors = Cors();
+const cors = Cors({
+  origin: 'https://studio.apollographql.com',
+  allowCredentials: true,
+});
 
 const server = new ApolloServer({
   schema: await buildSchema({
     resolvers: [UserResolver],
   }),
+  context: ({ req, res }): Context => ({ req, res }),
 });
 
 const startServer = server.start();
