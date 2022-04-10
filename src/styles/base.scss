@@ -1,0 +1,21 @@
+@layer base {
+  html {
+    @apply font-roboto text-lg leading-tight
+    text-base-black
+    cursor-default;
+  }
+
+  body {
+    @apply bg-body;
+  }
+
+  img,
+  button {
+    @apply select-none;
+  }
+
+  input {
+    @apply outline-0
+    bg-transparent;
+  }
+}

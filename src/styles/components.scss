@@ -1,0 +1,13 @@
+@layer components {
+  .wrapper-border {
+    @apply border-1 border-line
+    bg-white;
+  }
+}
+.btn {
+  @apply flex items-center justify-center font-bold rounded;
+
+  &:active {
+    @apply opacity-70;
+  }
+}
