@@ -13,20 +13,24 @@ class User {
   readonly _id!: string;
 
   @Field()
-  @prop({ type: String, required: true, unique: true })
+  @prop({ type: String, required: true })
   email!: string;
 
   @Field()
   @prop({ type: String, required: true, unique: true })
   username!: string;
 
-  @Field()
-  @prop({ type: String, required: true })
+  @Field({ nullable: true })
+  @prop({ type: String, default: null })
   password!: string;
 
   @Field()
   @prop({ type: String, required: true, enum: Account })
   account!: Account;
+
+  @Field({ nullable: true })
+  @prop({ type: String, default: null })
+  avatar!: string;
 }
 
 export default User;
