@@ -18,3 +18,11 @@ export const EXPIRES = {
 };
 
 export const __prod__ = process.env.NODE_ENV === 'production';
+
+export const FACEBOOK_CLIENT_ID = process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID;
+export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+export const PATHS = {
+  REGISTER: '/register',
+  LOGIN: '/login',
+};
