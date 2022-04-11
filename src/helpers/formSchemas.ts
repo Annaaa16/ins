@@ -17,3 +17,8 @@ export const loginSchema = yup
     password: yup.string().required('Password is required'),
   })
   .required();
+
+export const changePasswordSchema = yup.object({
+  password: yup.string().required('Password is required').min(3, 'Password must be greater than 3'),
+  confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Password must match'),
+});

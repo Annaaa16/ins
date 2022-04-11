@@ -131,6 +131,47 @@ export type UserMutationResponseFragment = {
   errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
 };
 
+export type ChangePasswordMutationVariables = Exact<{
+  newPassword: Scalars['String'];
+  userId: Scalars['String'];
+  token: Scalars['String'];
+}>;
+
+export type ChangePasswordMutation = {
+  __typename?: 'Mutation';
+  changePassword: {
+    __typename?: 'UserMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    user?: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    } | null;
+    errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
+  };
+};
+
+export type ForgotPasswordMutationVariables = Exact<{
+  usernameOrEmail: Scalars['String'];
+}>;
+
+export type ForgotPasswordMutation = {
+  __typename?: 'Mutation';
+  forgotPassword: {
+    __typename?: 'ForgotPasswordMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    linkReset?: string | null;
+    errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
+  };
+};
+
 export type LoginMutationVariables = Exact<{
   loginInput: LoginInput;
 }>;
@@ -138,6 +179,54 @@ export type LoginMutationVariables = Exact<{
 export type LoginMutation = {
   __typename?: 'Mutation';
   login: {
+    __typename?: 'UserMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    user?: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    } | null;
+    errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
+  };
+};
+
+export type LoginFacebookMutationVariables = Exact<{
+  userId: Scalars['String'];
+  accessToken: Scalars['String'];
+}>;
+
+export type LoginFacebookMutation = {
+  __typename?: 'Mutation';
+  loginFacebook: {
+    __typename?: 'UserMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    user?: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    } | null;
+    errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
+  };
+};
+
+export type LoginGoogleMutationVariables = Exact<{
+  clientId: Scalars['String'];
+  tokenId: Scalars['String'];
+}>;
+
+export type LoginGoogleMutation = {
+  __typename?: 'Mutation';
+  loginGoogle: {
     __typename?: 'UserMutationResponse';
     code: number;
     success: boolean;
@@ -207,6 +296,104 @@ export const UserMutationResponseFragmentDoc = gql`
   ${UserInfoFragmentDoc}
   ${FieldErrorFragmentDoc}
 `;
+export const ChangePasswordDocument = gql`
+  mutation ChangePassword($newPassword: String!, $userId: String!, $token: String!) {
+    changePassword(newPassword: $newPassword, userId: $userId, token: $token) {
+      ...userMutationResponse
+    }
+  }
+  ${UserMutationResponseFragmentDoc}
+`;
+export type ChangePasswordMutationFn = Apollo.MutationFunction<
+  ChangePasswordMutation,
+  ChangePasswordMutationVariables
+>;
+
+/**
+ * __useChangePasswordMutation__
+ *
+ * To run a mutation, you first call `useChangePasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangePasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changePasswordMutation, { data, loading, error }] = useChangePasswordMutation({
+ *   variables: {
+ *      newPassword: // value for 'newPassword'
+ *      userId: // value for 'userId'
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useChangePasswordMutation(
+  baseOptions?: Apollo.MutationHookOptions<ChangePasswordMutation, ChangePasswordMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(
+    ChangePasswordDocument,
+    options,
+  );
+}
+export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
+export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
+export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<
+  ChangePasswordMutation,
+  ChangePasswordMutationVariables
+>;
+export const ForgotPasswordDocument = gql`
+  mutation ForgotPassword($usernameOrEmail: String!) {
+    forgotPassword(usernameOrEmail: $usernameOrEmail) {
+      code
+      success
+      message
+      errors {
+        ...fieldError
+      }
+      linkReset
+    }
+  }
+  ${FieldErrorFragmentDoc}
+`;
+export type ForgotPasswordMutationFn = Apollo.MutationFunction<
+  ForgotPasswordMutation,
+  ForgotPasswordMutationVariables
+>;
+
+/**
+ * __useForgotPasswordMutation__
+ *
+ * To run a mutation, you first call `useForgotPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useForgotPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [forgotPasswordMutation, { data, loading, error }] = useForgotPasswordMutation({
+ *   variables: {
+ *      usernameOrEmail: // value for 'usernameOrEmail'
+ *   },
+ * });
+ */
+export function useForgotPasswordMutation(
+  baseOptions?: Apollo.MutationHookOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(
+    ForgotPasswordDocument,
+    options,
+  );
+}
+export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswordMutation>;
+export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
+export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<
+  ForgotPasswordMutation,
+  ForgotPasswordMutationVariables
+>;
 export const LoginDocument = gql`
   mutation Login($loginInput: LoginInput!) {
     login(loginInput: $loginInput) {
@@ -245,6 +432,98 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<
   LoginMutation,
   LoginMutationVariables
+>;
+export const LoginFacebookDocument = gql`
+  mutation LoginFacebook($userId: String!, $accessToken: String!) {
+    loginFacebook(userId: $userId, accessToken: $accessToken) {
+      ...userMutationResponse
+    }
+  }
+  ${UserMutationResponseFragmentDoc}
+`;
+export type LoginFacebookMutationFn = Apollo.MutationFunction<
+  LoginFacebookMutation,
+  LoginFacebookMutationVariables
+>;
+
+/**
+ * __useLoginFacebookMutation__
+ *
+ * To run a mutation, you first call `useLoginFacebookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginFacebookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginFacebookMutation, { data, loading, error }] = useLoginFacebookMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      accessToken: // value for 'accessToken'
+ *   },
+ * });
+ */
+export function useLoginFacebookMutation(
+  baseOptions?: Apollo.MutationHookOptions<LoginFacebookMutation, LoginFacebookMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<LoginFacebookMutation, LoginFacebookMutationVariables>(
+    LoginFacebookDocument,
+    options,
+  );
+}
+export type LoginFacebookMutationHookResult = ReturnType<typeof useLoginFacebookMutation>;
+export type LoginFacebookMutationResult = Apollo.MutationResult<LoginFacebookMutation>;
+export type LoginFacebookMutationOptions = Apollo.BaseMutationOptions<
+  LoginFacebookMutation,
+  LoginFacebookMutationVariables
+>;
+export const LoginGoogleDocument = gql`
+  mutation LoginGoogle($clientId: String!, $tokenId: String!) {
+    loginGoogle(clientId: $clientId, tokenId: $tokenId) {
+      ...userMutationResponse
+    }
+  }
+  ${UserMutationResponseFragmentDoc}
+`;
+export type LoginGoogleMutationFn = Apollo.MutationFunction<
+  LoginGoogleMutation,
+  LoginGoogleMutationVariables
+>;
+
+/**
+ * __useLoginGoogleMutation__
+ *
+ * To run a mutation, you first call `useLoginGoogleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginGoogleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginGoogleMutation, { data, loading, error }] = useLoginGoogleMutation({
+ *   variables: {
+ *      clientId: // value for 'clientId'
+ *      tokenId: // value for 'tokenId'
+ *   },
+ * });
+ */
+export function useLoginGoogleMutation(
+  baseOptions?: Apollo.MutationHookOptions<LoginGoogleMutation, LoginGoogleMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<LoginGoogleMutation, LoginGoogleMutationVariables>(
+    LoginGoogleDocument,
+    options,
+  );
+}
+export type LoginGoogleMutationHookResult = ReturnType<typeof useLoginGoogleMutation>;
+export type LoginGoogleMutationResult = Apollo.MutationResult<LoginGoogleMutation>;
+export type LoginGoogleMutationOptions = Apollo.BaseMutationOptions<
+  LoginGoogleMutation,
+  LoginGoogleMutationVariables
 >;
 export const RegisterDocument = gql`
   mutation Register($registerInput: RegisterInput!) {

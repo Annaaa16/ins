@@ -1,18 +1,34 @@
+import { useRouter } from 'next/router';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons';
 import { ReactFacebookLoginInfo } from 'react-facebook-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import clsx from 'clsx';
 
-import { FACEBOOK_CLIENT_ID } from '~/constants';
+import { FACEBOOK_CLIENT_ID, PATHS } from '~/constants';
+import { useLoginFacebookMutation } from '~/types/generated';
 
 interface ButtonFacebookProps {
   className?: string;
 }
 
 const ButtonFacebook = ({ className }: ButtonFacebookProps) => {
-  const handleFacebookResponse = (response: ReactFacebookLoginInfo) => {
-    console.log(response);
+  const [loginFacebook] = useLoginFacebookMutation();
+
+  const router = useRouter();
+
+  const handleFacebookResponse = async (fbResponse: ReactFacebookLoginInfo) => {
+    const response = await loginFacebook({
+      variables: {
+        accessToken: fbResponse.accessToken,
+        userId: fbResponse.userID,
+      },
+    });
+
+    const data = response.data?.loginFacebook;
+
+    if (data && !data.errors) router.push(PATHS.HOME);
   };
 
   return (

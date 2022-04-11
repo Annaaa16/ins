@@ -23,6 +23,9 @@ export const FACEBOOK_CLIENT_ID = process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID;
 export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 export const PATHS = {
+  HOME: '/',
   REGISTER: '/register',
   LOGIN: '/login',
+  FORGOT_PASSWORD: '/forgot-password',
+  CHANGE_PASSWORD: '/change-password',
 };

@@ -1,17 +1,37 @@
+import { useRouter } from 'next/router';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import clsx from 'clsx';
 
-import { GOOGLE_CLIENT_ID } from '~/constants';
+import { GOOGLE_CLIENT_ID, PATHS } from '~/constants';
+import { useLoginGoogleMutation } from '~/types/generated';
 
 interface ButtonGoogleProps {
   className?: string;
 }
 
 const ButtonGoogle = ({ className }: ButtonGoogleProps) => {
-  const handleGoogleResponse = (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-    console.log(response);
+  const [loginGoogle] = useLoginGoogleMutation();
+
+  const router = useRouter();
+
+  const handleGoogleResponse = async (
+    ggResponse: GoogleLoginResponse | GoogleLoginResponseOffline,
+  ) => {
+    if (ggResponse.code) return;
+
+    const response = await loginGoogle({
+      variables: {
+        clientId: GOOGLE_CLIENT_ID as string,
+        tokenId: (ggResponse as GoogleLoginResponse).tokenId,
+      },
+    });
+
+    const data = response.data?.loginGoogle;
+
+    if (data && !data.errors) router.push(PATHS.HOME);
   };
 
   return (
