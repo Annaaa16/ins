@@ -10,3 +10,10 @@ export const registerSchema = yup
       .min(3, 'Password must be greater than 3'),
   })
   .required();
+
+export const loginSchema = yup
+  .object({
+    username: yup.string().required('Username is required'),
+    password: yup.string().required('Password is required'),
+  })
+  .required();
