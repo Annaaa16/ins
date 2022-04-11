@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { Mutation, Arg, Ctx, Resolver, ClassType } from 'type-graphql';
+import axios from 'axios';
 
 // types
 import type { Context } from '~/types/context';
