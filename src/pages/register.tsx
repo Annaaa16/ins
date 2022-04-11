@@ -11,6 +11,7 @@ import { useRegisterMutation, RegisterInput } from '~/types/generated';
 import toErrorMap from '~/helpers/toErrorMap';
 
 import Meta from '~/layouts/Meta';
+import FormDivider from '~/components/FormDivider';
 import FormField from '~/components/FormField';
 import ButtonFacebook from '~/components/ButtonFacebook';
 import ButtonGoogle from '~/components/ButtonGoogle';
@@ -69,11 +70,7 @@ const Register = () => {
           <ButtonFacebook className='mt-3' />
           <ButtonGoogle className='mt-3' />
 
-          <div className='flex-between my-3'>
-            <div className={clsx('h-0.5 w-full', 'bg-line')} />
-            <div className={clsx('font-medium mx-4 text-sm', 'text-base-gray')}>OR</div>
-            <div className={clsx('h-0.5 w-full', 'bg-line')} />
-          </div>
+          <FormDivider />
 
           <form className='flex flex-col gap-y-3' onSubmit={handleSubmit(handleRegisterSubmit)}>
             <FormField register={register('email')} placeholder='Email' errors={errors} />
@@ -83,7 +80,7 @@ const Register = () => {
             <button
               className={clsx('btn text-sm w-full gap-x-2 py-2 mt-2', 'text-white bg-primary')}
             >
-              <span>Sign up</span>
+              Sign up
             </button>
 
             <p className={clsx('text-xs text-center mt-2', 'text-base-gray')}>
