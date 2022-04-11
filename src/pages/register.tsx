@@ -70,7 +70,7 @@ const Register = () => {
           <ButtonFacebook className='mt-3' />
           <ButtonGoogle className='mt-3' />
 
-          <FormDivider />
+          <FormDivider className='my-3' />
 
           <form className='flex flex-col gap-y-3' onSubmit={handleSubmit(handleRegisterSubmit)}>
             <FormField register={register('email')} placeholder='Email' errors={errors} />
