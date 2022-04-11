@@ -1,5 +1,6 @@
 const custom = {
   'form-w': '350px',
+  'container-w': '935px',
 };
 
 module.exports = {
