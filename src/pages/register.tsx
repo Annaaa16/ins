@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -92,7 +93,10 @@ const Register = () => {
         </div>
 
         <div className='wrapper-border flex-center text-sm py-6 mt-3'>
-          Have an account?<span className={clsx('ml-1', 'text-primary')}>Log in</span>
+          Have an account?
+          <NextLink href={PATHS.LOGIN}>
+            <a className={clsx('ml-1', 'text-primary')}>Log in</a>
+          </NextLink>
         </div>
       </div>
     </Meta>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 
 import { PATHS } from '~/constants';
 import { useForm } from 'react-hook-form';
@@ -25,8 +25,6 @@ const ForgotPassword = () => {
     watch,
     formState: { errors },
   } = useForm<ForgotPasswordMutationVariables>();
-
-  const router = useRouter();
 
   const [forgotPassword] = useForgotPasswordMutation();
 
@@ -108,23 +106,23 @@ const ForgotPassword = () => {
           {body}
 
           <FormDivider className='mt-7' />
-          <button
-            onClick={() => router.push(PATHS.REGISTER)}
-            className={clsx('w-full text-sm-1 font-medium text-center mt-7')}
-          >
-            Create New Account
-          </button>
+          <NextLink href={PATHS.REGISTER}>
+            <a className={clsx('block w-full text-sm-1 font-medium text-center mt-7')}>
+              Create New Account
+            </a>
+          </NextLink>
         </div>
-        <button
-          onClick={() => router.push(PATHS.LOGIN)}
-          className={clsx(
-            'w-full font-medium py-3 text-sm border-1 border-line border-t-0',
-            'bg-gray-50',
-            'active:opacity-70',
-          )}
-        >
-          Back To Login
-        </button>
+        <NextLink href={PATHS.LOGIN}>
+          <a
+            className={clsx(
+              'block text-center w-full font-medium py-3 text-sm border-1 border-line border-t-0',
+              'bg-gray-50',
+              'active:opacity-70',
+            )}
+          >
+            Back To Login
+          </a>
+        </NextLink>
       </div>
     </Meta>
   );

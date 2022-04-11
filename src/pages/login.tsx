@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -25,14 +25,13 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValidating },
     setFocus,
     setError,
+    clearErrors,
   } = useForm<LoginInput>({
     resolver: yupResolver(loginSchema),
   });
-
-  const router = useRouter();
 
   const handleLoginSubmit = async ({ password, username }: LoginInput) => {
     const response = await loginUser({
@@ -64,6 +63,10 @@ const Login = () => {
 
   useEffect(() => setFocus('username'), [setFocus]);
 
+  useEffect(() => {
+    if (isValidating) clearErrors();
+  }, [isValidating, clearErrors]);
+
   return (
     <Meta title='Login'>
       <div className={clsx('w-form-w mx-auto py-9')}>
@@ -82,16 +85,23 @@ const Login = () => {
             </button>
           </form>
 
-          <FormDivider />
+          <FormDivider className='my-3' />
 
           <ButtonFacebook className='mt-6' />
           <ButtonGoogle className='mt-3' />
 
-          <div className={clsx('text-sm-1 text-center mt-7', 'text-primary')}>Forgot password?</div>
+          <NextLink href={PATHS.FORGOT_PASSWORD}>
+            <a className={clsx('block text-sm-1 w-full text-center mt-7', 'text-primary')}>
+              Forgot password?
+            </a>
+          </NextLink>
         </div>
 
         <div className='wrapper-border flex-center text-sm py-6 mt-3'>
-          Don&apos;t have an account?<span className={clsx('ml-1', 'text-primary')}>Sign up</span>
+          Don&apos;t have an account?
+          <NextLink href={PATHS.REGISTER}>
+            <a className={clsx('ml-1', 'text-primary')}>Sign up</a>
+          </NextLink>
         </div>
       </div>
     </Meta>
