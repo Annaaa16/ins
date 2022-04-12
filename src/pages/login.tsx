@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
 
-import { PATHS } from '~/constants';
+import { ROUTES } from '~/constants';
 import { loginSchema } from '~/helpers/formSchemas';
 import { LoginInput, useLoginMutation } from '~/types/generated';
 import toErrorMap from '~/helpers/toErrorMap';
@@ -58,7 +58,7 @@ const Login = () => {
         message,
       });
     } else {
-      // router.push(PATHS.LOGIN);
+      // router.push(ROUTES.LOGIN);
     }
   };
 
@@ -96,7 +96,7 @@ const Login = () => {
             <ButtonFacebook className='mt-6' />
             <ButtonGoogle className='mt-3' />
 
-            <NextLink href={PATHS.FORGOT_PASSWORD}>
+            <NextLink href={ROUTES.FORGOT_PASSWORD}>
               <a className={clsx('block text-sm-1 w-full text-center mt-7', 'text-primary')}>
                 Forgot password?
               </a>
@@ -105,7 +105,7 @@ const Login = () => {
 
           <div className='wrapper-border flex-center text-sm py-6 mt-3'>
             Don&apos;t have an account?
-            <NextLink href={PATHS.REGISTER}>
+            <NextLink href={ROUTES.REGISTER}>
               <a className={clsx('ml-1', 'text-primary')}>Sign up</a>
             </NextLink>
           </div>

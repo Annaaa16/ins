@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 
-import { PATHS } from '~/constants';
+import { ROUTES } from '~/constants';
 import { useForm } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBilibili } from '@fortawesome/free-brands-svg-icons';
@@ -106,13 +106,13 @@ const ForgotPassword = () => {
           {body}
 
           <FormDivider className='mt-7' />
-          <NextLink href={PATHS.REGISTER}>
+          <NextLink href={ROUTES.REGISTER}>
             <a className={clsx('block w-full text-sm-1 font-medium text-center mt-7')}>
               Create New Account
             </a>
           </NextLink>
         </div>
-        <NextLink href={PATHS.LOGIN}>
+        <NextLink href={ROUTES.LOGIN}>
           <a
             className={clsx(
               'block text-center w-full font-medium py-3 text-sm border-1 border-line border-t-0',
