@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
 
-import { PATHS } from '~/constants';
+import { ROUTES } from '~/constants';
 import { registerSchema } from '~/helpers/formSchemas';
 import { useRegisterMutation, RegisterInput } from '~/types/generated';
 import toErrorMap from '~/helpers/toErrorMap';
@@ -53,7 +53,7 @@ const Register = () => {
         message,
       });
     } else {
-      router.push(PATHS.LOGIN);
+      router.push(ROUTES.LOGIN);
     }
   };
 
@@ -94,7 +94,7 @@ const Register = () => {
 
         <div className='wrapper-border flex-center text-sm py-6 mt-3'>
           Have an account?
-          <NextLink href={PATHS.LOGIN}>
+          <NextLink href={ROUTES.LOGIN}>
             <a className={clsx('ml-1', 'text-primary')}>Log in</a>
           </NextLink>
         </div>

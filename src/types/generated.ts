@@ -21,8 +21,8 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
-export type ForgotPasswordMutationResponse = {
-  __typename?: 'ForgotPasswordMutationResponse';
+export type ForgotPasswordResponse = {
+  __typename?: 'ForgotPasswordResponse';
   code: Scalars['Float'];
   errors?: Maybe<Array<FieldError>>;
   linkReset?: Maybe<Scalars['String']>;
@@ -38,7 +38,7 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: UserMutationResponse;
-  forgotPassword: ForgotPasswordMutationResponse;
+  forgotPassword: ForgotPasswordResponse;
   login: UserMutationResponse;
   loginFacebook: UserMutationResponse;
   loginGoogle: UserMutationResponse;
@@ -163,7 +163,7 @@ export type ForgotPasswordMutationVariables = Exact<{
 export type ForgotPasswordMutation = {
   __typename?: 'Mutation';
   forgotPassword: {
-    __typename?: 'ForgotPasswordMutationResponse';
+    __typename?: 'ForgotPasswordResponse';
     code: number;
     success: boolean;
     message?: string | null;

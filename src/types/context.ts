@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export interface Context {
-  req: NextApiRequest;
+  req: NextApiRequest & { userId: string };
   res: NextApiResponse;
 }

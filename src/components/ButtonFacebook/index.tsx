@@ -6,7 +6,7 @@ import { ReactFacebookLoginInfo } from 'react-facebook-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import clsx from 'clsx';
 
-import { FACEBOOK_CLIENT_ID, PATHS } from '~/constants';
+import { FACEBOOK_CLIENT_ID, ROUTES } from '~/constants';
 import { useLoginFacebookMutation } from '~/types/generated';
 
 interface ButtonFacebookProps {
@@ -28,7 +28,7 @@ const ButtonFacebook = ({ className }: ButtonFacebookProps) => {
 
     const data = response.data?.loginFacebook;
 
-    if (data && !data.errors) router.push(PATHS.HOME);
+    if (data && !data.errors) router.push(ROUTES.HOME);
   };
 
   return (

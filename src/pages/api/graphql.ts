@@ -7,6 +7,7 @@ import Cors from 'micro-cors';
 import { Context } from '~/types/context';
 
 import UserResolver from '~/db/resolvers/user';
+import PostResolver from '~/db/resolvers/post';
 import connectToDb from '~/db/connectToDb';
 
 connectToDb();
@@ -18,7 +19,7 @@ const cors = Cors({
 
 const server = new ApolloServer({
   schema: await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver, PostResolver],
   }),
   context: ({ req, res }): Context => ({ req, res }),
 });

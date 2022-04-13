@@ -1,10 +1,10 @@
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
-export class LoginInput {
+export class CreatePostInput {
   @Field()
-  username!: string;
+  caption!: string;
 
   @Field()
-  password!: string;
+  photoPath!: string;
 }

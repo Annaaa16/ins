@@ -5,7 +5,7 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import clsx from 'clsx';
 
-import { GOOGLE_CLIENT_ID, PATHS } from '~/constants';
+import { GOOGLE_CLIENT_ID, ROUTES } from '~/constants';
 import { useLoginGoogleMutation } from '~/types/generated';
 
 interface ButtonGoogleProps {
@@ -31,7 +31,7 @@ const ButtonGoogle = ({ className }: ButtonGoogleProps) => {
 
     const data = response.data?.loginGoogle;
 
-    if (data && !data.errors) router.push(PATHS.HOME);
+    if (data && !data.errors) router.push(ROUTES.HOME);
   };
 
   return (

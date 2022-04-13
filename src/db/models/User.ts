@@ -1,7 +1,5 @@
 import { getModelForClass } from '@typegoose/typegoose';
 
-import { default as UserEntity } from '../entities/User';
+import { User as UserEntity } from '../entities';
 
-const User = getModelForClass(UserEntity);
-
-export default User;
+export const User = getModelForClass(UserEntity);

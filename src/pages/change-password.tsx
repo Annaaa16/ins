@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
 
-import { PATHS } from '~/constants';
+import { ROUTES } from '~/constants';
 import { useChangePasswordMutation } from '~/types/generated';
 import { changePasswordSchema } from '~/helpers/formSchemas';
 import toErrorMap from '~/helpers/toErrorMap';
@@ -92,7 +92,7 @@ const ChangePassword = () => {
           {serverErrorMessage}
         </div>
         <button
-          onClick={() => router.push(PATHS.FORGOT_PASSWORD)}
+          onClick={() => router.push(ROUTES.FORGOT_PASSWORD)}
           className={clsx('btn text-sm w-full py-2 mt-5', 'text-white bg-primary')}
         >
           Back To Reset Password
@@ -110,7 +110,7 @@ const ChangePassword = () => {
           {body}
         </div>
 
-        <NextLink href={PATHS.LOGIN}>
+        <NextLink href={ROUTES.LOGIN}>
           <a
             className={clsx(
               'block text-center w-full font-medium py-3 text-sm border-1 border-line border-t-0',

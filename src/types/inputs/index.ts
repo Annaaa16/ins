@@ -1,2 +1,4 @@
-export { default as RegisterInput } from './RegisterInput';
-export { default as LoginInput } from './LoginInput';
+export * from './RegisterInput';
+export * from './LoginInput';
+export * from './CreatePostInput';
+export * from './UpdatePostInput';
