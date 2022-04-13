@@ -8,7 +8,7 @@ enum Account {
 }
 
 @ObjectType()
-class User {
+export class User {
   @Field((_type) => ID)
   readonly _id!: string;
 
@@ -32,5 +32,3 @@ class User {
   @prop({ type: String, default: null })
   avatar!: string;
 }
-
-export default User;

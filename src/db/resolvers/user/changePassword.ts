@@ -5,8 +5,7 @@ import bcrypt from 'bcrypt';
 import { UserMutationResponse } from '~/types/responses';
 
 // models
-import User from '~/db/models/User';
-import Token from '~/db/models/Token';
+import { User, Token } from '~/db/models';
 
 import respond from '~/helpers/respond';
 import hashData from '~/helpers/hashData';

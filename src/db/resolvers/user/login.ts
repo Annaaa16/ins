@@ -7,7 +7,7 @@ import { LoginInput } from '~/types/inputs';
 import { UserMutationResponse } from '~/types/responses';
 
 // models
-import User from '~/db/models/User';
+import { User } from '~/db/models';
 
 import { setTokens } from '~/helpers/token';
 import respond from '~/helpers/respond';

@@ -4,7 +4,7 @@ import { Field, ObjectType } from 'type-graphql';
 import { BaseResponse, FieldError } from '.';
 
 @ObjectType()
-export class MutationResponse extends BaseResponse {
+export default class QueryResponse extends BaseResponse {
   @Field((_type) => [FieldError], { nullable: true })
   errors?: FieldError[];
 }

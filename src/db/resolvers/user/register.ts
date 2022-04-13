@@ -5,7 +5,7 @@ import { RegisterInput } from '~/types/inputs';
 import { UserMutationResponse } from '~/types/responses';
 
 // models
-import User from '~/db/models/User';
+import { User } from '~/db/models';
 
 import respond from '~/helpers/respond';
 import hashData from '~/helpers/hashData';

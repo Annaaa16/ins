@@ -1,17 +1,5 @@
-import { getModelForClass, prop } from '@typegoose/typegoose';
-import mongoose from 'mongoose';
+import { getModelForClass } from '@typegoose/typegoose';
 
-class Token {
-  _id!: mongoose.Types.ObjectId;
+import { Token as TokenEntity } from '../entities';
 
-  @prop({ type: String, required: true, unique: true })
-  userId!: string;
-
-  @prop({ type: String, required: true, unique: true })
-  token!: string;
-
-  @prop({ type: Date, required: true, default: Date.now(), expires: 60 * 5 })
-  createdAt!: Date;
-}
-
-export default getModelForClass(Token);
+export const Token = getModelForClass(TokenEntity);

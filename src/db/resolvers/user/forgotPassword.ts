@@ -2,11 +2,10 @@ import { Arg, ClassType, Mutation, Resolver } from 'type-graphql';
 import { nanoid } from 'nanoid';
 
 // types
-import { ForgotPasswordMutationResponse } from '~/types/responses';
+import { ForgotPasswordResponse } from '~/types/responses';
 
 // models
-import User from '~/db/models/User';
-import Token from '~/db/models/Token';
+import { User, Token } from '~/db/models';
 
 import respond from '~/helpers/respond';
 import hashData from '~/helpers/hashData';
@@ -15,10 +14,10 @@ import sendEmail from '~/helpers/sendEmail';
 const forgotPassword = (Base: ClassType) => {
   @Resolver()
   class ForgotPassword extends Base {
-    @Mutation((_returns) => ForgotPasswordMutationResponse)
+    @Mutation((_returns) => ForgotPasswordResponse)
     forgotPassword(
       @Arg('usernameOrEmail') usernameOrEmail: string,
-    ): Promise<ForgotPasswordMutationResponse> {
+    ): Promise<ForgotPasswordResponse> {
       const handler = async () => {
         const existingUser = await User.findOne({
           $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
