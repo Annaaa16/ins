@@ -6,7 +6,7 @@ import { COOKIE_NAMES, EXPIRES, SECRETS } from '~/constants';
 import { setCookie } from './cookie';
 
 const generateToken = (type: 'accessToken' | 'refreshToken', userId: string) => {
-  if (!SECRETS.ACCESS_TOKEN || !SECRETS.REFRESH_TOKEN) throw new Error('Secret token not found');
+  if (!SECRETS.ACCESS_TOKEN || !SECRETS.REFRESH_TOKEN) throw new Error('Missing secret token');
 
   return jwt.sign(
     { userId },
@@ -15,6 +15,13 @@ const generateToken = (type: 'accessToken' | 'refreshToken', userId: string) => 
       expiresIn: type === 'accessToken' ? EXPIRES.ACCESS_TOKEN : EXPIRES.REFRESH_TOKEN,
     },
   );
+};
+
+export const sendAccessToken = (res: NextApiResponse, userId: string) => {
+  setCookie(res, {
+    key: COOKIE_NAMES.ACCESS_TOKEN,
+    value: generateToken('accessToken', userId),
+  });
 };
 
 export const setTokens = (res: NextApiResponse, userId: string) => {

@@ -1,4 +1,12 @@
-import { Arg, ClassType, Ctx, Mutation, registerEnumType, Resolver } from 'type-graphql';
+import {
+  Arg,
+  ClassType,
+  Ctx,
+  Mutation,
+  registerEnumType,
+  Resolver,
+  UseMiddleware,
+} from 'type-graphql';
 
 // types
 import type { Context } from '~/types/context';
@@ -7,6 +15,7 @@ import { BaseResponse } from '~/types/shared';
 // models
 import { Post } from '~/db/models';
 
+import { VerifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
 
 enum Reaction {
@@ -22,6 +31,7 @@ const reactPost = (Base: ClassType) => {
   @Resolver()
   class ReactPost extends Base {
     @Mutation((_returns) => BaseResponse)
+    @UseMiddleware(VerifyAuth)
     reactPost(
       @Arg('postId') postId: string,
       @Arg('reaction') reaction: Reaction,
