@@ -1,4 +1,4 @@
-import { Arg, ClassType, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
 import type { Context } from '~/types/context';
@@ -9,6 +9,7 @@ import { PostMutationResponse } from '~/types/responses';
 import { Post } from '~/db/models';
 
 import { Post as PostEntity } from '~/db/entities/Post';
+import { VerifyAuth } from '~/db/middlewares';
 import { updatePhoto } from '~/helpers/cloudinary';
 import respond from '~/helpers/respond';
 
@@ -16,6 +17,7 @@ const updatePost = (Base: ClassType) => {
   @Resolver()
   class UpdatePost extends Base {
     @Mutation((_returns) => PostMutationResponse)
+    @UseMiddleware(VerifyAuth)
     updatePost(
       @Arg('updatePostInput') { postId, caption, newPhoto, oldPhotoUrl }: UpdatePostInput,
       @Ctx() { req: { userId } }: Context,

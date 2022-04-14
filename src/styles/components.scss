@@ -3,16 +3,17 @@
     @apply border-1 border-line
     bg-white;
   }
-}
-.btn {
-  @apply flex items-center justify-center font-bold rounded;
 
-  &:active {
-    @apply opacity-70;
-  }
+  .btn {
+    @apply flex items-center justify-center font-bold rounded;
 
-  &--disabled {
-    @apply opacity-50 
-    cursor-default pointer-events-none;
+    &:active {
+      @apply opacity-70;
+    }
+
+    &--disabled {
+      @apply opacity-50 
+      cursor-default pointer-events-none;
+    }
   }
 }

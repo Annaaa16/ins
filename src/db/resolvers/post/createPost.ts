@@ -1,18 +1,20 @@
-import { Arg, ClassType, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
 import type { Context } from '~/types/context';
 import { PostMutationResponse } from '~/types/responses';
 import { CreatePostInput } from '~/types/inputs';
 
+import { VerifyAuth } from '~/db/middlewares';
+import { Post } from '~/db/models';
 import { uploadPhoto } from '~/helpers/cloudinary';
 import respond from '~/helpers/respond';
-import { Post } from '~/db/models';
 
 const createPost = (Base: ClassType) => {
   @Resolver()
   class CreatePost extends Base {
     @Mutation((_returns) => PostMutationResponse)
+    @UseMiddleware(VerifyAuth)
     createPost(
       @Arg('createPostInput') { caption, photoPath }: CreatePostInput,
       @Ctx() { req: { userId } }: Context,

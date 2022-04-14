@@ -1,4 +1,4 @@
-import { Arg, ClassType, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
 import type { Context } from '~/types/context';
@@ -7,13 +7,15 @@ import { BaseResponse } from '~/types/shared';
 // models
 import { Post } from '~/db/models';
 
-import respond from '~/helpers/respond';
+import { VerifyAuth } from '~/db/middlewares';
 import { deletePhoto } from '~/helpers/cloudinary';
+import respond from '~/helpers/respond';
 
 const deletePost = (Base: ClassType) => {
   @Resolver()
   class DeletePost extends Base {
     @Mutation((_returns) => BaseResponse)
+    @UseMiddleware(VerifyAuth)
     deletePost(
       @Arg('postId') postId: string,
       @Ctx() { req: { userId } }: Context,
