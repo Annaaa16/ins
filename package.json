@@ -25,6 +25,7 @@
     "cloudinary": "^1.29.0",
     "clsx": "^1.1.1",
     "cookie": "^0.4.2",
+    "deepmerge": "^4.2.2",
     "google-auth-library": "^7.14.1",
     "graphql": "^15.3.0",
     "jsonwebtoken": "^8.5.1",
