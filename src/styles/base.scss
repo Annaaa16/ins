@@ -18,3 +18,22 @@
     bg-transparent;
   }
 }
+
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-400;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-500;
+}

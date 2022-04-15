@@ -1,4 +1,5 @@
 const custom = {
+  'xs-1': '11px',
   'sm-1': '13px',
 };
 

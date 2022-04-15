@@ -1,6 +1,7 @@
 const custom = {
   'form-w': '350px',
   'container-w': '935px',
+  'header-h': '60px',
 };
 
 module.exports = {
