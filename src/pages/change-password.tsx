@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import { ROUTES } from '~/constants';
 import { useChangePasswordMutation } from '~/types/generated';
 import { changePasswordSchema } from '~/helpers/formSchemas';
+import { withRoute } from '~/hocs';
 import toErrorMap from '~/helpers/toErrorMap';
 
 import Meta from '~/layouts/Meta';
@@ -127,3 +128,5 @@ const ChangePassword = () => {
 };
 
 export default ChangePassword;
+
+export const getServerSideProps = withRoute({ isProtected: false })();

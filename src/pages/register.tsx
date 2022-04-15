@@ -9,13 +9,14 @@ import clsx from 'clsx';
 import { ROUTES } from '~/constants';
 import { registerSchema } from '~/helpers/formSchemas';
 import { useRegisterMutation, RegisterInput } from '~/types/generated';
+import { withRoute } from '~/hocs';
 import toErrorMap from '~/helpers/toErrorMap';
 
 import Meta from '~/layouts/Meta';
 import FormDivider from '~/components/FormDivider';
 import FormField from '~/components/FormField';
-import ButtonFacebook from '~/components/ButtonFacebook';
-import ButtonGoogle from '~/components/ButtonGoogle';
+import ButtonFacebook from '~/components/Button/ButtonFacebook';
+import ButtonGoogle from '~/components/Button/ButtonGoogle';
 
 // images
 import { logo } from '~/assets/images';
@@ -104,3 +105,5 @@ const Register = () => {
 };
 
 export default Register;
+
+export const getServerSideProps = withRoute({ isProtected: false })();

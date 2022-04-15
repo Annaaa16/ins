@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,12 +9,13 @@ import clsx from 'clsx';
 import { ROUTES } from '~/constants';
 import { loginSchema } from '~/helpers/formSchemas';
 import { LoginInput, useLoginMutation } from '~/types/generated';
+import { withRoute } from '~/hocs';
 import toErrorMap from '~/helpers/toErrorMap';
 
 import Meta from '~/layouts/Meta';
 import FormField from '~/components/FormField';
-import ButtonFacebook from '~/components/ButtonFacebook';
-import ButtonGoogle from '~/components/ButtonGoogle';
+import ButtonFacebook from '~/components/Button/ButtonFacebook';
+import ButtonGoogle from '~/components/Button/ButtonGoogle';
 import FormDivider from '~/components/FormDivider';
 import LoginScreenshot from '~/features/login/LoginScreenshot';
 
@@ -33,6 +35,8 @@ const Login = () => {
   } = useForm<LoginInput>({
     resolver: yupResolver(loginSchema),
   });
+
+  const router = useRouter();
 
   const handleLoginSubmit = async ({ password, username }: LoginInput) => {
     const response = await loginUser({
@@ -58,7 +62,7 @@ const Login = () => {
         message,
       });
     } else {
-      // router.push(ROUTES.LOGIN);
+      router.push(ROUTES.LOGIN);
     }
   };
 
@@ -116,3 +120,5 @@ const Login = () => {
 };
 
 export default Login;
+
+export const getServerSideProps = withRoute({ isProtected: false })();

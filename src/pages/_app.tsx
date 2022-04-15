@@ -4,7 +4,7 @@ import { ApolloProvider } from '@apollo/client';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
-import apolloClient from '~/configs/apolloClient';
+import { useApollo } from '~/lib/apolloClient';
 
 // styles
 import '../styles/index.scss';
@@ -12,6 +12,8 @@ import '../styles/index.scss';
 config.autoAddCss = false;
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const apolloClient = useApollo(pageProps);
+
   return (
     <ApolloProvider client={apolloClient}>
       <Component {...pageProps} />

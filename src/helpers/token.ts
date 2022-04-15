@@ -18,10 +18,14 @@ const generateToken = (type: 'accessToken' | 'refreshToken', userId: string) => 
 };
 
 export const sendAccessToken = (res: NextApiResponse, userId: string) => {
+  const accessToken = generateToken('accessToken', userId);
+
   setCookie(res, {
     key: COOKIE_NAMES.ACCESS_TOKEN,
-    value: generateToken('accessToken', userId),
+    value: accessToken,
   });
+
+  return accessToken;
 };
 
 export const setTokens = (res: NextApiResponse, userId: string) => {

@@ -13,6 +13,20 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
+};
+
+export type BaseResponse = {
+  __typename?: 'BaseResponse';
+  code: Scalars['Float'];
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type CreatePostInput = {
+  caption: Scalars['String'];
+  photoPath: Scalars['String'];
 };
 
 export type FieldError = {
@@ -30,6 +44,16 @@ export type ForgotPasswordResponse = {
   success: Scalars['Boolean'];
 };
 
+export type GetSessionResponse = {
+  __typename?: 'GetSessionResponse';
+  accessToken?: Maybe<Scalars['String']>;
+  code: Scalars['Float'];
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+  user?: Maybe<User>;
+};
+
 export type LoginInput = {
   password: Scalars['String'];
   username: Scalars['String'];
@@ -38,18 +62,30 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: UserMutationResponse;
+  createPost: PostMutationResponse;
+  deletePost: BaseResponse;
   forgotPassword: ForgotPasswordResponse;
   login: UserMutationResponse;
   loginFacebook: UserMutationResponse;
   loginGoogle: UserMutationResponse;
   logout: Scalars['Boolean'];
+  reactPost: BaseResponse;
   register: UserMutationResponse;
+  updatePost: PostMutationResponse;
 };
 
 export type MutationChangePasswordArgs = {
   newPassword: Scalars['String'];
   token: Scalars['String'];
   userId: Scalars['String'];
+};
+
+export type MutationCreatePostArgs = {
+  createPostInput: CreatePostInput;
+};
+
+export type MutationDeletePostArgs = {
+  postId: Scalars['String'];
 };
 
 export type MutationForgotPasswordArgs = {
@@ -70,19 +106,77 @@ export type MutationLoginGoogleArgs = {
   tokenId: Scalars['String'];
 };
 
+export type MutationReactPostArgs = {
+  postId: Scalars['String'];
+  reaction: Reaction;
+};
+
 export type MutationRegisterArgs = {
   registerInput: RegisterInput;
 };
 
+export type MutationUpdatePostArgs = {
+  updatePostInput: UpdatePostInput;
+};
+
+export type PaginatedPostsResponse = {
+  __typename?: 'PaginatedPostsResponse';
+  code: Scalars['Float'];
+  cursor?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  posts?: Maybe<Array<Post>>;
+  success: Scalars['Boolean'];
+};
+
+export type Post = {
+  __typename?: 'Post';
+  _id: Scalars['ID'];
+  caption?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  photo?: Maybe<Scalars['String']>;
+  photoId?: Maybe<Scalars['String']>;
+  reactions: Array<User>;
+  updatedAt: Scalars['DateTime'];
+  user: User;
+};
+
+export type PostMutationResponse = {
+  __typename?: 'PostMutationResponse';
+  code: Scalars['Float'];
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  post?: Maybe<Post>;
+  success: Scalars['Boolean'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  getPosts: PaginatedPostsResponse;
+  getSession: GetSessionResponse;
   hello: Scalars['String'];
 };
+
+export type QueryGetPostsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+};
+
+export enum Reaction {
+  Like = 'LIKE',
+  Unlike = 'UNLIKE',
+}
 
 export type RegisterInput = {
   email: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type UpdatePostInput = {
+  caption?: InputMaybe<Scalars['String']>;
+  newPhoto?: InputMaybe<Scalars['String']>;
+  oldPhotoUrl?: InputMaybe<Scalars['String']>;
+  postId: Scalars['String'];
 };
 
 export type User = {
@@ -263,6 +357,26 @@ export type RegisterMutation = {
       avatar?: string | null;
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
+  };
+};
+
+export type GetSessionQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSessionQuery = {
+  __typename?: 'Query';
+  getSession: {
+    __typename?: 'GetSessionResponse';
+    code: number;
+    success: boolean;
+    accessToken?: string | null;
+    user?: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    } | null;
   };
 };
 
@@ -567,3 +681,50 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
 >;
+export const GetSessionDocument = gql`
+  query GetSession {
+    getSession {
+      code
+      success
+      accessToken
+      user {
+        ...userInfo
+      }
+    }
+  }
+  ${UserInfoFragmentDoc}
+`;
+
+/**
+ * __useGetSessionQuery__
+ *
+ * To run a query within a React component, call `useGetSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSessionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSessionQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetSessionQuery, GetSessionQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSessionQuery, GetSessionQueryVariables>(GetSessionDocument, options);
+}
+export function useGetSessionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetSessionQuery, GetSessionQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSessionQuery, GetSessionQueryVariables>(
+    GetSessionDocument,
+    options,
+  );
+}
+export type GetSessionQueryHookResult = ReturnType<typeof useGetSessionQuery>;
+export type GetSessionLazyQueryHookResult = ReturnType<typeof useGetSessionLazyQuery>;
+export type GetSessionQueryResult = Apollo.QueryResult<GetSessionQuery, GetSessionQueryVariables>;

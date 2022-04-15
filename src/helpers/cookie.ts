@@ -1,5 +1,6 @@
 import { NextApiResponse } from 'next';
 
+import { ServerResponse } from 'http';
 import cookie from 'cookie';
 
 import { COOKIE_NAMES } from '~/constants';
@@ -10,7 +11,7 @@ interface Cookie {
   value: string;
 }
 
-export const setCookie = (res: NextApiResponse, payload: Cookie | Cookie[]) => {
+export const setCookie = (res: NextApiResponse | ServerResponse, payload: Cookie | Cookie[]) => {
   if (Array.isArray(payload)) {
     res.setHeader(
       'Set-Cookie',
@@ -25,7 +26,7 @@ export const setCookie = (res: NextApiResponse, payload: Cookie | Cookie[]) => {
   }
 };
 
-export const clearAllCookies = (res: NextApiResponse) => {
+export const clearAllCookies = (res: NextApiResponse | ServerResponse) => {
   res.setHeader(
     'Set-Cookie',
     Object.values(COOKIE_NAMES).map((key) =>

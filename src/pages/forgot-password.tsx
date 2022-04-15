@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 
-import { ROUTES } from '~/constants';
 import { useForm } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBilibili } from '@fortawesome/free-brands-svg-icons';
 import clsx from 'clsx';
 
+import { ROUTES } from '~/constants';
 import { ForgotPasswordMutationVariables, useForgotPasswordMutation } from '~/types/generated';
+import { withRoute } from '~/hocs';
+import toErrorMap from '~/helpers/toErrorMap';
 
 import FormDivider from '~/components/FormDivider';
 import FormField from '~/components/FormField';
-import toErrorMap from '~/helpers/toErrorMap';
 import Meta from '~/layouts/Meta';
 
 const ForgotPassword = () => {
@@ -129,3 +130,5 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
+
+export const getServerSideProps = withRoute({ isProtected: false })();

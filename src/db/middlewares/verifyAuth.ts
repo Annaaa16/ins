@@ -64,9 +64,10 @@ export const VerifyAuth: MiddlewareFn<Context> = async ({ context: { req, res } 
           message: 'User not found',
         };
 
-      req.userId = userId;
+      const accessToken = sendAccessToken(res, userId);
 
-      sendAccessToken(res, userId);
+      req.userId = userId;
+      req.accessToken = accessToken;
 
       return next();
     });
