@@ -55,3 +55,4 @@ const ButtonGoogle = ({ className }: ButtonGoogleProps) => {
 };
 
 export default ButtonGoogle;
+1;
