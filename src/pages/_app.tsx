@@ -5,6 +5,7 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
 import { useApollo } from '~/lib/apolloClient';
+import { wrapper } from '~/redux/store';
 
 // styles
 import '../styles/index.scss';
@@ -21,4 +22,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);
