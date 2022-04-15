@@ -6,9 +6,7 @@ interface MetaProps {
   children: ReactNode;
 }
 
-function Meta(props: MetaProps) {
-  const { title, children } = props;
-
+function Meta({ title, children }: MetaProps) {
   return (
     <>
       <Head>
