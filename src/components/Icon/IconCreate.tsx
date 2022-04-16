@@ -1,12 +1,10 @@
-interface IconCreateProps {
-  active: boolean;
-  className?: string;
-}
+// types
+import { IconProps } from '~/types/utils';
 
-const IconCreate = ({ active, className }: IconCreateProps) => {
-  return active ? (
+const IconCreate = (props: IconProps) => {
+  return props.active ? (
     <svg
-      className={className}
+      {...props}
       aria-label='New Post'
       color='#262626'
       fill='#262626'
@@ -19,7 +17,7 @@ const IconCreate = ({ active, className }: IconCreateProps) => {
     </svg>
   ) : (
     <svg
-      className={className}
+      {...props}
       aria-label='New Post'
       color='#262626'
       fill='#262626'

@@ -1,11 +1,10 @@
-interface IconCommentProps {
-  className?: string;
-}
+// types
+import { IconProps } from '~/types/utils';
 
-const IconComment = ({ className }: IconCommentProps) => {
+const IconComment = (props: IconProps) => {
   return (
     <svg
-      className={className}
+      {...props}
       aria-label='Comment'
       color='#262626'
       fill='#262626'

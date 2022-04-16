@@ -1,12 +1,10 @@
-interface IconMessengerProps {
-  active: boolean;
-  className?: string;
-}
+// types
+import { IconProps } from '~/types/utils';
 
-const IconMessenger = ({ active, className }: IconMessengerProps) => {
-  return active ? (
+const IconMessenger = (props: IconProps) => {
+  return props.active ? (
     <svg
-      className={className}
+      {...props}
       aria-label='Messenger'
       color='#262626'
       fill='#262626'
@@ -19,7 +17,7 @@ const IconMessenger = ({ active, className }: IconMessengerProps) => {
     </svg>
   ) : (
     <svg
-      className={className}
+      {...props}
       aria-label='Messenger'
       color='#262626'
       fill='#262626'

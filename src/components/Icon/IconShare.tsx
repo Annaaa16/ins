@@ -1,11 +1,10 @@
-interface IconShareProps {
-  className?: string;
-}
+// types
+import { IconProps } from '~/types/utils';
 
-const IconShare = ({ className }: IconShareProps) => {
+const IconShare = (props: IconProps) => {
   return (
     <svg
-      className={className}
+      {...props}
       aria-label='Share Post'
       color='#262626'
       fill='#262626'
