@@ -59,7 +59,9 @@ const updatePost = (Base: ClassType) => {
           newPost.photo = photoUrl;
         }
 
-        const updatedPost = await Post.findByIdAndUpdate(postId, newPost, { new: true }).lean();
+        const updatedPost = await Post.findByIdAndUpdate(postId, newPost, { new: true })
+          .populate('user')
+          .lean();
 
         if (!updatedPost)
           return {

@@ -16,18 +16,18 @@ const createPost = (Base: ClassType) => {
     @Mutation((_returns) => PostMutationResponse)
     @UseMiddleware(VerifyAuth)
     createPost(
-      @Arg('createPostInput') { caption, photoPath }: CreatePostInput,
+      @Arg('createPostInput') { caption, base64Photo }: CreatePostInput,
       @Ctx() { req: { userId } }: Context,
     ): Promise<PostMutationResponse> {
-      if (!caption.trim() || !photoPath)
+      if (!caption.trim() || !base64Photo)
         return Promise.resolve({
-          code: 200,
+          code: 400,
           success: false,
           message: 'Field is missing',
         });
 
       const handler = async () => {
-        const { photo, photoId } = await uploadPhoto(photoPath);
+        const { photo, photoId } = await uploadPhoto(base64Photo);
 
         const newPost = await Post.create({
           caption,
@@ -38,9 +38,9 @@ const createPost = (Base: ClassType) => {
 
         return {
           code: 200,
-          success: false,
+          success: true,
           message: 'The post has been created successfully',
-          post: newPost.toObject(),
+          post: (await newPost.populate('user')).toObject(),
         };
       };
 
