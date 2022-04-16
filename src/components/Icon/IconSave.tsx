@@ -1,11 +1,10 @@
-interface IconSaveProps {
-  className?: string;
-}
+// types
+import { IconProps } from '~/types/utils';
 
-const IconSave = ({ className }: IconSaveProps) => {
+const IconSave = (props: IconProps) => {
   return (
     <svg
-      className={className}
+      {...props}
       aria-label='Save'
       color='#262626'
       fill='#262626'

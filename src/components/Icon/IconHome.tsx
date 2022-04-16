@@ -1,12 +1,10 @@
-interface IconHomeProps {
-  active: boolean;
-  className?: string;
-}
+// types
+import { IconProps } from '~/types/utils';
 
-const IconHome = ({ active, className }: IconHomeProps) => {
-  return active ? (
+const IconHome = (props: IconProps) => {
+  return props.active ? (
     <svg
-      className={className}
+      {...props}
       aria-label='Home'
       color='#262626'
       fill='#262626'
@@ -19,7 +17,7 @@ const IconHome = ({ active, className }: IconHomeProps) => {
     </svg>
   ) : (
     <svg
-      className={className}
+      {...props}
       aria-label='Home'
       color='#262626'
       fill='#262626'

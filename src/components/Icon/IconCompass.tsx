@@ -1,12 +1,10 @@
-interface IconCompassProps {
-  active: boolean;
-  className?: string;
-}
+// types
+import { IconProps } from '~/types/utils';
 
-const IconCompass = ({ active, className }: IconCompassProps) => {
-  return active ? (
+const IconCompass = (props: IconProps) => {
+  return props.active ? (
     <svg
-      className={className}
+      {...props}
       aria-label='Find People'
       color='#262626'
       fill='#262626'
@@ -19,7 +17,7 @@ const IconCompass = ({ active, className }: IconCompassProps) => {
     </svg>
   ) : (
     <svg
-      className={className}
+      {...props}
       aria-label='Find People'
       color='#262626'
       fill='#262626'

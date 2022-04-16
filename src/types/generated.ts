@@ -25,8 +25,8 @@ export type BaseResponse = {
 };
 
 export type CreatePostInput = {
+  base64Photo: Scalars['String'];
   caption: Scalars['String'];
-  photoPath: Scalars['String'];
 };
 
 export type FieldError = {
@@ -200,6 +200,62 @@ export type UserMutationResponse = {
 
 export type FieldErrorFragment = { __typename?: 'FieldError'; field: string; message: string };
 
+export type PostInfoFragment = {
+  __typename?: 'Post';
+  _id: string;
+  caption?: string | null;
+  photo?: string | null;
+  createdAt: any;
+  updatedAt: any;
+  reactions: Array<{
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+  }>;
+  user: {
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+  };
+};
+
+export type PostMutationResponseFragment = {
+  __typename?: 'PostMutationResponse';
+  code: number;
+  success: boolean;
+  message?: string | null;
+  post?: {
+    __typename?: 'Post';
+    _id: string;
+    caption?: string | null;
+    photo?: string | null;
+    createdAt: any;
+    updatedAt: any;
+    reactions: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    user: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    };
+  } | null;
+};
+
 export type UserInfoFragment = {
   __typename?: 'User';
   _id: string;
@@ -247,6 +303,44 @@ export type ChangePasswordMutation = {
       avatar?: string | null;
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
+  };
+};
+
+export type CreatePostMutationVariables = Exact<{
+  createPostInput: CreatePostInput;
+}>;
+
+export type CreatePostMutation = {
+  __typename?: 'Mutation';
+  createPost: {
+    __typename?: 'PostMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    post?: {
+      __typename?: 'Post';
+      _id: string;
+      caption?: string | null;
+      photo?: string | null;
+      createdAt: any;
+      updatedAt: any;
+      reactions: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      user: {
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      };
+    } | null;
   };
 };
 
@@ -389,6 +483,37 @@ export const UserInfoFragmentDoc = gql`
     avatar
   }
 `;
+export const PostInfoFragmentDoc = gql`
+  fragment postInfo on Post {
+    _id
+    caption
+    photo
+    reactions {
+      _id
+      email
+      username
+      account
+      avatar
+    }
+    user {
+      ...userInfo
+    }
+    createdAt
+    updatedAt
+  }
+  ${UserInfoFragmentDoc}
+`;
+export const PostMutationResponseFragmentDoc = gql`
+  fragment postMutationResponse on PostMutationResponse {
+    code
+    success
+    message
+    post {
+      ...postInfo
+    }
+  }
+  ${PostInfoFragmentDoc}
+`;
 export const FieldErrorFragmentDoc = gql`
   fragment fieldError on FieldError {
     field
@@ -456,6 +581,51 @@ export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordM
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<
   ChangePasswordMutation,
   ChangePasswordMutationVariables
+>;
+export const CreatePostDocument = gql`
+  mutation CreatePost($createPostInput: CreatePostInput!) {
+    createPost(createPostInput: $createPostInput) {
+      ...postMutationResponse
+    }
+  }
+  ${PostMutationResponseFragmentDoc}
+`;
+export type CreatePostMutationFn = Apollo.MutationFunction<
+  CreatePostMutation,
+  CreatePostMutationVariables
+>;
+
+/**
+ * __useCreatePostMutation__
+ *
+ * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
+ *   variables: {
+ *      createPostInput: // value for 'createPostInput'
+ *   },
+ * });
+ */
+export function useCreatePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreatePostMutation, CreatePostMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreatePostMutation, CreatePostMutationVariables>(
+    CreatePostDocument,
+    options,
+  );
+}
+export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
+export type CreatePostMutationResult = Apollo.MutationResult<CreatePostMutation>;
+export type CreatePostMutationOptions = Apollo.BaseMutationOptions<
+  CreatePostMutation,
+  CreatePostMutationVariables
 >;
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($usernameOrEmail: String!) {

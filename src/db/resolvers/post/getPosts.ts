@@ -19,7 +19,7 @@ const getPosts = (Base: ClassType) => {
       const handler = async () => {
         const { filterQuery, sort, getNextCursor } = paginate(Post, ['createdAt', -1], cursor);
 
-        const posts = await Post.find(filterQuery).limit(3).sort([sort]).lean();
+        const posts = await Post.find(filterQuery).limit(3).sort([sort]).populate('user').lean();
 
         const nextCursor = await getNextCursor(posts);
 

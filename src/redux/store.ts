@@ -12,7 +12,7 @@ export const makeStore = () =>
     reducer: rootReducer as typeof combinedReducers,
   });
 
-export const wrapper = createWrapper<Store>(makeStore, { debug: true });
+export const wrapper = createWrapper<Store>(makeStore);
 
 export const useStoreDispatch = () => useDispatch<StoreDispatch>();
 

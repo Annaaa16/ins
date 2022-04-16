@@ -1,10 +1,12 @@
 import { AnyAction, combineReducers } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 
-import counterReducer from './slices/counterSlice';
+import postReducer from './slices/postSlice';
+import modalReducer from './slices/modalSlice';
 
 export const combinedReducers = combineReducers({
-  counter: counterReducer,
+  post: postReducer,
+  modal: modalReducer,
 });
 
 const rootReducer = (state: ReturnType<typeof combinedReducers>, action: AnyAction) => {

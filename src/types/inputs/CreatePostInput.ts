@@ -6,5 +6,5 @@ export class CreatePostInput {
   caption!: string;
 
   @Field()
-  photoPath!: string;
+  base64Photo!: string;
 }
