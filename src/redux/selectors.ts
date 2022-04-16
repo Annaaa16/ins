@@ -1,3 +1,5 @@
 import { useStoreSelector } from './store';
 
-export const useCounterSelector = () => useStoreSelector((state) => state.counter);
+export const usePostSelector = () => useStoreSelector((state) => state.post);
+
+export const useModalSelector = () => useStoreSelector((state) => state.modal);
