@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
-import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { ApolloClient, from, HttpLink, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
 import { IncomingHttpHeaders } from 'http';
+import fetch from 'isomorphic-unfetch';
 import isEqual from 'lodash/isEqual';
 import merge from 'deepmerge';
 
@@ -12,6 +14,10 @@ interface ApolloStateProps {
 }
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
+
+const errorLink = onError(() => {
+  // console.log('errors', errors);
+});
 
 const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   const enhancedFetch = async (url: RequestInfo, init: RequestInit) => {
@@ -26,17 +32,19 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
     }).then((response) => response);
   };
 
+  const httpLink = new HttpLink({
+    uri: 'http://localhost:3000/api/graphql',
+    fetchOptions: {
+      mode: 'cors',
+    },
+    credentials: 'include',
+    fetch: enhancedFetch,
+  });
+
   return new ApolloClient({
     // SSR only for Node.js
     ssrMode: typeof window === 'undefined',
-    link: new HttpLink({
-      uri: 'http://localhost:3000/api/graphql',
-      fetchOptions: {
-        mode: 'cors',
-      },
-      credentials: 'include',
-      fetch: enhancedFetch,
-    }),
+    link: from([errorLink, httpLink]),
     cache: new InMemoryCache(),
   });
 };
