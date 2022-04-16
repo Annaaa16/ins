@@ -9,7 +9,9 @@ module.exports = {
       lineHeight: require('./src/lib/tailwind/lineHeight'),
       borderWidth: require('./src/lib/tailwind/borderWidth'),
       colors: require('./src/lib/tailwind/colors'),
+      keyframes: require('./src/lib/tailwind/keyframes'),
+      animation: require('./src/lib/tailwind/animation'),
     },
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')],
 };

@@ -13,9 +13,14 @@
     @apply select-none;
   }
 
-  input {
+  input,
+  textarea {
     @apply outline-0
     bg-transparent;
+  }
+
+  svg {
+    @apply fill-base-black;
   }
 }
 
