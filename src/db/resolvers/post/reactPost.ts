@@ -18,13 +18,13 @@ import { Post } from '~/db/models';
 import { VerifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
 
-enum Reaction {
+enum ReactionType {
   LIKE = 'LIKE',
   UNLIKE = 'UNLIKE',
 }
 
-registerEnumType(Reaction, {
-  name: 'Reaction',
+registerEnumType(ReactionType, {
+  name: 'ReactionType',
 });
 
 const reactPost = (Base: ClassType) => {
@@ -34,7 +34,7 @@ const reactPost = (Base: ClassType) => {
     @UseMiddleware(VerifyAuth)
     reactPost(
       @Arg('postId') postId: string,
-      @Arg('reaction') reaction: Reaction,
+      @Arg('reaction') reaction: ReactionType,
       @Ctx() { req: { userId } }: Context,
     ): Promise<BaseResponse> {
       const handler = async () => {
@@ -49,7 +49,7 @@ const reactPost = (Base: ClassType) => {
 
         const isLiked = reactionPost.reactions.includes(userId);
 
-        if (reaction === Reaction.LIKE) {
+        if (reaction === ReactionType.LIKE) {
           if (isLiked)
             return {
               code: 400,
@@ -61,7 +61,7 @@ const reactPost = (Base: ClassType) => {
 
           return {
             code: 200,
-            success: false,
+            success: true,
             message: 'Post is liked',
           };
         }
@@ -77,7 +77,7 @@ const reactPost = (Base: ClassType) => {
 
         return {
           code: 200,
-          success: false,
+          success: true,
           message: 'Post is unliked',
         };
       };
