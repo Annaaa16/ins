@@ -1,11 +1,13 @@
+import { Post } from '~/types/generated';
+
 import PostActions from './PostActions';
 import PostDetail from './PostDetail';
 
-const PostBody = () => {
+const PostBody = (props: Post) => {
   return (
     <div className='px-4 pt-4 pb-3'>
-      <PostActions />
-      <PostDetail />
+      <PostActions {...props} />
+      <PostDetail {...props} />
     </div>
   );
 };

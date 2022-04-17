@@ -1,12 +1,15 @@
 import clsx from 'clsx';
 
-import avatar from '~/assets/avatar.png';
+import { Post } from '~/types/generated';
 
-const PostHeader = () => {
+import avatar from '~/assets/avatar.png';
+import Skeleton from '../Skeleton';
+
+const PostHeader = ({ user }: Post) => {
   return (
     <div className='flex items-center py-3 px-4'>
-      <img className='w-8h h-8 mr-3 rounded-full' src={avatar.src} alt='Avatar' />
-      <span className={clsx('text-sm font-medium')}>duolingo</span>
+      <Skeleton rounded className='w-8 h-8 mr-3' src={user.avatar ?? avatar.src} alt='Avatar' />
+      <span className={clsx('text-sm font-medium')}>{user.username}</span>
     </div>
   );
 };

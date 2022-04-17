@@ -1,7 +1,10 @@
 import clsx from 'clsx';
+
+import { Post } from '~/types/generated';
+
 import IconEmoji from '../Icon/IconEmoji';
 
-const PostFooter = () => {
+const PostFooter = (_props: Post) => {
   return (
     <form className='flex items-center px-4 py-3 border-t-1 border-line'>
       <IconEmoji className={clsx('mr-4', 'cursor-pointer')} />

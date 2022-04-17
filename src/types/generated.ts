@@ -108,7 +108,7 @@ export type MutationLoginGoogleArgs = {
 
 export type MutationReactPostArgs = {
   postId: Scalars['String'];
-  reaction: Reaction;
+  reaction: ReactionType;
 };
 
 export type MutationRegisterArgs = {
@@ -159,9 +159,10 @@ export type Query = {
 
 export type QueryGetPostsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
+  page: Scalars['Int'];
 };
 
-export enum Reaction {
+export enum ReactionType {
   Like = 'LIKE',
   Unlike = 'UNLIKE',
 }
@@ -431,6 +432,21 @@ export type LoginGoogleMutation = {
   };
 };
 
+export type ReactPostMutationVariables = Exact<{
+  reaction: ReactionType;
+  postId: Scalars['String'];
+}>;
+
+export type ReactPostMutation = {
+  __typename?: 'Mutation';
+  reactPost: {
+    __typename?: 'BaseResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+  };
+};
+
 export type RegisterMutationVariables = Exact<{
   registerInput: RegisterInput;
 }>;
@@ -451,6 +467,46 @@ export type RegisterMutation = {
       avatar?: string | null;
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
+  };
+};
+
+export type GetPostsQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['String']>;
+  page: Scalars['Int'];
+}>;
+
+export type GetPostsQuery = {
+  __typename?: 'Query';
+  getPosts: {
+    __typename?: 'PaginatedPostsResponse';
+    code: number;
+    message?: string | null;
+    success: boolean;
+    cursor?: string | null;
+    posts?: Array<{
+      __typename?: 'Post';
+      _id: string;
+      caption?: string | null;
+      photo?: string | null;
+      createdAt: any;
+      updatedAt: any;
+      reactions: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      user: {
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      };
+    }> | null;
   };
 };
 
@@ -809,6 +865,53 @@ export type LoginGoogleMutationOptions = Apollo.BaseMutationOptions<
   LoginGoogleMutation,
   LoginGoogleMutationVariables
 >;
+export const ReactPostDocument = gql`
+  mutation ReactPost($reaction: ReactionType!, $postId: String!) {
+    reactPost(reaction: $reaction, postId: $postId) {
+      code
+      success
+      message
+    }
+  }
+`;
+export type ReactPostMutationFn = Apollo.MutationFunction<
+  ReactPostMutation,
+  ReactPostMutationVariables
+>;
+
+/**
+ * __useReactPostMutation__
+ *
+ * To run a mutation, you first call `useReactPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReactPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [reactPostMutation, { data, loading, error }] = useReactPostMutation({
+ *   variables: {
+ *      reaction: // value for 'reaction'
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useReactPostMutation(
+  baseOptions?: Apollo.MutationHookOptions<ReactPostMutation, ReactPostMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ReactPostMutation, ReactPostMutationVariables>(
+    ReactPostDocument,
+    options,
+  );
+}
+export type ReactPostMutationHookResult = ReturnType<typeof useReactPostMutation>;
+export type ReactPostMutationResult = Apollo.MutationResult<ReactPostMutation>;
+export type ReactPostMutationOptions = Apollo.BaseMutationOptions<
+  ReactPostMutation,
+  ReactPostMutationVariables
+>;
 export const RegisterDocument = gql`
   mutation Register($registerInput: RegisterInput!) {
     register(registerInput: $registerInput) {
@@ -851,6 +954,53 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
 >;
+export const GetPostsDocument = gql`
+  query GetPosts($cursor: String, $page: Int!) {
+    getPosts(cursor: $cursor, page: $page) {
+      code
+      message
+      success
+      posts {
+        ...postInfo
+      }
+      cursor
+    }
+  }
+  ${PostInfoFragmentDoc}
+`;
+
+/**
+ * __useGetPostsQuery__
+ *
+ * To run a query within a React component, call `useGetPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPostsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useGetPostsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetPostsQuery, GetPostsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
+}
+export function useGetPostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetPostsQuery, GetPostsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
+}
+export type GetPostsQueryHookResult = ReturnType<typeof useGetPostsQuery>;
+export type GetPostsLazyQueryHookResult = ReturnType<typeof useGetPostsLazyQuery>;
+export type GetPostsQueryResult = Apollo.QueryResult<GetPostsQuery, GetPostsQueryVariables>;
 export const GetSessionDocument = gql`
   query GetSession {
     getSession {

@@ -1,17 +1,28 @@
 import clsx from 'clsx';
 
-const PostDetail = () => {
+// import TimeAgo from 'react-timeago';
+import { displayLikeCounts } from '~/helpers/format';
+
+import { Post } from '~/types/generated';
+
+const PostDetail = ({ user, reactions, caption }: Post) => {
   return (
     <div className='flex flex-col gap-y-2 text-sm-1 mt-5'>
-      <span className={clsx('font-medium', 'cursor-pointer')}>39,714 likes</span>
-      <div>
-        <span className={clsx('font-medium', 'cursor-pointer')}>duolingo</span>{' '}
-        <span>the only photo dump you need.</span>
-      </div>
-      <span className={clsx('text-base-gray', 'cursor-pointer')}>View all 1,207 comments</span>
-      <span className={clsx('uppercase text-xs-1', 'text-base-gray', 'cursor-pointer')}>
-        2 days ago
+      <span className={clsx('font-medium', 'cursor-pointer select-none')}>
+        {displayLikeCounts(reactions, 'like')}
       </span>
+      <div className='select-none'>
+        <span className={clsx('font-medium', 'cursor-pointer')}>{user.username}</span>{' '}
+        <span>{caption}</span>
+      </div>
+      <span className={clsx('text-base-gray', 'cursor-pointer select-none')}>
+        View all 1,207 comments
+      </span>
+      {/* <TimeAgo
+        live={false}
+        className={clsx('uppercase text-xs-1', 'text-base-gray', 'cursor-pointer select-none')}
+        date={updatedAt}
+      /> */}
     </div>
   );
 };
