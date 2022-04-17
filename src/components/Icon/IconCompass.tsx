@@ -1,10 +1,10 @@
 // types
 import { IconProps } from '~/types/utils';
 
-const IconCompass = (props: IconProps) => {
-  return props.active ? (
+const IconCompass = ({ active, ...rest }: IconProps) => {
+  return active ? (
     <svg
-      {...props}
+      {...rest}
       aria-label='Find People'
       color='#262626'
       fill='#262626'
@@ -17,7 +17,7 @@ const IconCompass = (props: IconProps) => {
     </svg>
   ) : (
     <svg
-      {...props}
+      {...rest}
       aria-label='Find People'
       color='#262626'
       fill='#262626'
