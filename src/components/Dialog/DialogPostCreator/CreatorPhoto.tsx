@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import clsx from 'clsx';
 
@@ -22,8 +22,6 @@ const CreatorPhoto = ({ preview, onSetPreview }: CreatorPhotoProps) => {
     reader.onloadend = () => onSetPreview(reader.result as string);
   };
 
-  const onImageChange = (e: ChangeEvent<HTMLInputElement>) => handleSetFile(e.target.files?.[0]);
-
   useEffect(() => () => URL.revokeObjectURL(preview), [preview]);
 
   return (
@@ -43,7 +41,7 @@ const CreatorPhoto = ({ preview, onSetPreview }: CreatorPhotoProps) => {
             <input
               ref={fileInputRef}
               accept='image/png, image/jpeg, image/gif'
-              onChange={onImageChange}
+              onChange={(e) => handleSetFile(e.target.files?.[0])}
               className='hidden'
               type='file'
             />

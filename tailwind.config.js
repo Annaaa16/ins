@@ -8,6 +8,7 @@ module.exports = {
       fontFamily: require('./src/lib/tailwind/fontFamily'),
       lineHeight: require('./src/lib/tailwind/lineHeight'),
       borderWidth: require('./src/lib/tailwind/borderWidth'),
+      backgroundImage: require('./src/lib/tailwind/backgroundImage'),
       colors: require('./src/lib/tailwind/colors'),
       keyframes: require('./src/lib/tailwind/keyframes'),
       animation: require('./src/lib/tailwind/animation'),
