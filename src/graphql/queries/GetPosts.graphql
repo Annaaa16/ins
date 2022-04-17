@@ -1,0 +1,11 @@
+query GetPosts($cursor: String, $page: Int!) {
+  getPosts(cursor: $cursor, page: $page) {
+    code
+    message
+    success
+    posts {
+      ...postInfo
+    }
+    cursor
+  }
+}
