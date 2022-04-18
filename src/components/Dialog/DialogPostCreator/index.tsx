@@ -3,7 +3,6 @@ import { useState } from 'react';
 import clsx from 'clsx';
 
 import { useCreatePostMutation } from '~/types/generated';
-import { useLoading } from '~/hooks';
 import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
 import { modalActions } from '~/redux/slices/modalSlice';
@@ -18,21 +17,18 @@ const DialogPostCreator = () => {
   const [caption, setCaption] = useState<string>('');
   const [preview, setPreview] = useState<string>('');
 
-  const [createPost] = useCreatePostMutation();
-  const [loading, handleAction] = useLoading();
+  const [createPost, { loading }] = useCreatePostMutation();
   const dispatch = useStoreDispatch();
 
   const handleCreatePostSubmit = async () => {
-    const response = await handleAction(() =>
-      createPost({
-        variables: {
-          createPostInput: {
-            caption,
-            base64Photo: preview,
-          },
+    const response = await createPost({
+      variables: {
+        createPostInput: {
+          caption,
+          base64Photo: preview,
         },
-      }),
-    );
+      },
+    });
 
     const data = response.data?.createPost;
 
