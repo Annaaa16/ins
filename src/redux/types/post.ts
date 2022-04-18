@@ -12,7 +12,7 @@ export interface InitPostStateReducer {
 }
 
 export interface ReactPostReducer {
-  user: User;
+  currentUser: User;
   postId: string;
   reaction: ReactionType;
 }

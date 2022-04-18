@@ -3,8 +3,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 
 import { Post } from '~/types/generated';
-import { usePost } from '~/hooks';
-import { useDoubleTab } from '~/hooks';
+import { usePost, useDoubleTab } from '~/hooks';
 
 import Skeleton from '../Skeleton';
 import IconHeart from '../Icon/IconHeart';
