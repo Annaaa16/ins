@@ -1,4 +1,6 @@
 const custom = {
+  100: '400px',
+
   'form-w': '350px',
   'container-w': '935px',
   'header-h': '60px',

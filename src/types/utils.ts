@@ -6,7 +6,13 @@ export interface IconProps extends DOMAttributes<SVGSVGElement> {
   onClick?: () => void;
 }
 
+export type Callback = () => void;
+
 export type AddParameters<
   TFunction extends (...args: any) => any,
   TParameters extends [...args: any],
 > = (...args: [...Parameters<TFunction>, ...TParameters]) => ReturnType<TFunction>;
+
+// export type AddParameters2<Fn, NewType> = Fn extends (...arg: infer R) => any
+//   ? (...args: [...R, NewType]) => ReturnType<Fn>
+//   : never;
