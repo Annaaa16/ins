@@ -7,6 +7,8 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import { useApollo } from '~/lib/apolloClient';
 import { wrapper } from '~/redux/store';
 
+import ModalProvider from '~/contexts/ModalContext';
+
 // styles
 import '../styles/index.scss';
 
@@ -17,7 +19,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <Component {...pageProps} />
+      <ModalProvider>
+        <Component {...pageProps} />
+      </ModalProvider>
     </ApolloProvider>
   );
 }

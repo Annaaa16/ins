@@ -9,7 +9,6 @@ import { withRoute } from '~/hocs';
 import Header from '~/components/Header';
 import HomeFeed from '~/features/home/HomeFeed';
 import HomeWidget from '~/features/home/HomeWidget';
-import DialogPostCreator from '~/components/Dialog/DialogPostCreator';
 
 const Home: NextPage = () => {
   return (
@@ -19,7 +18,6 @@ const Home: NextPage = () => {
         <HomeFeed />
         <HomeWidget />
       </main>
-      <DialogPostCreator />
     </>
   );
 };

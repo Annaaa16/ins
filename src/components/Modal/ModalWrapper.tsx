@@ -2,25 +2,19 @@ import { ReactNode } from 'react';
 
 import clsx from 'clsx';
 
-import { useModalSelector } from '~/redux/selectors';
-import { useStoreDispatch } from '~/redux/store';
+import { useModalContext } from '~/contexts/ModalContext';
 
-import IconClose from './Icon/IconClose';
-import { modalActions } from '~/redux/slices/modalSlice';
+import IconClose from '../Icon/IconClose';
 
 interface ModalProps {
-  className?: string;
   children: ReactNode;
+  className?: string;
 }
 
-const Modal = ({ className, children }: ModalProps) => {
-  const { isOpen } = useModalSelector();
+const ModalWrapper = ({ className, children }: ModalProps) => {
+  const { hideModal } = useModalContext();
 
-  const dispatch = useStoreDispatch();
-
-  const closeModal = () => dispatch(modalActions.close());
-
-  if (!isOpen) return null;
+  const closeModal = () => hideModal();
 
   return (
     <div className={clsx('fixed inset-0 z-50', 'flex m-auto')}>
@@ -34,4 +28,4 @@ const Modal = ({ className, children }: ModalProps) => {
   );
 };
 
-export default Modal;
+export default ModalWrapper;

@@ -5,17 +5,22 @@ import clsx from 'clsx';
 import { useCreatePostMutation } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
-import { modalActions } from '~/redux/slices/modalSlice';
+import { useModalContext } from '~/contexts/ModalContext';
+import { usePostSelector } from '~/redux/selectors';
 
-import Modal from '~/components/Modal';
+import ModalWrapper from '../ModalWrapper';
 import CreatorForm from './CreatorForm';
 import CreatorHeader from './CreatorHeader';
 import CreatorPhoto from './CreatorPhoto';
 import CreatorLoading from './CreatorLoading';
 
-const DialogPostCreator = () => {
-  const [caption, setCaption] = useState<string>('');
-  const [preview, setPreview] = useState<string>('');
+const ModalPostCreator = () => {
+  const { hideModal } = useModalContext();
+
+  const { selectedPost } = usePostSelector();
+
+  const [caption, setCaption] = useState<string>(selectedPost?.caption ?? '');
+  const [preview, setPreview] = useState<string>(selectedPost?.photo ?? '');
 
   const [createPost, { loading }] = useCreatePostMutation();
   const dispatch = useStoreDispatch();
@@ -37,12 +42,12 @@ const DialogPostCreator = () => {
       setPreview('');
 
       dispatch(postActions.addNewPost(data.post));
-      dispatch(modalActions.close());
+      hideModal();
     }
   };
 
   return (
-    <Modal className='w-[913px] max-w-full mx-auto my-12 lg:my-auto'>
+    <ModalWrapper className='w-[913px] max-w-full mx-auto my-12 lg:my-auto'>
       {loading ? (
         <CreatorLoading />
       ) : (
@@ -54,8 +59,8 @@ const DialogPostCreator = () => {
           </div>
         </div>
       )}
-    </Modal>
+    </ModalWrapper>
   );
 };
 
-export default DialogPostCreator;
+export default ModalPostCreator;

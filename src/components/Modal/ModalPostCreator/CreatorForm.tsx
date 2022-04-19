@@ -1,6 +1,8 @@
 import clsx from 'clsx';
 
 import { useAutoFocus } from '~/hooks';
+import { useAuthSelector } from '~/redux/selectors';
+import { getNameInMail } from '~/helpers/format';
 
 import IconEmoji from '~/components/Icon/IconEmoji';
 import CreatorFormLocation from './CreatorFormLocation';
@@ -16,12 +18,14 @@ interface CreatorFormProps {
 const CreatorForm = ({ caption, onChangeCaption }: CreatorFormProps) => {
   const { focusRef } = useAutoFocus();
 
+  const { currentUser } = useAuthSelector();
+
   return (
     <div className='lg:w-2/5 border-l border-line'>
       <div className='px-3 py-4'>
         <div className='flex items-center'>
           <img className='w-7 h-7 rounded-full mr-2' src={avatar.src} alt='Avatar' />
-          <span className='font-bold text-base'>minhhunghuynh1106</span>
+          <span className='font-bold text-base'>{getNameInMail(currentUser?.email)}</span>
         </div>
         <textarea
           ref={focusRef}
