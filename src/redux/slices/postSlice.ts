@@ -1,12 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // types
+import {
+  DeletePostReducer,
+  InitPostStateReducer,
+  PostSliceState,
+  ReactPostReducer,
+} from '../types/post';
+
 import { Post, ReactionType } from '~/types/generated';
-import { InitPostStateReducer, PostSliceState, ReactPostReducer } from '../types/post';
 
 const initialState: PostSliceState = {
   posts: [],
   cursor: null,
+  selectedPost: null,
 };
 
 const postSlice = createSlice({
@@ -33,6 +40,15 @@ const postSlice = createSlice({
             (reactedUser) => reactedUser._id !== currentUser._id,
           );
       });
+    },
+
+    deletePost: (state, { payload }: PayloadAction<DeletePostReducer>) => {
+      state.posts = state.posts.filter((post) => post._id !== payload.postId);
+    },
+
+    // Selected to implement actions
+    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
+      state.selectedPost = action.payload;
     },
   },
 });
