@@ -44,6 +44,7 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
   const hideModal = (callback?: Callback) => {
     setDialog(null);
     dispatch(postActions.setSelectedPost(null));
+    dispatch(postActions.setCurrentAction(null));
 
     if (callback) callback();
   };

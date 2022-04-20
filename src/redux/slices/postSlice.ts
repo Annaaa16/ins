@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // types
 import {
+  CurrentAction,
   DeletePostReducer,
   InitPostStateReducer,
   PostSliceState,
@@ -14,6 +15,7 @@ const initialState: PostSliceState = {
   posts: [],
   cursor: null,
   selectedPost: null,
+  currentAction: null,
 };
 
 const postSlice = createSlice({
@@ -22,6 +24,10 @@ const postSlice = createSlice({
   reducers: {
     addNewPost: (state, action: PayloadAction<Post>) => {
       state.posts.unshift(action.payload);
+    },
+
+    updatePost: (state, { payload: updatedPost }: PayloadAction<Post>) => {
+      state.posts = state.posts.map((post) => (post._id === updatedPost._id ? updatedPost : post));
     },
 
     initPostState: (state, action: PayloadAction<InitPostStateReducer>) => {
@@ -49,6 +55,10 @@ const postSlice = createSlice({
     // Selected to implement actions
     setSelectedPost: (state, action: PayloadAction<Post | null>) => {
       state.selectedPost = action.payload;
+    },
+
+    setCurrentAction: (state, action: PayloadAction<CurrentAction>) => {
+      state.currentAction = action.payload;
     },
   },
 });

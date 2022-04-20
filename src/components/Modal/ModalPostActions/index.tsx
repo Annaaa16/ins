@@ -50,7 +50,10 @@ const ModalPostActions = () => {
   const selectedActions = isPostOwner ? meActions : publicActions;
 
   addPostAction('delete', handleDeletePost);
-  addPostAction('edit', () => showModal(MODAL_TYPES.POST_CREATOR));
+  addPostAction('edit', () => {
+    dispatch(postActions.setCurrentAction('update'));
+    showModal(MODAL_TYPES.POST_CREATOR);
+  });
 
   return (
     <ModalWrapper>

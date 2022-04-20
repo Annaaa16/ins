@@ -1,10 +1,13 @@
 // types
 import { Post, ReactionType, User } from '~/types/generated';
 
+export type CurrentAction = 'create' | 'update' | 'delete' | null;
+
 export interface PostSliceState {
   selectedPost: Post | null;
   posts: Post[];
   cursor: string | null;
+  currentAction: CurrentAction;
 }
 
 export interface InitPostStateReducer {
