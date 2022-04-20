@@ -22,7 +22,7 @@ const Skeleton = ({ alt, src, rounded, className, ...rest }: SkeletonProps) => {
         ref={imageRef}
         src={src}
         alt={alt}
-        className={clsx(isLoaded ? 'opacity-100 visible' : 'opacity-0 invisible')}
+        className={clsx('w-full', isLoaded ? 'opacity-100 visible' : 'opacity-0 invisible')}
         onLoad={() => setIsLoaded(true)}
         draggable={false}
       />

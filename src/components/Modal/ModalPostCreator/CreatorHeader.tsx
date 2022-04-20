@@ -1,20 +1,26 @@
 import clsx from 'clsx';
 
+import { usePostSelector } from '~/redux/selectors';
+
 interface CreatorHeaderProps {
-  onCreatePostSubmit: () => void;
+  onCreateOrUpdateSubmit: () => void;
 }
 
-const CreatorHeader = ({ onCreatePostSubmit }: CreatorHeaderProps) => {
+const CreatorHeader = ({ onCreateOrUpdateSubmit }: CreatorHeaderProps) => {
+  const { currentAction } = usePostSelector();
+
   return (
     <div
       className={clsx('sticky top-0', 'flex-center text-sm py-3 border-b border-line', 'bg-white')}
     >
-      <span className='font-medium'>Create new post</span>
+      <span className='font-medium'>
+        {currentAction === 'update' ? 'Edit Info' : 'Create new post'}
+      </span>
       <button
-        onClick={onCreatePostSubmit}
+        onClick={onCreateOrUpdateSubmit}
         className={clsx('abs-center-y right-3', 'btn float-right', 'text-primary')}
       >
-        Share
+        {currentAction === 'update' ? 'Done' : 'Share'}
       </button>
     </div>
   );

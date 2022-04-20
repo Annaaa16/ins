@@ -24,6 +24,25 @@ export type BaseResponse = {
   success: Scalars['Boolean'];
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  _id: Scalars['ID'];
+  caption: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  reactions: Array<User>;
+  updatedAt: Scalars['DateTime'];
+  user: User;
+};
+
+export type CommentMutationResponse = {
+  __typename?: 'CommentMutationResponse';
+  code: Scalars['Float'];
+  comment?: Maybe<Comment>;
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 export type CreatePostInput = {
   base64Photo: Scalars['String'];
   caption: Scalars['String'];
@@ -62,13 +81,16 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: UserMutationResponse;
+  createComment: CommentMutationResponse;
   createPost: PostMutationResponse;
+  deleteComment: BaseResponse;
   deletePost: BaseResponse;
   forgotPassword: ForgotPasswordResponse;
   login: UserMutationResponse;
   loginFacebook: UserMutationResponse;
   loginGoogle: UserMutationResponse;
   logout: Scalars['Boolean'];
+  reactComment: BaseResponse;
   reactPost: BaseResponse;
   register: UserMutationResponse;
   updatePost: PostMutationResponse;
@@ -80,8 +102,16 @@ export type MutationChangePasswordArgs = {
   userId: Scalars['String'];
 };
 
+export type MutationCreateCommentArgs = {
+  caption: Scalars['String'];
+};
+
 export type MutationCreatePostArgs = {
   createPostInput: CreatePostInput;
+};
+
+export type MutationDeleteCommentArgs = {
+  commentId: Scalars['String'];
 };
 
 export type MutationDeletePostArgs = {
@@ -106,6 +136,11 @@ export type MutationLoginGoogleArgs = {
   tokenId: Scalars['String'];
 };
 
+export type MutationReactCommentArgs = {
+  commentId: Scalars['String'];
+  reaction: ReactionType2;
+};
+
 export type MutationReactPostArgs = {
   postId: Scalars['String'];
   reaction: ReactionType;
@@ -117,6 +152,16 @@ export type MutationRegisterArgs = {
 
 export type MutationUpdatePostArgs = {
   updatePostInput: UpdatePostInput;
+};
+
+export type PaginatedCommentsResponse = {
+  __typename?: 'PaginatedCommentsResponse';
+  code: Scalars['Float'];
+  comments?: Maybe<Array<Comment>>;
+  cursor?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
 };
 
 export type PaginatedPostsResponse = {
@@ -135,7 +180,6 @@ export type Post = {
   caption?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   photo?: Maybe<Scalars['String']>;
-  photoId?: Maybe<Scalars['String']>;
   reactions: Array<User>;
   updatedAt: Scalars['DateTime'];
   user: User;
@@ -152,17 +196,28 @@ export type PostMutationResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  getComments: PaginatedCommentsResponse;
   getPosts: PaginatedPostsResponse;
   getSession: GetSessionResponse;
   hello: Scalars['String'];
 };
 
+export type QueryGetCommentsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
 export type QueryGetPostsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
-  page: Scalars['Int'];
+  limit: Scalars['Int'];
 };
 
 export enum ReactionType {
+  Like = 'LIKE',
+  Unlike = 'UNLIKE',
+}
+
+export enum ReactionType2 {
   Like = 'LIKE',
   Unlike = 'UNLIKE',
 }
@@ -175,7 +230,7 @@ export type RegisterInput = {
 
 export type UpdatePostInput = {
   caption?: InputMaybe<Scalars['String']>;
-  newPhoto?: InputMaybe<Scalars['String']>;
+  newBase64Photo?: InputMaybe<Scalars['String']>;
   oldPhotoUrl?: InputMaybe<Scalars['String']>;
   postId: Scalars['String'];
 };
@@ -484,11 +539,11 @@ export type ReactPostMutation = {
   };
 };
 
-export type UpdatePhotoMutationVariables = Exact<{
+export type UpdatePostMutationVariables = Exact<{
   updatePostInput: UpdatePostInput;
 }>;
 
-export type UpdatePhotoMutation = {
+export type UpdatePostMutation = {
   __typename?: 'Mutation';
   updatePost: {
     __typename?: 'PostMutationResponse';
@@ -544,7 +599,7 @@ export type GetSessionQuery = {
 
 export type GetPostsQueryVariables = Exact<{
   cursor?: InputMaybe<Scalars['String']>;
-  page: Scalars['Int'];
+  limit: Scalars['Int'];
 }>;
 
 export type GetPostsQuery = {
@@ -1052,50 +1107,50 @@ export type ReactPostMutationOptions = Apollo.BaseMutationOptions<
   ReactPostMutation,
   ReactPostMutationVariables
 >;
-export const UpdatePhotoDocument = gql`
-  mutation UpdatePhoto($updatePostInput: UpdatePostInput!) {
+export const UpdatePostDocument = gql`
+  mutation UpdatePost($updatePostInput: UpdatePostInput!) {
     updatePost(updatePostInput: $updatePostInput) {
       ...postMutationResponse
     }
   }
   ${PostMutationResponseFragmentDoc}
 `;
-export type UpdatePhotoMutationFn = Apollo.MutationFunction<
-  UpdatePhotoMutation,
-  UpdatePhotoMutationVariables
+export type UpdatePostMutationFn = Apollo.MutationFunction<
+  UpdatePostMutation,
+  UpdatePostMutationVariables
 >;
 
 /**
- * __useUpdatePhotoMutation__
+ * __useUpdatePostMutation__
  *
- * To run a mutation, you first call `useUpdatePhotoMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePhotoMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updatePhotoMutation, { data, loading, error }] = useUpdatePhotoMutation({
+ * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
  *   variables: {
  *      updatePostInput: // value for 'updatePostInput'
  *   },
  * });
  */
-export function useUpdatePhotoMutation(
-  baseOptions?: Apollo.MutationHookOptions<UpdatePhotoMutation, UpdatePhotoMutationVariables>,
+export function useUpdatePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdatePostMutation, UpdatePostMutationVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<UpdatePhotoMutation, UpdatePhotoMutationVariables>(
-    UpdatePhotoDocument,
+  return Apollo.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(
+    UpdatePostDocument,
     options,
   );
 }
-export type UpdatePhotoMutationHookResult = ReturnType<typeof useUpdatePhotoMutation>;
-export type UpdatePhotoMutationResult = Apollo.MutationResult<UpdatePhotoMutation>;
-export type UpdatePhotoMutationOptions = Apollo.BaseMutationOptions<
-  UpdatePhotoMutation,
-  UpdatePhotoMutationVariables
+export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
+export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
+export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
+  UpdatePostMutation,
+  UpdatePostMutationVariables
 >;
 export const GetSessionDocument = gql`
   query GetSession {
@@ -1145,8 +1200,8 @@ export type GetSessionQueryHookResult = ReturnType<typeof useGetSessionQuery>;
 export type GetSessionLazyQueryHookResult = ReturnType<typeof useGetSessionLazyQuery>;
 export type GetSessionQueryResult = Apollo.QueryResult<GetSessionQuery, GetSessionQueryVariables>;
 export const GetPostsDocument = gql`
-  query GetPosts($cursor: String, $page: Int!) {
-    getPosts(cursor: $cursor, page: $page) {
+  query GetPosts($cursor: String, $limit: Int!) {
+    getPosts(cursor: $cursor, limit: $limit) {
       code
       message
       success
@@ -1172,7 +1227,7 @@ export const GetPostsDocument = gql`
  * const { data, loading, error } = useGetPostsQuery({
  *   variables: {
  *      cursor: // value for 'cursor'
- *      page: // value for 'page'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
