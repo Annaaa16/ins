@@ -1,8 +1,8 @@
 import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
-import type { Context } from '~/types/context';
-import { BaseResponse } from '~/types/shared';
+import type { Context } from '~/db/types/context';
+import { BaseResponse } from '~/db/types/shared';
 
 // models
 import { Post } from '~/db/models';
@@ -30,7 +30,7 @@ const deletePost = (Base: ClassType) => {
             message: 'Post not found',
           };
 
-        await deletePhoto(deletedPost.photoId);
+        await deletePhoto(deletedPost.photo);
 
         return {
           code: 200,

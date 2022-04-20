@@ -2,9 +2,9 @@ import { Mutation, Arg, Ctx, Resolver, ClassType } from 'type-graphql';
 import axios from 'axios';
 
 // types
-import type { Context } from '~/types/context';
+import type { Context } from '~/db/types/context';
 import { FacebookLoginResponse } from '~/types/auth';
-import { UserMutationResponse } from '~/types/responses';
+import { UserMutationResponse } from '~/db/types/responses';
 
 // models
 import { User } from '~/db/models';

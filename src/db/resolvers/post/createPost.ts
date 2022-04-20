@@ -1,9 +1,9 @@
 import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
-import type { Context } from '~/types/context';
-import { PostMutationResponse } from '~/types/responses';
-import { CreatePostInput } from '~/types/inputs';
+import type { Context } from '~/db/types/context';
+import { PostMutationResponse } from '~/db/types/responses';
+import { CreatePostInput } from '~/db/types/inputs';
 
 import { VerifyAuth } from '~/db/middlewares';
 import { Post } from '~/db/models';
@@ -27,17 +27,16 @@ const createPost = (Base: ClassType) => {
         });
 
       const handler = async () => {
-        const { photo, photoId } = await uploadPhoto(base64Photo);
+        const { photo } = await uploadPhoto(base64Photo);
 
         const newPost = await Post.create({
           caption,
           photo,
-          photoId,
           user: userId,
         });
 
         return {
-          code: 200,
+          code: 201,
           success: true,
           message: 'The post has been created successfully',
           post: (await newPost.populate('user')).toObject(),

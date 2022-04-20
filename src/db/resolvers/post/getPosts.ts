@@ -1,7 +1,7 @@
 import { Arg, ClassType, Int, Query, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
-import { PaginatedPostsResponse } from '~/types/responses';
+import { PaginatedPostsResponse } from '~/db/types/responses';
 
 // models
 import { Post } from '~/db/models';
@@ -16,14 +16,14 @@ const getPosts = (Base: ClassType) => {
     @Query((_returns) => PaginatedPostsResponse)
     @UseMiddleware(VerifyAuth)
     getPosts(
-      @Arg('page', (_type) => Int) page: number,
+      @Arg('limit', (_type) => Int) limit: number,
       @Arg('cursor', { nullable: true }) cursor?: string,
     ): Promise<PaginatedPostsResponse> {
       const handler = async () => {
         const { filterQuery, sort, getNextCursor } = paginate(Post, ['createdAt', -1], cursor);
 
         const posts = await Post.find(filterQuery)
-          .limit(page)
+          .limit(limit)
           .sort([sort])
           .populate('user')
           .populate('reactions')

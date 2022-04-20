@@ -1,14 +1,14 @@
 import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
-import type { Context } from '~/types/context';
-import { UpdatePostInput } from '~/types/inputs';
-import { PostMutationResponse } from '~/types/responses';
+import type { Context } from '~/db/types/context';
+import { UpdatePostInput } from '~/db/types/inputs';
+import { PostMutationResponse } from '~/db/types/responses';
 
 // models
 import { Post } from '~/db/models';
 
-import { Post as PostEntity } from '~/db/entities/Post';
+import { Post as PostEntity } from '~/db/entities';
 import { VerifyAuth } from '~/db/middlewares';
 import { updatePhoto } from '~/helpers/cloudinary';
 import respond from '~/helpers/respond';
@@ -19,10 +19,10 @@ const updatePost = (Base: ClassType) => {
     @Mutation((_returns) => PostMutationResponse)
     @UseMiddleware(VerifyAuth)
     updatePost(
-      @Arg('updatePostInput') { postId, caption, newPhoto, oldPhotoUrl }: UpdatePostInput,
+      @Arg('updatePostInput') { postId, caption, newBase64Photo, oldPhotoUrl }: UpdatePostInput,
       @Ctx() { req: { userId } }: Context,
     ): Promise<PostMutationResponse> {
-      if (!caption?.trim() && !newPhoto)
+      if (!caption?.trim() && !newBase64Photo)
         return Promise.resolve({
           code: 400,
           success: false,
@@ -46,21 +46,22 @@ const updatePost = (Base: ClassType) => {
         }
 
         // Update photo
-        if (newPhoto && oldPhotoUrl) {
-          const { photoUrl } = await updatePhoto(newPhoto, oldPhotoUrl);
+        if (newBase64Photo && oldPhotoUrl) {
+          const { photoUrl } = await updatePhoto(newBase64Photo, oldPhotoUrl);
 
           newPost.photo = photoUrl;
         }
 
         // Add new photo
-        if (newPhoto && !oldPhotoUrl) {
-          const { photoUrl } = await updatePhoto(newPhoto);
+        if (newBase64Photo && !oldPhotoUrl) {
+          const { photoUrl } = await updatePhoto(newBase64Photo);
 
           newPost.photo = photoUrl;
         }
 
         const updatedPost = await Post.findByIdAndUpdate(postId, newPost, { new: true })
           .populate('user')
+          .populate('reactions')
           .lean();
 
         if (!updatedPost)

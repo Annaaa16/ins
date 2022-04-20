@@ -1,8 +1,8 @@
 import { Arg, Resolver, ClassType, Mutation } from 'type-graphql';
 
 // types
-import { RegisterInput } from '~/types/inputs';
-import { UserMutationResponse } from '~/types/responses';
+import { RegisterInput } from '~/db/types/inputs';
+import { UserMutationResponse } from '~/db/types/responses';
 
 // models
 import { User } from '~/db/models';

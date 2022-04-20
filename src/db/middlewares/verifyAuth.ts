@@ -2,7 +2,7 @@ import { MiddlewareFn } from 'type-graphql';
 import jwt from 'jsonwebtoken';
 
 // types
-import { Context } from '~/types/context';
+import { Context } from '~/db/types/context';
 
 import { SECRETS } from '~/constants';
 import { User } from '../models';

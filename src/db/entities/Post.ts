@@ -22,10 +22,6 @@ export class Post extends TimeStamps {
   @prop({ type: String, default: null })
   photo!: string;
 
-  @Field({ nullable: true })
-  @prop({ type: String, default: null })
-  photoId!: string;
-
   @Field((_type) => User)
   @prop({ type: mongoose.Types.ObjectId, ref: User, required: true })
   user!: mongoose.Types.ObjectId;

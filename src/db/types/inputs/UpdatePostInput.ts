@@ -9,7 +9,7 @@ export class UpdatePostInput {
   caption?: string;
 
   @Field({ nullable: true })
-  newPhoto?: string;
+  newBase64Photo?: string;
 
   @Field({ nullable: true })
   oldPhotoUrl?: string;
