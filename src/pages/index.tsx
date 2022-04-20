@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
     const response = await client.query<GetPostsQuery, GetPostsQueryVariables>({
       query: GetPostsDocument,
       variables: {
-        page: LIMITS.POSTS,
+        limit: LIMITS.POSTS,
         cursor: '',
       },
     });

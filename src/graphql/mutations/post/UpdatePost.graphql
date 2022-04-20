@@ -1,4 +1,4 @@
-mutation UpdatePhoto($updatePostInput: UpdatePostInput!) {
+mutation UpdatePost($updatePostInput: UpdatePostInput!) {
   updatePost(updatePostInput: $updatePostInput) {
     ...postMutationResponse
   }
