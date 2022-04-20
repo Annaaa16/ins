@@ -41,12 +41,18 @@ const DropZone = ({ children, className, onDrop }: DropZoneProps) => {
 
         setIsDragging(false);
       }}
-      className={clsx(
-        'flex-center flex-col h-full',
-        isDragging && ['border-dashed border-3 border-primary', 'bg-primary bg-opacity-5'],
-        className,
-      )}
+      className={clsx('relative', 'flex-center flex-col h-full', className)}
     >
+      <div
+        className={clsx(
+          'absolute inset-0',
+          isDragging && [
+            'border-dashed border-3 border-primary lg:rounded-bl-xl',
+            'bg-primary bg-opacity-10',
+          ],
+          'select-none pointer-events-none',
+        )}
+      />
       {children}
     </div>
   );
