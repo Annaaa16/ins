@@ -9,7 +9,7 @@ import { UserMutationResponse } from '~/db/types/responses';
 // models
 import { User } from '~/db/models';
 
-import { setTokens } from '~/helpers/token';
+import { sendTokens } from '~/helpers/token';
 import respond from '~/helpers/respond';
 
 const loginFacebook = (Base: ClassType) => {
@@ -39,7 +39,7 @@ const loginFacebook = (Base: ClassType) => {
             })
           ).toObject();
 
-        setTokens(res, existingUser._id);
+        sendTokens(res, existingUser._id);
 
         return {
           code: 200,

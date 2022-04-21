@@ -28,7 +28,7 @@ export const sendAccessToken = (res: NextApiResponse, userId: string) => {
   return accessToken;
 };
 
-export const setTokens = (res: NextApiResponse, userId: string) => {
+export const sendTokens = (res: NextApiResponse, userId: string) => {
   setCookie(res, [
     {
       key: COOKIE_NAMES.ACCESS_TOKEN,
