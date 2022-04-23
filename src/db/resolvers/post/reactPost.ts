@@ -16,7 +16,7 @@ import { ReactionType } from '~/db/types/utils';
 // models
 import { Post } from '~/db/models';
 
-import { VerifyAuth } from '~/db/middlewares';
+import { verifyAuth } from '~/db/middlewares';
 import { reactItem } from '~/db/utils';
 import respond from '~/helpers/respond';
 
@@ -28,7 +28,7 @@ const reactPost = (Base: ClassType) => {
   @Resolver()
   class ReactPost extends Base {
     @Mutation((_returns) => BaseResponse)
-    @UseMiddleware(VerifyAuth)
+    @UseMiddleware(verifyAuth)
     reactPost(
       @Arg('postId') postId: string,
       @Arg('reaction', (_type) => ReactionType) reaction: ReactionType,

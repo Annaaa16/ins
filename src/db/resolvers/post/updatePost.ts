@@ -9,7 +9,7 @@ import { PostMutationResponse } from '~/db/types/responses';
 import { Post } from '~/db/models';
 
 import { Post as PostEntity } from '~/db/entities';
-import { VerifyAuth } from '~/db/middlewares';
+import { verifyAuth } from '~/db/middlewares';
 import { updatePhoto } from '~/helpers/cloudinary';
 import respond from '~/helpers/respond';
 
@@ -17,7 +17,7 @@ const updatePost = (Base: ClassType) => {
   @Resolver()
   class UpdatePost extends Base {
     @Mutation((_returns) => PostMutationResponse)
-    @UseMiddleware(VerifyAuth)
+    @UseMiddleware(verifyAuth)
     updatePost(
       @Arg('updatePostInput') { postId, caption, newBase64Photo, oldPhotoUrl }: UpdatePostInput,
       @Ctx() { req: { userId } }: Context,

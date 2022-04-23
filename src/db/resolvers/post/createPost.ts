@@ -5,7 +5,7 @@ import type { Context } from '~/db/types/context';
 import { PostMutationResponse } from '~/db/types/responses';
 import { CreatePostInput } from '~/db/types/inputs';
 
-import { VerifyAuth } from '~/db/middlewares';
+import { verifyAuth } from '~/db/middlewares';
 import { Post } from '~/db/models';
 import { uploadPhoto } from '~/helpers/cloudinary';
 import respond from '~/helpers/respond';
@@ -14,7 +14,7 @@ const createPost = (Base: ClassType) => {
   @Resolver()
   class CreatePost extends Base {
     @Mutation((_returns) => PostMutationResponse)
-    @UseMiddleware(VerifyAuth)
+    @UseMiddleware(verifyAuth)
     createPost(
       @Arg('createPostInput') { caption, base64Photo }: CreatePostInput,
       @Ctx() { req: { userId } }: Context,

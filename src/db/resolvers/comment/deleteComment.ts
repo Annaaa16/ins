@@ -7,14 +7,14 @@ import { BaseResponse } from '~/db/types/shared';
 // models
 import { Comment } from '~/db/models';
 
-import { VerifyAuth } from '~/db/middlewares';
+import { verifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
 
 const deleteComment = (Base: ClassType) => {
   @Resolver()
   class DeleteComment extends Base {
     @Mutation((_returns) => BaseResponse)
-    @UseMiddleware(VerifyAuth)
+    @UseMiddleware(verifyAuth)
     deleteComment(
       @Arg('commentId') commentId: string,
       @Ctx() { req: { userId } }: Context,

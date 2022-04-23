@@ -16,7 +16,7 @@ import { ReactionType } from '~/db/types/utils';
 // models
 import { Comment } from '~/db/models';
 
-import { VerifyAuth } from '~/db/middlewares';
+import { verifyAuth } from '~/db/middlewares';
 import { reactItem } from '~/db/utils';
 import respond from '~/helpers/respond';
 
@@ -28,7 +28,7 @@ const reactComment = (Base: ClassType) => {
   @Resolver()
   class ReactComment extends Base {
     @Mutation((_returns) => BaseResponse)
-    @UseMiddleware(VerifyAuth)
+    @UseMiddleware(verifyAuth)
     reactComment(
       @Arg('commentId') commentId: string,
       @Arg('reaction', (_type) => ReactionType) reaction: ReactionType,
