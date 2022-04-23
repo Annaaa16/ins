@@ -1,20 +1,35 @@
-import { Arg, ClassType, Int, Query, Resolver, UseMiddleware } from 'type-graphql';
+import {
+  Arg,
+  ClassType,
+  FieldResolver,
+  Int,
+  Query,
+  Resolver,
+  Root,
+  UseMiddleware,
+} from 'type-graphql';
 
 // types
 import { PaginatedPostsResponse } from '~/db/types/responses';
 
 // models
-import { Post } from '~/db/models';
+import { Comment, Post } from '~/db/models';
 
-import { VerifyAuth } from '~/db/middlewares';
+import { verifyAuth } from '~/db/middlewares';
+import { Post as PostEntity } from '~/db/entities';
 import respond from '~/helpers/respond';
 import paginate from '~/helpers/paginate';
 
 const getPosts = (Base: ClassType) => {
-  @Resolver()
+  @Resolver((_of) => PostEntity)
   class GetPosts extends Base {
+    @FieldResolver((_returns) => Int)
+    async commentCounts(@Root() post: PostEntity) {
+      return await Comment.countDocuments({ postId: post._id });
+    }
+
     @Query((_returns) => PaginatedPostsResponse)
-    @UseMiddleware(VerifyAuth)
+    @UseMiddleware(verifyAuth)
     getPosts(
       @Arg('limit', (_type) => Int) limit: number,
       @Arg('cursor', { nullable: true }) cursor?: string,
@@ -29,7 +44,7 @@ const getPosts = (Base: ClassType) => {
           .populate('reactions')
           .lean();
 
-        const nextCursor = await getNextCursor(posts);
+        const { cursor: nextCursor, hasMore } = await getNextCursor(posts);
 
         return {
           code: 200,
@@ -37,6 +52,7 @@ const getPosts = (Base: ClassType) => {
           message: 'Get posts successfully',
           posts,
           cursor: nextCursor,
+          hasMore,
         };
       };
 
