@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
       query: GetPostsDocument,
       variables: {
         limit: LIMITS.POSTS,
-        cursor: '',
+        cursor: null,
       },
     });
 
@@ -40,8 +40,8 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
 
     if (data.success && data.posts)
       dispatch(
-        postActions.initPostState({
-          cursor: data.cursor,
+        postActions.addFetchedPosts({
+          cursor: data.cursor ?? null,
           posts: data.posts,
         }),
       );

@@ -1,8 +1,7 @@
-fragment postInfo on Post {
+fragment commentInfo on Comment {
   _id
   caption
-  photo
-  commentCounts
+  postId
   reactions {
     _id
     email

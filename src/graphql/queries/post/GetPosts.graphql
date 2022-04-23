@@ -7,5 +7,6 @@ query GetPosts($cursor: String, $limit: Int!) {
       ...postInfo
     }
     cursor
+    hasMore
   }
 }

@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 import IconPhotoVideo from '~/components/Icon/IconPhotoVideo';
 import DropZone from '~/components/DropZone';
+import Skeleton from '~/components/Skeleton';
 
 interface CreatorPhotoProps {
   preview: string;
@@ -31,14 +32,10 @@ const CreatorPhoto = ({ preview, oldPhoto, onSetOldPhoto, onSetPreview }: Creato
 
   return (
     <div className='lg:w-3/5 h-[580px]'>
-      <DropZone onDrop={handleSetFile} border={!oldPhoto && !preview}>
+      <DropZone onDrop={handleSetFile}>
         {preview || oldPhoto ? (
           <div className='w-full h-full'>
-            <img
-              className={clsx('w-full h-full object-cover')}
-              src={oldPhoto || preview}
-              alt='Upload'
-            />
+            <Skeleton objectFit='cover' src={oldPhoto || preview} alt='Upload' />
           </div>
         ) : (
           <>

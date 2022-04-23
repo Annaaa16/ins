@@ -1,0 +1,5 @@
+mutation CreateComment($caption: String!, $postId: String!) {
+  createComment(caption: $caption, postId: $postId) {
+    ...commentMutationResponse
+  }
+}

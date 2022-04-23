@@ -2,17 +2,17 @@ import { useState } from 'react';
 
 import clsx from 'clsx';
 
+import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import { useCreatePostMutation, useUpdatePostMutation } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
-import { useModalContext } from '~/contexts/ModalContext';
 import { usePostSelector } from '~/redux/selectors';
 
 import ModalWrapper from '../ModalWrapper';
 import CreatorForm from './CreatorForm';
 import CreatorHeader from './CreatorHeader';
 import CreatorPhoto from './CreatorPhoto';
-import CreatorLoading from './CreatorLoading';
+import Loading from '~/components/Loading';
 
 const ModalPostCreator = () => {
   const { hideModal } = useModalContext();
@@ -23,14 +23,15 @@ const ModalPostCreator = () => {
   const [preview, setPreview] = useState<string>('');
   const [oldPhoto, setOldPhoto] = useState<string>(selectedPost?.photo ?? '');
 
-  const [createPost, { loading: createPostLoading }] = useCreatePostMutation();
-  const [updatePost, { loading: updatePostLoading }] = useUpdatePostMutation();
+  const [createPost, { loading: loadingCreatePost }] = useCreatePostMutation();
+  const [updatePost, { loading: loadingUpdatePost }] = useUpdatePostMutation();
   const dispatch = useStoreDispatch();
 
   const reset = () => {
     setCaption('');
     setPreview('');
-    hideModal();
+    hideModal([MODAL_TYPES.POST_CREATOR, MODAL_TYPES.POST_ACTIONS]);
+    dispatch(postActions.setSelectedPost(null));
   };
 
   const handleCreatePostSubmit = async () => {
@@ -76,9 +77,12 @@ const ModalPostCreator = () => {
   };
 
   return (
-    <ModalWrapper className='w-[913px] max-w-full mx-auto my-12 lg:my-auto'>
-      {createPostLoading || updatePostLoading ? (
-        <CreatorLoading />
+    <ModalWrapper
+      modalType={MODAL_TYPES.POST_CREATOR}
+      className='w-[913px] max-w-full mx-auto my-12 lg:my-auto'
+    >
+      {loadingCreatePost || loadingUpdatePost ? (
+        <Loading title='Sharing' />
       ) : (
         <div className={clsx('rounded-xl overflow-y-auto', 'bg-white', 'scrollbar-none')}>
           <CreatorHeader

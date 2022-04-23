@@ -4,9 +4,10 @@ import clsx from 'clsx';
 
 interface SkeletonProps extends ImgHTMLAttributes<HTMLImageElement> {
   rounded?: boolean;
+  objectFit?: 'contain' | 'cover';
 }
 
-const Skeleton = ({ alt, src, rounded, className, ...rest }: SkeletonProps) => {
+const Skeleton = ({ alt, src, rounded, className, objectFit, ...rest }: SkeletonProps) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const imageRef = useRef<HTMLImageElement>(null);
@@ -16,13 +17,25 @@ const Skeleton = ({ alt, src, rounded, className, ...rest }: SkeletonProps) => {
   }, []);
 
   return (
-    <div className={clsx('relative', 'overflow-hidden', className, rounded && 'rounded-full')}>
+    <div
+      className={clsx(
+        'relative',
+        'overflow-hidden flex-shrink-0',
+        className,
+        rounded && 'rounded-full',
+        objectFit === 'cover' && 'w-full h-full',
+      )}
+    >
       <img
         {...rest}
         ref={imageRef}
         src={src}
         alt={alt}
-        className={clsx('w-full', isLoaded ? 'opacity-100 visible' : 'opacity-0 invisible')}
+        className={clsx(
+          'w-full',
+          isLoaded ? 'opacity-100 visible' : 'opacity-0 invisible',
+          objectFit && ['h-full', objectFit === 'cover' ? 'object-cover' : 'object-contain'],
+        )}
         onLoad={() => setIsLoaded(true)}
         draggable={false}
       />

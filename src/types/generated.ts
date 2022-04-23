@@ -29,6 +29,7 @@ export type Comment = {
   _id: Scalars['ID'];
   caption: Scalars['String'];
   createdAt: Scalars['DateTime'];
+  postId: Scalars['String'];
   reactions: Array<User>;
   updatedAt: Scalars['DateTime'];
   user: User;
@@ -104,6 +105,7 @@ export type MutationChangePasswordArgs = {
 
 export type MutationCreateCommentArgs = {
   caption: Scalars['String'];
+  postId: Scalars['String'];
 };
 
 export type MutationCreatePostArgs = {
@@ -138,7 +140,7 @@ export type MutationLoginGoogleArgs = {
 
 export type MutationReactCommentArgs = {
   commentId: Scalars['String'];
-  reaction: ReactionType2;
+  reaction: ReactionType;
 };
 
 export type MutationReactPostArgs = {
@@ -160,6 +162,7 @@ export type PaginatedCommentsResponse = {
   comments?: Maybe<Array<Comment>>;
   cursor?: Maybe<Scalars['String']>;
   errors?: Maybe<Array<FieldError>>;
+  hasMore?: Maybe<Scalars['Boolean']>;
   message?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
@@ -169,6 +172,7 @@ export type PaginatedPostsResponse = {
   code: Scalars['Float'];
   cursor?: Maybe<Scalars['String']>;
   errors?: Maybe<Array<FieldError>>;
+  hasMore?: Maybe<Scalars['Boolean']>;
   message?: Maybe<Scalars['String']>;
   posts?: Maybe<Array<Post>>;
   success: Scalars['Boolean'];
@@ -178,6 +182,7 @@ export type Post = {
   __typename?: 'Post';
   _id: Scalars['ID'];
   caption?: Maybe<Scalars['String']>;
+  commentCounts: Scalars['Int'];
   createdAt: Scalars['DateTime'];
   photo?: Maybe<Scalars['String']>;
   reactions: Array<User>;
@@ -205,6 +210,7 @@ export type Query = {
 export type QueryGetCommentsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
+  postId: Scalars['ID'];
 };
 
 export type QueryGetPostsArgs = {
@@ -213,11 +219,6 @@ export type QueryGetPostsArgs = {
 };
 
 export enum ReactionType {
-  Like = 'LIKE',
-  Unlike = 'UNLIKE',
-}
-
-export enum ReactionType2 {
   Like = 'LIKE',
   Unlike = 'UNLIKE',
 }
@@ -254,6 +255,62 @@ export type UserMutationResponse = {
   user?: Maybe<User>;
 };
 
+export type CommentInfoFragment = {
+  __typename?: 'Comment';
+  _id: string;
+  caption: string;
+  postId: string;
+  createdAt: any;
+  updatedAt: any;
+  reactions: Array<{
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+  }>;
+  user: {
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+  };
+};
+
+export type CommentMutationResponseFragment = {
+  __typename?: 'CommentMutationResponse';
+  code: number;
+  success: boolean;
+  message?: string | null;
+  comment?: {
+    __typename?: 'Comment';
+    _id: string;
+    caption: string;
+    postId: string;
+    createdAt: any;
+    updatedAt: any;
+    reactions: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    user: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    };
+  } | null;
+};
+
 export type FieldErrorFragment = { __typename?: 'FieldError'; field: string; message: string };
 
 export type PostInfoFragment = {
@@ -261,6 +318,7 @@ export type PostInfoFragment = {
   _id: string;
   caption?: string | null;
   photo?: string | null;
+  commentCounts: number;
   createdAt: any;
   updatedAt: any;
   reactions: Array<{
@@ -291,6 +349,7 @@ export type PostMutationResponseFragment = {
     _id: string;
     caption?: string | null;
     photo?: string | null;
+    commentCounts: number;
     createdAt: any;
     updatedAt: any;
     reactions: Array<{
@@ -472,6 +531,59 @@ export type RegisterMutation = {
   };
 };
 
+export type CreateCommentMutationVariables = Exact<{
+  caption: Scalars['String'];
+  postId: Scalars['String'];
+}>;
+
+export type CreateCommentMutation = {
+  __typename?: 'Mutation';
+  createComment: {
+    __typename?: 'CommentMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    comment?: {
+      __typename?: 'Comment';
+      _id: string;
+      caption: string;
+      postId: string;
+      createdAt: any;
+      updatedAt: any;
+      reactions: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      user: {
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      };
+    } | null;
+  };
+};
+
+export type DeleteCommentMutationVariables = Exact<{
+  commentId: Scalars['String'];
+}>;
+
+export type DeleteCommentMutation = {
+  __typename?: 'Mutation';
+  deleteComment: {
+    __typename?: 'BaseResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+  };
+};
+
 export type CreatePostMutationVariables = Exact<{
   createPostInput: CreatePostInput;
 }>;
@@ -488,6 +600,7 @@ export type CreatePostMutation = {
       _id: string;
       caption?: string | null;
       photo?: string | null;
+      commentCounts: number;
       createdAt: any;
       updatedAt: any;
       reactions: Array<{
@@ -555,6 +668,7 @@ export type UpdatePostMutation = {
       _id: string;
       caption?: string | null;
       photo?: string | null;
+      commentCounts: number;
       createdAt: any;
       updatedAt: any;
       reactions: Array<{
@@ -597,6 +711,63 @@ export type GetSessionQuery = {
   };
 };
 
+export type GetCommentsQueryVariables = Exact<{
+  postId: Scalars['ID'];
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetCommentsQuery = {
+  __typename?: 'Query';
+  getComments: {
+    __typename?: 'PaginatedCommentsResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    cursor?: string | null;
+    hasMore?: boolean | null;
+    comments?: Array<{
+      __typename?: 'Comment';
+      _id: string;
+      caption: string;
+      postId: string;
+      createdAt: any;
+      updatedAt: any;
+      reactions: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      user: {
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      };
+    }> | null;
+  };
+};
+
+export type ReactCommentMutationVariables = Exact<{
+  reaction: ReactionType;
+  commentId: Scalars['String'];
+}>;
+
+export type ReactCommentMutation = {
+  __typename?: 'Mutation';
+  reactComment: {
+    __typename?: 'BaseResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+  };
+};
+
 export type GetPostsQueryVariables = Exact<{
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
@@ -610,11 +781,13 @@ export type GetPostsQuery = {
     message?: string | null;
     success: boolean;
     cursor?: string | null;
+    hasMore?: boolean | null;
     posts?: Array<{
       __typename?: 'Post';
       _id: string;
       caption?: string | null;
       photo?: string | null;
+      commentCounts: number;
       createdAt: any;
       updatedAt: any;
       reactions: Array<{
@@ -646,11 +819,43 @@ export const UserInfoFragmentDoc = gql`
     avatar
   }
 `;
+export const CommentInfoFragmentDoc = gql`
+  fragment commentInfo on Comment {
+    _id
+    caption
+    postId
+    reactions {
+      _id
+      email
+      username
+      account
+      avatar
+    }
+    user {
+      ...userInfo
+    }
+    createdAt
+    updatedAt
+  }
+  ${UserInfoFragmentDoc}
+`;
+export const CommentMutationResponseFragmentDoc = gql`
+  fragment commentMutationResponse on CommentMutationResponse {
+    code
+    success
+    message
+    comment {
+      ...commentInfo
+    }
+  }
+  ${CommentInfoFragmentDoc}
+`;
 export const PostInfoFragmentDoc = gql`
   fragment postInfo on Post {
     _id
     caption
     photo
+    commentCounts
     reactions {
       _id
       email
@@ -969,6 +1174,98 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
 >;
+export const CreateCommentDocument = gql`
+  mutation CreateComment($caption: String!, $postId: String!) {
+    createComment(caption: $caption, postId: $postId) {
+      ...commentMutationResponse
+    }
+  }
+  ${CommentMutationResponseFragmentDoc}
+`;
+export type CreateCommentMutationFn = Apollo.MutationFunction<
+  CreateCommentMutation,
+  CreateCommentMutationVariables
+>;
+
+/**
+ * __useCreateCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      caption: // value for 'caption'
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(
+    CreateCommentDocument,
+    options,
+  );
+}
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<
+  CreateCommentMutation,
+  CreateCommentMutationVariables
+>;
+export const DeleteCommentDocument = gql`
+  mutation DeleteComment($commentId: String!) {
+    deleteComment(commentId: $commentId) {
+      code
+      success
+      message
+    }
+  }
+`;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<
+  DeleteCommentMutation,
+  DeleteCommentMutationVariables
+>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      commentId: // value for 'commentId'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(
+    DeleteCommentDocument,
+    options,
+  );
+}
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCommentMutation,
+  DeleteCommentMutationVariables
+>;
 export const CreatePostDocument = gql`
   mutation CreatePost($createPostInput: CreatePostInput!) {
     createPost(createPostInput: $createPostInput) {
@@ -1199,6 +1496,108 @@ export function useGetSessionLazyQuery(
 export type GetSessionQueryHookResult = ReturnType<typeof useGetSessionQuery>;
 export type GetSessionLazyQueryHookResult = ReturnType<typeof useGetSessionLazyQuery>;
 export type GetSessionQueryResult = Apollo.QueryResult<GetSessionQuery, GetSessionQueryVariables>;
+export const GetCommentsDocument = gql`
+  query GetComments($postId: ID!, $limit: Int!, $cursor: String) {
+    getComments(postId: $postId, limit: $limit, cursor: $cursor) {
+      code
+      success
+      message
+      comments {
+        ...commentInfo
+      }
+      cursor
+      hasMore
+    }
+  }
+  ${CommentInfoFragmentDoc}
+`;
+
+/**
+ * __useGetCommentsQuery__
+ *
+ * To run a query within a React component, call `useGetCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommentsQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useGetCommentsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetCommentsQuery, GetCommentsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetCommentsQuery, GetCommentsQueryVariables>(GetCommentsDocument, options);
+}
+export function useGetCommentsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetCommentsQuery, GetCommentsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetCommentsQuery, GetCommentsQueryVariables>(
+    GetCommentsDocument,
+    options,
+  );
+}
+export type GetCommentsQueryHookResult = ReturnType<typeof useGetCommentsQuery>;
+export type GetCommentsLazyQueryHookResult = ReturnType<typeof useGetCommentsLazyQuery>;
+export type GetCommentsQueryResult = Apollo.QueryResult<
+  GetCommentsQuery,
+  GetCommentsQueryVariables
+>;
+export const ReactCommentDocument = gql`
+  mutation ReactComment($reaction: ReactionType!, $commentId: String!) {
+    reactComment(reaction: $reaction, commentId: $commentId) {
+      code
+      success
+      message
+    }
+  }
+`;
+export type ReactCommentMutationFn = Apollo.MutationFunction<
+  ReactCommentMutation,
+  ReactCommentMutationVariables
+>;
+
+/**
+ * __useReactCommentMutation__
+ *
+ * To run a mutation, you first call `useReactCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReactCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [reactCommentMutation, { data, loading, error }] = useReactCommentMutation({
+ *   variables: {
+ *      reaction: // value for 'reaction'
+ *      commentId: // value for 'commentId'
+ *   },
+ * });
+ */
+export function useReactCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<ReactCommentMutation, ReactCommentMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ReactCommentMutation, ReactCommentMutationVariables>(
+    ReactCommentDocument,
+    options,
+  );
+}
+export type ReactCommentMutationHookResult = ReturnType<typeof useReactCommentMutation>;
+export type ReactCommentMutationResult = Apollo.MutationResult<ReactCommentMutation>;
+export type ReactCommentMutationOptions = Apollo.BaseMutationOptions<
+  ReactCommentMutation,
+  ReactCommentMutationVariables
+>;
 export const GetPostsDocument = gql`
   query GetPosts($cursor: String, $limit: Int!) {
     getPosts(cursor: $cursor, limit: $limit) {
@@ -1209,6 +1608,7 @@ export const GetPostsDocument = gql`
         ...postInfo
       }
       cursor
+      hasMore
     }
   }
   ${PostInfoFragmentDoc}

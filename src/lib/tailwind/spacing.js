@@ -4,6 +4,9 @@ const custom = {
   'form-w': '350px',
   'container-w': '935px',
   'header-h': '60px',
+
+  'modal-post-detail-h': 'calc(100vh - 60px)',
+  'modal-post-detail-h-mobile': 'calc(100vh - 90px)',
 };
 
 module.exports = {

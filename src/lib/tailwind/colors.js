@@ -7,5 +7,8 @@ module.exports = {
     gray: '#8e8e8e',
     red: '#db4437',
   },
-  modal: 'rgb(0 0 0 / 0.85)',
+  modal: {
+    DEFAULT: 'rgb(0 0 0 / 0.85)',
+    light: 'rgb(0 0 0 / 0.65)',
+  },
 };

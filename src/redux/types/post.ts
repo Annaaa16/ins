@@ -10,11 +10,6 @@ export interface PostSliceState {
   currentAction: CurrentAction;
 }
 
-export interface InitPostStateReducer {
-  posts: Post[];
-  cursor?: string | null;
-}
-
 export interface ReactPostReducer {
   currentUser: User;
   postId: string;
@@ -22,5 +17,14 @@ export interface ReactPostReducer {
 }
 
 export interface DeletePostReducer {
+  postId: string;
+}
+
+export interface AddFetchedPostsReducer {
+  posts: Post[];
+  cursor: string | null;
+}
+
+export interface IncreaseCommentCountsReducer {
   postId: string;
 }

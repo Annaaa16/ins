@@ -1,19 +1,16 @@
 import { Post, ReactionType, useReactPostMutation } from '~/types/generated';
 
-import { useAuthSelector, usePostSelector } from '~/redux/selectors';
+import { useAuthSelector } from '~/redux/selectors';
 import { postActions } from '~/redux/slices/postSlice';
 import { useStoreDispatch } from '~/redux/store';
 
-export const usePost = ({ _id: postId }: Post) => {
-  const { posts } = usePostSelector();
+export const usePost = (post: Post) => {
   const { currentUser } = useAuthSelector();
 
   const [reactPostMutate] = useReactPostMutation();
   const dispatch = useStoreDispatch();
 
-  const isLiked = posts
-    .find((post) => post._id === postId)
-    ?.reactions.some((reaction) => reaction._id === currentUser?._id);
+  const isLiked = post.reactions.some((reaction) => reaction._id === currentUser?._id);
 
   const reactPost = () => {
     if (typeof isLiked === 'undefined' || !currentUser) return;
@@ -22,7 +19,7 @@ export const usePost = ({ _id: postId }: Post) => {
 
     dispatch(
       postActions.reactPost({
-        postId,
+        postId: post._id,
         currentUser,
         reaction: reactionType,
       }),
@@ -30,7 +27,7 @@ export const usePost = ({ _id: postId }: Post) => {
 
     reactPostMutate({
       variables: {
-        postId,
+        postId: post._id,
         reaction: reactionType,
       },
     });
