@@ -1,5 +1,5 @@
 // types
-import { BaseResponse } from '~/types/shared';
+import { BaseResponse } from '~/db/types/shared';
 
 const respond = <T>(handler: () => Promise<T>): Promise<T | BaseResponse> => {
   try {

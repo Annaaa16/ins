@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 
-import { useStoreDispatch } from '~/redux/store';
-import { modalActions } from '~/redux/slices/modalSlice';
+import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 
 import IconCompass from '../Icon/IconCompass';
 import IconCreate from '../Icon/IconCreate';
@@ -10,14 +9,14 @@ import IconHome from '../Icon/IconHome';
 import IconMessenger from '../Icon/IconMessenger';
 
 const HeaderRight = () => {
-  const dispatch = useStoreDispatch();
+  const { showModal } = useModalContext();
 
   return (
     <div className='flex justify-end gap-x-5'>
       <IconHome className={clsx('cursor-pointer')} active />
       <IconMessenger className={clsx('cursor-pointer')} active={false} />
       <IconCreate
-        onClick={() => dispatch(modalActions.open())}
+        onClick={() => showModal(MODAL_TYPES.POST_CREATOR)}
         className={clsx('cursor-pointer')}
         active={false}
       />

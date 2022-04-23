@@ -2,14 +2,14 @@ import { Mutation, Arg, Ctx, Resolver, ClassType } from 'type-graphql';
 import bcrypt from 'bcrypt';
 
 // types
-import type { Context } from '~/types/context';
-import { LoginInput } from '~/types/inputs';
-import { UserMutationResponse } from '~/types/responses';
+import type { Context } from '~/db/types/context';
+import { LoginInput } from '~/db/types/inputs';
+import { UserMutationResponse } from '~/db/types/responses';
 
 // models
 import { User } from '~/db/models';
 
-import { setTokens } from '~/helpers/token';
+import { sendTokens } from '~/helpers/token';
 import respond from '~/helpers/respond';
 
 const login = (Base: ClassType) => {
@@ -53,7 +53,7 @@ const login = (Base: ClassType) => {
             ],
           };
 
-        setTokens(res, existingUser._id);
+        sendTokens(res, existingUser._id);
 
         return {
           code: 200,

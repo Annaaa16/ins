@@ -4,10 +4,11 @@ import { buildSchema } from 'type-graphql';
 import Cors from 'micro-cors';
 
 // types
-import { Context } from '~/types/context';
+import { Context } from '~/db/types/context';
 
 import AuthResolver from '~/db/resolvers/auth';
 import PostResolver from '~/db/resolvers/post';
+import CommentResolver from '~/db/resolvers/comment';
 import connectToDb from '~/db/connectToDb';
 
 connectToDb();
@@ -19,7 +20,7 @@ const cors = Cors({
 
 const server = new ApolloServer({
   schema: await buildSchema({
-    resolvers: [AuthResolver, PostResolver],
+    resolvers: [AuthResolver, PostResolver, CommentResolver],
   }),
   context: ({ req, res }): Context => ({ req, res }),
 });

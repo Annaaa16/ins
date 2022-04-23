@@ -2,13 +2,13 @@ import { Mutation, Arg, Ctx, Resolver, ClassType } from 'type-graphql';
 import { OAuth2Client } from 'google-auth-library';
 
 // types
-import type { Context } from '~/types/context';
-import { UserMutationResponse } from '~/types/responses';
+import type { Context } from '~/db/types/context';
+import { UserMutationResponse } from '~/db/types/responses';
 
 // models
 import { User } from '~/db/models';
 
-import { setTokens } from '~/helpers/token';
+import { sendTokens } from '~/helpers/token';
 import respond from '~/helpers/respond';
 
 const loginGoogle = (Base: ClassType) => {
@@ -63,7 +63,7 @@ const loginGoogle = (Base: ClassType) => {
             })
           ).toObject();
 
-        setTokens(res, existingUser._id);
+        sendTokens(res, existingUser._id);
 
         return {
           code: 200,

@@ -2,11 +2,13 @@ import { AnyAction, combineReducers } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 
 import postReducer from './slices/postSlice';
-import modalReducer from './slices/modalSlice';
+import authReducer from './slices/authSlice';
+import commentReducer from './slices/commentSlice';
 
 export const combinedReducers = combineReducers({
   post: postReducer,
-  modal: modalReducer,
+  auth: authReducer,
+  comment: commentReducer,
 });
 
 const rootReducer = (state: ReturnType<typeof combinedReducers>, action: AnyAction) => {

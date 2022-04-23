@@ -2,7 +2,7 @@ import { MiddlewareFn } from 'type-graphql';
 import jwt from 'jsonwebtoken';
 
 // types
-import { Context } from '~/types/context';
+import { Context } from '~/db/types/context';
 
 import { SECRETS } from '~/constants';
 import { User } from '../models';
@@ -13,7 +13,7 @@ interface JwtPayloadSigned extends jwt.JwtPayload {
   userId: string;
 }
 
-export const VerifyAuth: MiddlewareFn<Context> = async ({ context: { req, res } }, next) => {
+export const verifyAuth: MiddlewareFn<Context> = async ({ context: { req, res } }, next) => {
   const { access_token, refresh_token } = req.cookies;
   const { ACCESS_TOKEN, REFRESH_TOKEN } = SECRETS;
 

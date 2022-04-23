@@ -5,7 +5,7 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import clsx from 'clsx';
 
-import { GOOGLE_CLIENT_ID, ROUTES } from '~/constants';
+import { GOOGLE_CLIENT_ID, ROUTES, __client__ } from '~/constants';
 import { useLoginGoogleMutation } from '~/types/generated';
 
 interface ButtonGoogleProps {
@@ -20,7 +20,7 @@ const ButtonGoogle = ({ className }: ButtonGoogleProps) => {
   const handleGoogleResponse = async (
     ggResponse: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => {
-    if (ggResponse.code) return;
+    if (ggResponse.code || __client__) return;
 
     const response = await loginGoogle({
       variables: {

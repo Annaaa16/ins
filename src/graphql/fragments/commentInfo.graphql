@@ -1,0 +1,17 @@
+fragment commentInfo on Comment {
+  _id
+  caption
+  postId
+  reactions {
+    _id
+    email
+    username
+    account
+    avatar
+  }
+  user {
+    ...userInfo
+  }
+  createdAt
+  updatedAt
+}

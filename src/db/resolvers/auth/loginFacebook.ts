@@ -2,14 +2,14 @@ import { Mutation, Arg, Ctx, Resolver, ClassType } from 'type-graphql';
 import axios from 'axios';
 
 // types
-import type { Context } from '~/types/context';
+import type { Context } from '~/db/types/context';
 import { FacebookLoginResponse } from '~/types/auth';
-import { UserMutationResponse } from '~/types/responses';
+import { UserMutationResponse } from '~/db/types/responses';
 
 // models
 import { User } from '~/db/models';
 
-import { setTokens } from '~/helpers/token';
+import { sendTokens } from '~/helpers/token';
 import respond from '~/helpers/respond';
 
 const loginFacebook = (Base: ClassType) => {
@@ -39,7 +39,7 @@ const loginFacebook = (Base: ClassType) => {
             })
           ).toObject();
 
-        setTokens(res, existingUser._id);
+        sendTokens(res, existingUser._id);
 
         return {
           code: 200,

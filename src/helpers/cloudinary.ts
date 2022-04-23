@@ -11,11 +11,11 @@ export const getPhotoIdFromUrl = (url: string) => {
 };
 
 export const uploadPhoto = async (photo: string) => {
-  const { secure_url, public_id } = await cloudinary.uploader.upload(photo, {
+  const { secure_url } = await cloudinary.uploader.upload(photo, {
     folder: CLOUDINARY_FOLDERS.POSTS,
   });
 
-  return { photo: secure_url, photoId: public_id };
+  return { photo: secure_url };
 };
 
 export const updatePhoto = async (photo: string, photoUrl?: string) => {
@@ -38,7 +38,11 @@ export const updatePhoto = async (photo: string, photoUrl?: string) => {
   return { photoUrl: secure_url };
 };
 
-export const deletePhoto = async (photoId?: string) => {
+export const deletePhoto = async (photoUrl?: string) => {
+  if (!photoUrl) return;
+
+  const photoId = getPhotoIdFromUrl(photoUrl);
+
   if (!photoId) return;
 
   await cloudinary.uploader.destroy(photoId);

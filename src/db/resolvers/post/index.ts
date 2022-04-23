@@ -1,5 +1,6 @@
 import { Query, Resolver } from 'type-graphql';
 
+import { Post } from '~/db/entities';
 import extender from '~/helpers/extender';
 
 // sub resolvers
@@ -9,7 +10,7 @@ import getPosts from './getPosts';
 import reactPost from './reactPost';
 import updatePost from './updatePost';
 
-@Resolver()
+@Resolver((_of) => Post)
 export default class PostResolver extends extender(
   createPost,
   updatePost,

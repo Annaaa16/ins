@@ -1,10 +1,10 @@
 // types
 import { IconProps } from '~/types/utils';
 
-const IconCreate = (props: IconProps) => {
-  return props.active ? (
+const IconCreate = ({ active, ...rest }: IconProps) => {
+  return active ? (
     <svg
-      {...props}
+      {...rest}
       aria-label='New Post'
       color='#262626'
       fill='#262626'
@@ -17,7 +17,7 @@ const IconCreate = (props: IconProps) => {
     </svg>
   ) : (
     <svg
-      {...props}
+      {...rest}
       aria-label='New Post'
       color='#262626'
       fill='#262626'

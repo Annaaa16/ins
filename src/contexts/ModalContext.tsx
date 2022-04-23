@@ -1,0 +1,75 @@
+import { createContext, ReactNode, useContext, useState } from 'react';
+
+// types
+import { Callback } from '~/types/utils';
+
+import { useStoreDispatch } from '~/redux/store';
+import { postActions } from '~/redux/slices/postSlice';
+
+import ModalPostActions from '~/components/Modal/ModalPostActions';
+import ModalPostCreator from '~/components/Modal/ModalPostCreator';
+import ModalPostDetail from '~/components/Modal/ModalPostDetail';
+import ModalCommentActions from '~/components/Modal/ModalCommentActions';
+
+interface ModalInitState {
+  showModal: (modalType: ModalType, callback?: Callback) => void;
+  hideModal: (modalType: ModalType | ModalType[], callback?: Callback) => void;
+}
+
+interface ModalProviderProps {
+  children: ReactNode;
+}
+
+export type ModalType = keyof typeof MODAL_TYPES;
+
+export const MODAL_TYPES = {
+  POST_CREATOR: 'POST_CREATOR',
+  POST_DETAIL: 'POST_DETAIL',
+  POST_ACTIONS: 'POST_ACTIONS',
+  COMMENT_ACTIONS: 'COMMENT_ACTIONS',
+} as const;
+
+const MODALS = {
+  [MODAL_TYPES.POST_CREATOR]: <ModalPostCreator key={MODAL_TYPES.POST_CREATOR} />,
+  [MODAL_TYPES.POST_DETAIL]: <ModalPostDetail key={MODAL_TYPES.POST_DETAIL} />,
+  [MODAL_TYPES.POST_ACTIONS]: <ModalPostActions key={MODAL_TYPES.POST_ACTIONS} />,
+  [MODAL_TYPES.COMMENT_ACTIONS]: <ModalCommentActions key={MODAL_TYPES.COMMENT_ACTIONS} />,
+} as const;
+
+const ModalContext = createContext<ModalInitState>({
+  showModal: () => null,
+  hideModal: () => null,
+});
+
+const ModalProvider = ({ children }: ModalProviderProps) => {
+  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+
+  const dispatch = useStoreDispatch();
+
+  const showModal = (modalType: ModalType, callback?: Callback) => {
+    setModalTypes([...modalTypes, modalType]);
+
+    if (callback) callback();
+  };
+
+  const hideModal = (modalType: ModalType | ModalType[], callback?: Callback) => {
+    if (Array.isArray(modalType))
+      setModalTypes(modalTypes.filter((type) => !modalType.includes(type)));
+    else setModalTypes(modalTypes.filter((type) => type !== modalType));
+
+    dispatch(postActions.setCurrentAction(null));
+
+    if (callback) callback();
+  };
+
+  return (
+    <ModalContext.Provider value={{ showModal, hideModal }}>
+      {children}
+      {modalTypes.map((type) => MODALS[type])}
+    </ModalContext.Provider>
+  );
+};
+
+export const useModalContext = () => useContext(ModalContext);
+
+export default ModalProvider;
