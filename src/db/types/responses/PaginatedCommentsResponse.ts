@@ -12,4 +12,7 @@ export class PaginatedCommentsResponse extends QueryResponse {
 
   @Field((_type) => String, { nullable: true })
   cursor?: string | null;
+
+  @Field((_type) => Boolean, { nullable: true })
+  hasMore?: boolean;
 }

@@ -4,16 +4,19 @@ const paginate = <T extends AnyParamConstructor<any>>(
   Model: ReturnModelType<T, BeAnObject>,
   sort: [string, number],
   cursor?: string,
+  query: Record<string, any> = {},
 ) => {
   const sortField: string = sort[0];
   const sortOperator = sort[1] === 1 ? '$gt' : '$lt';
 
-  const filterQuery = cursor ? { [sortField]: { [sortOperator]: cursor } } : {};
+  const filterQuery = cursor ? { [sortField]: { [sortOperator]: cursor }, ...query } : query;
 
-  const getNextCursor = async (items: any[]): Promise<string | null> => {
-    if (items.length === 0) return null;
+  const getNextCursor = async (
+    items: any[],
+  ): Promise<{ cursor: string | null; hasMore: boolean }> => {
+    if (items.length === 0) return { cursor: null, hasMore: false };
 
-    const lastDoc = await Model.findOne()
+    const lastDoc = await Model.findOne(query)
       .sort({ $natural: -1 * sort[1] })
       .lean();
 
@@ -27,7 +30,7 @@ const paginate = <T extends AnyParamConstructor<any>>(
       cursor = lastItem[sortField] > lastDoc[sortField] ? lastItem[sortField] : null;
     }
 
-    return cursor;
+    return { cursor, hasMore: lastDoc[sortField].toString() !== lastItem[sortField].toString() };
   };
 
   return { filterQuery, sort, getNextCursor };
