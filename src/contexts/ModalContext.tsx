@@ -8,21 +8,32 @@ import { postActions } from '~/redux/slices/postSlice';
 
 import ModalPostActions from '~/components/Modal/ModalPostActions';
 import ModalPostCreator from '~/components/Modal/ModalPostCreator';
+import ModalPostDetail from '~/components/Modal/ModalPostDetail';
+import ModalCommentActions from '~/components/Modal/ModalCommentActions';
 
 interface ModalInitState {
-  showModal: (dialogType: DialogType, callback?: Callback) => void;
-  hideModal: (callback?: Callback) => void;
+  showModal: (modalType: ModalType, callback?: Callback) => void;
+  hideModal: (modalType: ModalType | ModalType[], callback?: Callback) => void;
 }
 
 interface ModalProviderProps {
   children: ReactNode;
 }
 
-type DialogType = keyof typeof MODAL_TYPES | null;
+export type ModalType = keyof typeof MODAL_TYPES;
 
 export const MODAL_TYPES = {
   POST_CREATOR: 'POST_CREATOR',
+  POST_DETAIL: 'POST_DETAIL',
   POST_ACTIONS: 'POST_ACTIONS',
+  COMMENT_ACTIONS: 'COMMENT_ACTIONS',
+} as const;
+
+const MODALS = {
+  [MODAL_TYPES.POST_CREATOR]: <ModalPostCreator key={MODAL_TYPES.POST_CREATOR} />,
+  [MODAL_TYPES.POST_DETAIL]: <ModalPostDetail key={MODAL_TYPES.POST_DETAIL} />,
+  [MODAL_TYPES.POST_ACTIONS]: <ModalPostActions key={MODAL_TYPES.POST_ACTIONS} />,
+  [MODAL_TYPES.COMMENT_ACTIONS]: <ModalCommentActions key={MODAL_TYPES.COMMENT_ACTIONS} />,
 } as const;
 
 const ModalContext = createContext<ModalInitState>({
@@ -31,39 +42,30 @@ const ModalContext = createContext<ModalInitState>({
 });
 
 const ModalProvider = ({ children }: ModalProviderProps) => {
-  const [dialog, setDialog] = useState<DialogType>(null);
+  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
 
   const dispatch = useStoreDispatch();
 
-  const showModal = (dialogType: DialogType, callback?: Callback) => {
-    setDialog(dialogType);
+  const showModal = (modalType: ModalType, callback?: Callback) => {
+    setModalTypes([...modalTypes, modalType]);
 
     if (callback) callback();
   };
 
-  const hideModal = (callback?: Callback) => {
-    setDialog(null);
-    dispatch(postActions.setSelectedPost(null));
+  const hideModal = (modalType: ModalType | ModalType[], callback?: Callback) => {
+    if (Array.isArray(modalType))
+      setModalTypes(modalTypes.filter((type) => !modalType.includes(type)));
+    else setModalTypes(modalTypes.filter((type) => type !== modalType));
+
     dispatch(postActions.setCurrentAction(null));
 
     if (callback) callback();
   };
 
-  const renderDialog = () => {
-    switch (dialog) {
-      case MODAL_TYPES.POST_CREATOR:
-        return <ModalPostCreator />;
-      case MODAL_TYPES.POST_ACTIONS:
-        return <ModalPostActions />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <ModalContext.Provider value={{ showModal, hideModal }}>
       {children}
-      {renderDialog()}
+      {modalTypes.map((type) => MODALS[type])}
     </ModalContext.Provider>
   );
 };
