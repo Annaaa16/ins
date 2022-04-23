@@ -10,13 +10,17 @@ export class Comment extends TimeStamps {
   @Field((_type) => ID)
   _id!: string;
 
-  @Field()
-  @prop({ type: String, required: true })
-  caption!: string;
-
   @Field((_type) => User)
   @prop({ type: mongoose.Types.ObjectId, ref: User, required: true })
   user!: mongoose.Types.ObjectId;
+
+  @Field()
+  @prop({ type: String, required: true })
+  postId!: string;
+
+  @Field()
+  @prop({ type: String, required: true })
+  caption!: string;
 
   @Field((_type) => [User])
   @prop({ type: [mongoose.Types.ObjectId], ref: User, default: [] })

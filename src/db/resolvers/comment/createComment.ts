@@ -3,7 +3,7 @@ import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-gra
 // types
 import type { Context } from '~/db/types/context';
 
-import { VerifyAuth } from '~/db/middlewares';
+import { verifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
 import { CommentMutationResponse } from '~/db/types/responses';
 import { Comment } from '~/db/models';
@@ -12,9 +12,10 @@ const createComment = (Base: ClassType) => {
   @Resolver()
   class CreateComment extends Base {
     @Mutation((_returns) => CommentMutationResponse)
-    @UseMiddleware(VerifyAuth)
+    @UseMiddleware(verifyAuth)
     createComment(
       @Arg('caption') caption: string,
+      @Arg('postId') postId: string,
       @Ctx() { req: { userId } }: Context,
     ): Promise<CommentMutationResponse> {
       if (!caption.trim())
@@ -28,6 +29,7 @@ const createComment = (Base: ClassType) => {
         const newComment = await Comment.create({
           user: userId,
           caption,
+          postId,
         });
 
         return {
