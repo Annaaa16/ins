@@ -5,9 +5,9 @@ import type { Context } from '~/db/types/context';
 import { BaseResponse } from '~/db/types/shared';
 
 // models
-import { Post } from '~/db/models';
+import { Post, Comment } from '~/db/models';
 
-import { VerifyAuth } from '~/db/middlewares';
+import { verifyAuth } from '~/db/middlewares';
 import { deletePhoto } from '~/helpers/cloudinary';
 import respond from '~/helpers/respond';
 
@@ -15,7 +15,7 @@ const deletePost = (Base: ClassType) => {
   @Resolver()
   class DeletePost extends Base {
     @Mutation((_returns) => BaseResponse)
-    @UseMiddleware(VerifyAuth)
+    @UseMiddleware(verifyAuth)
     deletePost(
       @Arg('postId') postId: string,
       @Ctx() { req: { userId } }: Context,
@@ -31,6 +31,7 @@ const deletePost = (Base: ClassType) => {
           };
 
         await deletePhoto(deletedPost.photo);
+        await Comment.deleteMany({ postId });
 
         return {
           code: 200,
