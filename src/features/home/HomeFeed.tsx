@@ -42,12 +42,12 @@ const HomeFeed = () => {
   }, [cursor, isIntersecting, getPosts, dispatch]);
 
   return (
-    <section className='col-span-2 pb-10 space-y-10'>
+    <>
       {posts.map((post) => (
         <Post key={post._id} {...post} />
       ))}
       <div ref={observerRef} />
-    </section>
+    </>
   );
 };
 

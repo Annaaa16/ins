@@ -14,9 +14,13 @@ const Home: NextPage = () => {
   return (
     <>
       <Header />
-      <main className='grid grid-cols-3 w-container-w mx-auto space-header'>
-        <HomeFeed />
-        <HomeWidget />
+      <main className='grid grid-cols-3 w-container-w mx-auto mt-header-h pt-7'>
+        <section className='col-span-2 pb-10 space-y-10'>
+          <HomeFeed />
+        </section>
+        <section className='pl-5 pt-4'>
+          <HomeWidget />
+        </section>
       </main>
     </>
   );
