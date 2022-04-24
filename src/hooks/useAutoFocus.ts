@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 export const useAutoFocus = (deps?: any[]) => {
-  const focusRef = useRef<HTMLTextAreaElement | null>(null);
+  const focusRef = useRef<any>(null);
 
   useEffect(() => {
     const target = focusRef.current;
