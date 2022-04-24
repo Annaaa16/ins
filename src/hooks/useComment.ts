@@ -9,9 +9,14 @@ export const useComment = (comment: Comment, postId: string) => {
   const [reactCommentMutate] = useReactCommentMutation();
   const dispatch = useStoreDispatch();
 
-  const isLiked = comment.reactions.some((reactedUser) => reactedUser._id === currentUser!._id);
+  let isLiked = false;
+  let reactComment = () => {};
 
-  const reactComment = () => {
+  if (currentUser == null) return { isLiked, reactComment };
+
+  isLiked = comment.reactions.some((reactedUser) => reactedUser._id === currentUser._id);
+
+  reactComment = () => {
     if (typeof isLiked === 'undefined' || currentUser == null) return;
 
     const reactionType = isLiked ? ReactionType.Unlike : ReactionType.Like;
@@ -33,5 +38,5 @@ export const useComment = (comment: Comment, postId: string) => {
     });
   };
 
-  return { isLiked, currentUser, reactComment };
+  return { isLiked, reactComment };
 };
