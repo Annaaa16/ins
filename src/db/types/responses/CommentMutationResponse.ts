@@ -7,6 +7,6 @@ import { Comment } from '~/db/entities';
 
 @ObjectType()
 export class CommentMutationResponse extends MutationResponse {
-  @Field({ nullable: true })
+  @Field((_type) => Comment, { nullable: true })
   comment?: Comment;
 }
