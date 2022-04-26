@@ -1,5 +1,6 @@
-import { createContext, ReactNode } from 'react';
-// import io from 'socket.io-client';
+import { ReactNode, createContext, useEffect, useContext, useState } from 'react';
+
+import io, { Socket } from 'socket.io-client';
 
 interface SocketProviderProps {
   children: ReactNode;
@@ -7,23 +8,35 @@ interface SocketProviderProps {
 
 export const SocketContext = createContext({});
 
-// let socket;
-
 const SocketProvider = ({ children }: SocketProviderProps) => {
-  // useEffect(() => {
-  //   socketInitializer();
-  // }, []);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
-  // const socketInitializer = async () => {
-  //   await fetch('/api/socket');
-  //   socket = io();
+  useEffect(() => {
+    (async () => {
+      await fetch('/api/socket');
+      setSocket(
+        io({
+          withCredentials: true,
+        }),
+      );
+    })();
+  }, []);
 
-  //   socket.on('connect', () => {
-  //     console.log('connected');
-  //   });
-  // };
+  useEffect(() => {
+    if (socket == null) return;
 
-  return <SocketContext.Provider value={{}}>{children}</SocketContext.Provider>;
+    return () => {
+      socket.close();
+    };
+  }, [socket]);
+
+  const sendMessage = (msg: string) => {
+    socket?.emit('sendMessage', msg);
+  };
+
+  return <SocketContext.Provider value={{ sendMessage }}>{children}</SocketContext.Provider>;
 };
+
+export const useSocketContext = () => useContext(SocketContext);
 
 export default SocketProvider;

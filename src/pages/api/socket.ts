@@ -1,17 +1,37 @@
-import { Server } from 'socket.io';
+import { NextApiRequest } from 'next';
 
-const SocketHandler = (_req: any, res: any) => {
-  if (res.socket.server.io) {
-    console.log('Socket is already running');
-  } else {
-    console.log('Socket is initializing');
+import { Server as ServerIO } from 'socket.io';
 
-    const io = new Server(res.socket.server);
+// types
+import { NextApiResponseServerIO } from '~/socket/types';
+
+const socketHandler = (_req: NextApiRequest, res: NextApiResponseServerIO) => {
+  if (!res.socket.server.io) {
+    const httpServer = res.socket.server;
+
+    const io = new ServerIO(httpServer);
 
     res.socket.server.io = io;
+
+    console.log('Socket connected 🍺');
+
+    io.on('connection', (socket) => {
+      socket.on('sendMessage', (msg) => {
+        console.log('msg', msg);
+        socket.emit('update-input', msg);
+      });
+    });
+  } else {
+    console.log('Socket already connected ⚡');
   }
 
   res.end();
 };
 
-export default SocketHandler;
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default socketHandler;
