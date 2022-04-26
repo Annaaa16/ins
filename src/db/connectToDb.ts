@@ -4,7 +4,7 @@ import { MONGODB_URI } from '~/constants';
 
 const connectToDb = () => {
   if (mongoose.connections[0].readyState) {
-    console.log('Already connected ✔️');
+    console.log('DB already connected ✔️');
     return;
   }
 
@@ -13,7 +13,7 @@ const connectToDb = () => {
   mongoose.connect(MONGODB_URI, {}, (err) => {
     if (err) throw new Error('Server got an error 🔨');
 
-    console.log('Connected to db 🚀');
+    console.log('Connected to DB 🚀');
   });
 };
 
