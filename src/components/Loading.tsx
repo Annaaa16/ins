@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import Spinner from '~/components/Spinner';
+import SpinnerLogo from '~/components/Spinner/SpinnerLogo';
 
 interface LoadingProps {
   title: string;
@@ -18,7 +18,7 @@ const Loading = ({ title }: LoadingProps) => {
         <span className='font-medium text-lg'>{title}</span>
       </div>
       <div className='flex-center flex-grow'>
-        <Spinner className='w-20' />
+        <SpinnerLogo className='w-20' />
       </div>
     </div>
   );

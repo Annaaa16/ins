@@ -94,6 +94,7 @@ export type Mutation = {
   reactComment: BaseResponse;
   reactPost: BaseResponse;
   register: UserMutationResponse;
+  searchUser: SearchUserResponse;
   updatePost: PostMutationResponse;
 };
 
@@ -150,6 +151,11 @@ export type MutationReactPostArgs = {
 
 export type MutationRegisterArgs = {
   registerInput: RegisterInput;
+};
+
+export type MutationSearchUserArgs = {
+  limit: Scalars['Int'];
+  query: Scalars['String'];
 };
 
 export type MutationUpdatePostArgs = {
@@ -227,6 +233,15 @@ export type RegisterInput = {
   email: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type SearchUserResponse = {
+  __typename?: 'SearchUserResponse';
+  code: Scalars['Float'];
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+  users?: Maybe<Array<User>>;
 };
 
 export type UpdatePostInput = {
@@ -688,6 +703,28 @@ export type UpdatePostMutation = {
         avatar?: string | null;
       };
     } | null;
+  };
+};
+
+export type SearchUserMutationVariables = Exact<{
+  query: Scalars['String'];
+  limit: Scalars['Int'];
+}>;
+
+export type SearchUserMutation = {
+  __typename?: 'Mutation';
+  searchUser: {
+    __typename?: 'SearchUserResponse';
+    code: number;
+    success: boolean;
+    users?: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }> | null;
   };
 };
 
@@ -1448,6 +1485,56 @@ export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   UpdatePostMutation,
   UpdatePostMutationVariables
+>;
+export const SearchUserDocument = gql`
+  mutation SearchUser($query: String!, $limit: Int!) {
+    searchUser(query: $query, limit: $limit) {
+      code
+      success
+      users {
+        ...userInfo
+      }
+    }
+  }
+  ${UserInfoFragmentDoc}
+`;
+export type SearchUserMutationFn = Apollo.MutationFunction<
+  SearchUserMutation,
+  SearchUserMutationVariables
+>;
+
+/**
+ * __useSearchUserMutation__
+ *
+ * To run a mutation, you first call `useSearchUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSearchUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [searchUserMutation, { data, loading, error }] = useSearchUserMutation({
+ *   variables: {
+ *      query: // value for 'query'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useSearchUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<SearchUserMutation, SearchUserMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SearchUserMutation, SearchUserMutationVariables>(
+    SearchUserDocument,
+    options,
+  );
+}
+export type SearchUserMutationHookResult = ReturnType<typeof useSearchUserMutation>;
+export type SearchUserMutationResult = Apollo.MutationResult<SearchUserMutation>;
+export type SearchUserMutationOptions = Apollo.BaseMutationOptions<
+  SearchUserMutation,
+  SearchUserMutationVariables
 >;
 export const GetSessionDocument = gql`
   query GetSession {
