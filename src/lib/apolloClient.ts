@@ -15,8 +15,8 @@ interface ApolloStateProps {
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
-const errorLink = onError(() => {
-  // console.log('errors', errors);
+const errorLink = onError((errors) => {
+  if (errors) console.log('Error link =>', errors);
 });
 
 const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
