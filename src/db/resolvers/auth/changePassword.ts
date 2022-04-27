@@ -27,12 +27,6 @@ const changePassword = (Base: ClassType) => {
             code: 400,
             success: false,
             message: 'Invalid or expired reset token',
-            errors: [
-              {
-                field: 'token',
-                message: 'Invalid or expired reset token',
-              },
-            ],
           };
 
         const tokenCorrect = bcrypt.compare(token, tokenRecord.token);
@@ -42,12 +36,6 @@ const changePassword = (Base: ClassType) => {
             code: 400,
             success: false,
             message: 'Invalid token',
-            errors: [
-              {
-                field: 'token',
-                message: 'Invalid token',
-              },
-            ],
           };
 
         const existingUser = await User.findOne({ userId }).lean();
@@ -57,7 +45,6 @@ const changePassword = (Base: ClassType) => {
             code: 404,
             success: false,
             message: 'User no longer exists',
-            errors: [{ field: 'token', message: 'User no longer exists' }],
           };
 
         await User.updateOne({ _id: userId }, { password: hashData(newPassword) });
