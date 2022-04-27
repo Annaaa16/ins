@@ -1,7 +1,0 @@
-fragment userInfo on User {
-  _id
-  email
-  username
-  account
-  avatar
-}

@@ -1,4 +1,4 @@
-fragment commentInfo on Comment {
+fragment comment on Comment {
   _id
   caption
   postId
@@ -10,7 +10,7 @@ fragment commentInfo on Comment {
     avatar
   }
   user {
-    ...userInfo
+    ...user
   }
   createdAt
   updatedAt

@@ -3,7 +3,7 @@ mutation SearchUser($query: String!, $limit: Int!) {
     code
     success
     users {
-      ...userInfo
+      ...user
     }
   }
 }

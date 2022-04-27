@@ -4,7 +4,7 @@ query GetPosts($cursor: String, $limit: Int!) {
     message
     success
     posts {
-      ...postInfo
+      ...post
     }
     cursor
     hasMore

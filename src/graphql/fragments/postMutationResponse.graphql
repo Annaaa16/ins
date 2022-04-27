@@ -3,6 +3,6 @@ fragment postMutationResponse on PostMutationResponse {
   success
   message
   post {
-    ...postInfo
+    ...post
   }
 }
