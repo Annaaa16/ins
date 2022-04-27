@@ -15,7 +15,7 @@ export class Post extends TimeStamps {
   caption!: string;
 
   @Field((_type) => [User])
-  @prop({ type: [mongoose.Types.ObjectId], ref: User, default: [] })
+  @prop({ type: [mongoose.Types.ObjectId], ref: () => User, default: [] })
   reactions!: string[];
 
   @Field({ nullable: true })
@@ -23,7 +23,7 @@ export class Post extends TimeStamps {
   photo!: string;
 
   @Field((_type) => User)
-  @prop({ type: mongoose.Types.ObjectId, ref: User, required: true })
+  @prop({ type: mongoose.Types.ObjectId, ref: () => User, required: true })
   user!: mongoose.Types.ObjectId;
 
   @Field((_type) => Date)
