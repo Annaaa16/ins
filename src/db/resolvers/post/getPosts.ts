@@ -24,7 +24,7 @@ const getPosts = (Base: ClassType) => {
   @Resolver((_of) => PostEntity)
   class GetPosts extends Base {
     @FieldResolver((_returns) => Int)
-    async commentCounts(@Root() post: PostEntity) {
+    async commentCounts(@Root() post: PostEntity): Promise<number> {
       return await Comment.countDocuments({ postId: post._id });
     }
 
@@ -40,7 +40,7 @@ const getPosts = (Base: ClassType) => {
         const posts = await Post.find(filterQuery)
           .limit(limit)
           .sort([sort])
-          .populate('user')
+          .populate({ path: 'user', populate: ['followers', 'following'] })
           .populate('reactions')
           .lean();
 
