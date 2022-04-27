@@ -1,5 +1,6 @@
 import { prop } from '@typegoose/typegoose';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, Int } from 'type-graphql';
+import mongoose from 'mongoose';
 
 enum Account {
   DEFAULT = 'default',
@@ -31,4 +32,12 @@ export class User {
   @Field({ nullable: true })
   @prop({ type: String, default: null })
   avatar!: string;
+
+  @Field((_type) => [User])
+  @prop({ type: [mongoose.Types.ObjectId], ref: () => User, default: [] })
+  followers!: string[];
+
+  @Field((_type) => [User])
+  @prop({ type: [mongoose.Types.ObjectId], ref: () => User, default: [] })
+  following!: string[];
 }
