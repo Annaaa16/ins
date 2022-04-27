@@ -2,7 +2,7 @@ import { IconProps } from '~/types/utils';
 
 import clsx from 'clsx';
 
-function SpinnerSearch(props: IconProps) {
+function SpinnerRing(props: IconProps) {
   return (
     <svg
       {...props}
@@ -21,4 +21,4 @@ function SpinnerSearch(props: IconProps) {
   );
 }
 
-export default SpinnerSearch;
+export default SpinnerRing;

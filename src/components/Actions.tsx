@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import { Post } from '~/types/generated';
+import { PostFragment } from '~/types/generated';
 import { usePost } from '~/hooks';
 
 import IconComment from './Icon/IconComment';
@@ -9,7 +9,7 @@ import IconSave from './Icon/IconSave';
 import IconShare from './Icon/IconShare';
 
 interface ActionsProps {
-  post: Post;
+  post: PostFragment;
   className?: string;
 }
 

@@ -1,9 +1,9 @@
-import { Comment, ReactionType, useReactCommentMutation } from '~/types/generated';
+import { CommentFragment, ReactionType, useReactCommentMutation } from '~/types/generated';
 import { useAuthSelector } from '~/redux/selectors';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { useStoreDispatch } from '~/redux/store';
 
-export const useComment = (comment: Comment, postId: string) => {
+export const useComment = (comment: CommentFragment, postId: string) => {
   const { currentUser } = useAuthSelector();
 
   const [reactCommentMutate] = useReactCommentMutation();

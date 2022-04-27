@@ -1,10 +1,10 @@
-import { Post, ReactionType, useReactPostMutation } from '~/types/generated';
+import { PostFragment, ReactionType, useReactPostMutation } from '~/types/generated';
 
 import { useAuthSelector } from '~/redux/selectors';
 import { postActions } from '~/redux/slices/postSlice';
 import { useStoreDispatch } from '~/redux/store';
 
-export const usePost = (post: Post) => {
+export const usePost = (post: PostFragment) => {
   const { currentUser } = useAuthSelector();
 
   const [reactPostMutate] = useReactPostMutation();

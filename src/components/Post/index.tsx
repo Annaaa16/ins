@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import clsx from 'clsx';
 
-import { Post, useCreateCommentMutation } from '~/types/generated';
+import { PostFragment, useCreateCommentMutation } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { postActions } from '~/redux/slices/postSlice';
@@ -12,7 +12,7 @@ import PostHeader from './PostHeader';
 import PostPhoto from './PostPhoto';
 import CommentField from '../CommentField';
 
-const Post = (props: Post) => {
+const PostFragment = (props: PostFragment) => {
   const { _id: postId } = props;
 
   const [caption, setCaption] = useState<string>('');
@@ -52,4 +52,4 @@ const Post = (props: Post) => {
   );
 };
 
-export default Post;
+export default PostFragment;

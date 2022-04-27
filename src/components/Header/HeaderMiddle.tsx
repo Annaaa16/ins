@@ -5,18 +5,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 
 import { LIMITS } from '~/constants';
-import { User, useSearchUserMutation } from '~/types/generated';
+import { UserFragment, useSearchUserMutation } from '~/types/generated';
 import { getNameInMail } from '~/helpers/format';
 import { useClickOutside, useDebounce } from '~/hooks';
 
 import Skeleton from '../Skeleton';
-import SpinnerSearch from '../Spinner/SpinnerSearch';
+import SpinnerRing from '../Spinner/SpinnerRing';
 
 import avatar from '~/assets/avatar.png';
 import SpinnerLogo from '../Spinner/SpinnerLogo';
 
 const HeaderMiddle = () => {
-  const [searchedUser, setSearchedUser] = useState<User[]>([]);
+  const [searchedUser, setSearchedUser] = useState<UserFragment[]>([]);
   const [isOpenSearchList, setIsOpenSearchList] = useState<boolean>(false);
 
   const searchListRef = useRef<HTMLUListElement>(null);
@@ -58,7 +58,7 @@ const HeaderMiddle = () => {
           )}
           placeholder='Search'
         />
-        {debouncing && <SpinnerSearch className='ml-2' />}
+        {debouncing && <SpinnerRing className='ml-2' />}
       </div>
 
       {isOpenSearchList && (
