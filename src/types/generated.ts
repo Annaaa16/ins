@@ -55,6 +55,11 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export enum FollowType {
+  Follow = 'FOLLOW',
+  Unfollow = 'UNFOLLOW',
+}
+
 export type ForgotPasswordResponse = {
   __typename?: 'ForgotPasswordResponse';
   code: Scalars['Float'];
@@ -86,6 +91,7 @@ export type Mutation = {
   createPost: PostMutationResponse;
   deleteComment: BaseResponse;
   deletePost: BaseResponse;
+  followUser: UserMutationResponse;
   forgotPassword: ForgotPasswordResponse;
   login: UserMutationResponse;
   loginFacebook: UserMutationResponse;
@@ -94,6 +100,7 @@ export type Mutation = {
   reactComment: BaseResponse;
   reactPost: BaseResponse;
   register: UserMutationResponse;
+  searchUser: SearchUserResponse;
   updatePost: PostMutationResponse;
 };
 
@@ -118,6 +125,11 @@ export type MutationDeleteCommentArgs = {
 
 export type MutationDeletePostArgs = {
   postId: Scalars['String'];
+};
+
+export type MutationFollowUserArgs = {
+  followType: FollowType;
+  userId: Scalars['String'];
 };
 
 export type MutationForgotPasswordArgs = {
@@ -150,6 +162,11 @@ export type MutationReactPostArgs = {
 
 export type MutationRegisterArgs = {
   registerInput: RegisterInput;
+};
+
+export type MutationSearchUserArgs = {
+  limit: Scalars['Int'];
+  query: Scalars['String'];
 };
 
 export type MutationUpdatePostArgs = {
@@ -229,6 +246,15 @@ export type RegisterInput = {
   username: Scalars['String'];
 };
 
+export type SearchUserResponse = {
+  __typename?: 'SearchUserResponse';
+  code: Scalars['Float'];
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+  users?: Maybe<Array<User>>;
+};
+
 export type UpdatePostInput = {
   caption?: InputMaybe<Scalars['String']>;
   newBase64Photo?: InputMaybe<Scalars['String']>;
@@ -242,6 +268,8 @@ export type User = {
   account: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
   email: Scalars['String'];
+  followers: Array<User>;
+  following: Array<User>;
   password?: Maybe<Scalars['String']>;
   username: Scalars['String'];
 };
@@ -255,7 +283,7 @@ export type UserMutationResponse = {
   user?: Maybe<User>;
 };
 
-export type CommentInfoFragment = {
+export type CommentFragment = {
   __typename?: 'Comment';
   _id: string;
   caption: string;
@@ -277,6 +305,22 @@ export type CommentInfoFragment = {
     username: string;
     account: string;
     avatar?: string | null;
+    followers: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    following: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
   };
 };
 
@@ -307,13 +351,29 @@ export type CommentMutationResponseFragment = {
       username: string;
       account: string;
       avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     };
   } | null;
 };
 
 export type FieldErrorFragment = { __typename?: 'FieldError'; field: string; message: string };
 
-export type PostInfoFragment = {
+export type PostFragment = {
   __typename?: 'Post';
   _id: string;
   caption?: string | null;
@@ -336,6 +396,22 @@ export type PostInfoFragment = {
     username: string;
     account: string;
     avatar?: string | null;
+    followers: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    following: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
   };
 };
 
@@ -367,17 +443,58 @@ export type PostMutationResponseFragment = {
       username: string;
       account: string;
       avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     };
   } | null;
 };
 
-export type UserInfoFragment = {
+export type UserFieldFragment = {
   __typename?: 'User';
   _id: string;
   email: string;
   username: string;
   account: string;
   avatar?: string | null;
+};
+
+export type UserFragment = {
+  __typename?: 'User';
+  _id: string;
+  email: string;
+  username: string;
+  account: string;
+  avatar?: string | null;
+  followers: Array<{
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+  }>;
+  following: Array<{
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+  }>;
 };
 
 export type UserMutationResponseFragment = {
@@ -392,6 +509,22 @@ export type UserMutationResponseFragment = {
     username: string;
     account: string;
     avatar?: string | null;
+    followers: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    following: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
   } | null;
   errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
 };
@@ -416,6 +549,22 @@ export type ChangePasswordMutation = {
       username: string;
       account: string;
       avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
   };
@@ -455,6 +604,22 @@ export type LoginMutation = {
       username: string;
       account: string;
       avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
   };
@@ -479,6 +644,22 @@ export type LoginFacebookMutation = {
       username: string;
       account: string;
       avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
   };
@@ -503,6 +684,22 @@ export type LoginGoogleMutation = {
       username: string;
       account: string;
       avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
   };
@@ -526,6 +723,22 @@ export type RegisterMutation = {
       username: string;
       account: string;
       avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
   };
@@ -565,6 +778,22 @@ export type CreateCommentMutation = {
         username: string;
         account: string;
         avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
       };
     } | null;
   };
@@ -618,6 +847,22 @@ export type CreatePostMutation = {
         username: string;
         account: string;
         avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
       };
     } | null;
   };
@@ -686,8 +931,101 @@ export type UpdatePostMutation = {
         username: string;
         account: string;
         avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
       };
     } | null;
+  };
+};
+
+export type FollowUserMutationVariables = Exact<{
+  followType: FollowType;
+  userId: Scalars['String'];
+}>;
+
+export type FollowUserMutation = {
+  __typename?: 'Mutation';
+  followUser: {
+    __typename?: 'UserMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    user?: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+    } | null;
+  };
+};
+
+export type SearchUserMutationVariables = Exact<{
+  query: Scalars['String'];
+  limit: Scalars['Int'];
+}>;
+
+export type SearchUserMutation = {
+  __typename?: 'Mutation';
+  searchUser: {
+    __typename?: 'SearchUserResponse';
+    code: number;
+    success: boolean;
+    users?: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+    }> | null;
   };
 };
 
@@ -707,6 +1045,22 @@ export type GetSessionQuery = {
       username: string;
       account: string;
       avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     } | null;
   };
 };
@@ -748,6 +1102,22 @@ export type GetCommentsQuery = {
         username: string;
         account: string;
         avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
       };
     }> | null;
   };
@@ -805,13 +1175,29 @@ export type GetPostsQuery = {
         username: string;
         account: string;
         avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
       };
     }> | null;
   };
 };
 
-export const UserInfoFragmentDoc = gql`
-  fragment userInfo on User {
+export const UserFieldFragmentDoc = gql`
+  fragment userField on User {
     _id
     email
     username
@@ -819,8 +1205,20 @@ export const UserInfoFragmentDoc = gql`
     avatar
   }
 `;
-export const CommentInfoFragmentDoc = gql`
-  fragment commentInfo on Comment {
+export const UserFragmentDoc = gql`
+  fragment user on User {
+    ...userField
+    followers {
+      ...userField
+    }
+    following {
+      ...userField
+    }
+  }
+  ${UserFieldFragmentDoc}
+`;
+export const CommentFragmentDoc = gql`
+  fragment comment on Comment {
     _id
     caption
     postId
@@ -832,12 +1230,12 @@ export const CommentInfoFragmentDoc = gql`
       avatar
     }
     user {
-      ...userInfo
+      ...user
     }
     createdAt
     updatedAt
   }
-  ${UserInfoFragmentDoc}
+  ${UserFragmentDoc}
 `;
 export const CommentMutationResponseFragmentDoc = gql`
   fragment commentMutationResponse on CommentMutationResponse {
@@ -845,13 +1243,13 @@ export const CommentMutationResponseFragmentDoc = gql`
     success
     message
     comment {
-      ...commentInfo
+      ...comment
     }
   }
-  ${CommentInfoFragmentDoc}
+  ${CommentFragmentDoc}
 `;
-export const PostInfoFragmentDoc = gql`
-  fragment postInfo on Post {
+export const PostFragmentDoc = gql`
+  fragment post on Post {
     _id
     caption
     photo
@@ -864,12 +1262,12 @@ export const PostInfoFragmentDoc = gql`
       avatar
     }
     user {
-      ...userInfo
+      ...user
     }
     createdAt
     updatedAt
   }
-  ${UserInfoFragmentDoc}
+  ${UserFragmentDoc}
 `;
 export const PostMutationResponseFragmentDoc = gql`
   fragment postMutationResponse on PostMutationResponse {
@@ -877,10 +1275,10 @@ export const PostMutationResponseFragmentDoc = gql`
     success
     message
     post {
-      ...postInfo
+      ...post
     }
   }
-  ${PostInfoFragmentDoc}
+  ${PostFragmentDoc}
 `;
 export const FieldErrorFragmentDoc = gql`
   fragment fieldError on FieldError {
@@ -894,13 +1292,13 @@ export const UserMutationResponseFragmentDoc = gql`
     success
     message
     user {
-      ...userInfo
+      ...user
     }
     errors {
       ...fieldError
     }
   }
-  ${UserInfoFragmentDoc}
+  ${UserFragmentDoc}
   ${FieldErrorFragmentDoc}
 `;
 export const ChangePasswordDocument = gql`
@@ -1449,6 +1847,107 @@ export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   UpdatePostMutation,
   UpdatePostMutationVariables
 >;
+export const FollowUserDocument = gql`
+  mutation FollowUser($followType: FollowType!, $userId: String!) {
+    followUser(followType: $followType, userId: $userId) {
+      code
+      success
+      message
+      user {
+        ...user
+      }
+    }
+  }
+  ${UserFragmentDoc}
+`;
+export type FollowUserMutationFn = Apollo.MutationFunction<
+  FollowUserMutation,
+  FollowUserMutationVariables
+>;
+
+/**
+ * __useFollowUserMutation__
+ *
+ * To run a mutation, you first call `useFollowUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [followUserMutation, { data, loading, error }] = useFollowUserMutation({
+ *   variables: {
+ *      followType: // value for 'followType'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useFollowUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<FollowUserMutation, FollowUserMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<FollowUserMutation, FollowUserMutationVariables>(
+    FollowUserDocument,
+    options,
+  );
+}
+export type FollowUserMutationHookResult = ReturnType<typeof useFollowUserMutation>;
+export type FollowUserMutationResult = Apollo.MutationResult<FollowUserMutation>;
+export type FollowUserMutationOptions = Apollo.BaseMutationOptions<
+  FollowUserMutation,
+  FollowUserMutationVariables
+>;
+export const SearchUserDocument = gql`
+  mutation SearchUser($query: String!, $limit: Int!) {
+    searchUser(query: $query, limit: $limit) {
+      code
+      success
+      users {
+        ...user
+      }
+    }
+  }
+  ${UserFragmentDoc}
+`;
+export type SearchUserMutationFn = Apollo.MutationFunction<
+  SearchUserMutation,
+  SearchUserMutationVariables
+>;
+
+/**
+ * __useSearchUserMutation__
+ *
+ * To run a mutation, you first call `useSearchUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSearchUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [searchUserMutation, { data, loading, error }] = useSearchUserMutation({
+ *   variables: {
+ *      query: // value for 'query'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useSearchUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<SearchUserMutation, SearchUserMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SearchUserMutation, SearchUserMutationVariables>(
+    SearchUserDocument,
+    options,
+  );
+}
+export type SearchUserMutationHookResult = ReturnType<typeof useSearchUserMutation>;
+export type SearchUserMutationResult = Apollo.MutationResult<SearchUserMutation>;
+export type SearchUserMutationOptions = Apollo.BaseMutationOptions<
+  SearchUserMutation,
+  SearchUserMutationVariables
+>;
 export const GetSessionDocument = gql`
   query GetSession {
     getSession {
@@ -1456,11 +1955,11 @@ export const GetSessionDocument = gql`
       success
       accessToken
       user {
-        ...userInfo
+        ...user
       }
     }
   }
-  ${UserInfoFragmentDoc}
+  ${UserFragmentDoc}
 `;
 
 /**
@@ -1503,13 +2002,13 @@ export const GetCommentsDocument = gql`
       success
       message
       comments {
-        ...commentInfo
+        ...comment
       }
       cursor
       hasMore
     }
   }
-  ${CommentInfoFragmentDoc}
+  ${CommentFragmentDoc}
 `;
 
 /**
@@ -1605,13 +2104,13 @@ export const GetPostsDocument = gql`
       message
       success
       posts {
-        ...postInfo
+        ...post
       }
       cursor
       hasMore
     }
   }
-  ${PostInfoFragmentDoc}
+  ${PostFragmentDoc}
 `;
 
 /**

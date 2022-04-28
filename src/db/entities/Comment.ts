@@ -11,7 +11,7 @@ export class Comment extends TimeStamps {
   _id!: string;
 
   @Field((_type) => User)
-  @prop({ type: mongoose.Types.ObjectId, ref: User, required: true })
+  @prop({ type: mongoose.Types.ObjectId, ref: () => User, required: true })
   user!: mongoose.Types.ObjectId;
 
   @Field()
@@ -23,7 +23,7 @@ export class Comment extends TimeStamps {
   caption!: string;
 
   @Field((_type) => [User])
-  @prop({ type: [mongoose.Types.ObjectId], ref: User, default: [] })
+  @prop({ type: [mongoose.Types.ObjectId], ref: () => User, default: [] })
   reactions!: string[];
 
   @Field((_type) => Date)

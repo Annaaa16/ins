@@ -4,7 +4,7 @@ query GetSession {
     success
     accessToken
     user {
-      ...userInfo
+      ...user
     }
   }
 }

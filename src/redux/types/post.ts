@@ -1,17 +1,17 @@
 // types
-import { Post, ReactionType, User } from '~/types/generated';
+import { FollowType, PostFragment, ReactionType, UserFragment } from '~/types/generated';
 
 export type CurrentAction = 'create' | 'update' | 'delete' | null;
 
 export interface PostSliceState {
-  selectedPost: Post | null;
-  posts: Post[];
+  selectedPost: PostFragment | null;
+  posts: PostFragment[];
   cursor: string | null;
   currentAction: CurrentAction;
 }
 
 export interface ReactPostReducer {
-  currentUser: User;
+  currentUser: UserFragment;
   postId: string;
   reaction: ReactionType;
 }
@@ -21,10 +21,16 @@ export interface DeletePostReducer {
 }
 
 export interface AddFetchedPostsReducer {
-  posts: Post[];
+  posts: PostFragment[];
   cursor: string | null;
 }
 
 export interface IncreaseCommentCountsReducer {
   postId: string;
+}
+
+export interface FollowUserReducer {
+  postId: string;
+  followType: FollowType;
+  currentUser: UserFragment;
 }

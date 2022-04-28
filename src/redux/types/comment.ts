@@ -1,9 +1,9 @@
-import { Comment, ReactionType, User } from '~/types/generated';
+import { CommentFragment, ReactionType, UserFragment } from '~/types/generated';
 
 interface CommentPerPost {
   [postId: string]: {
-    data: Comment[];
-    commentsPerPost: Comment[];
+    data: CommentFragment[];
+    commentsPerPost: CommentFragment[];
     cursor: string | null;
     hasMore: boolean;
   };
@@ -11,23 +11,23 @@ interface CommentPerPost {
 
 export interface CommentSliceState {
   comments: CommentPerPost;
-  selectedComment: Comment | null;
+  selectedComment: CommentFragment | null;
 }
 
 export interface AddNewCommentReducer {
   postId: string;
-  comment: Comment;
+  comment: CommentFragment;
 }
 
 export interface AddCommentsReducer {
   postId: string;
-  comments: Comment[];
+  comments: CommentFragment[];
   cursor: string | null;
   hasMore: boolean;
 }
 
 export interface ReactCommentReducer {
-  currentUser: User;
+  currentUser: UserFragment;
   postId: string;
   commentId: string;
   reaction: ReactionType;

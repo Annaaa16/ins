@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 import clsx from 'clsx';
 
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
-import { Comment, Post } from '~/types/generated';
+import { CommentFragment, PostFragment } from '~/types/generated';
 import { displayLikeCounts } from '~/helpers/format';
 import { postActions } from '~/redux/slices/postSlice';
 import { useStoreDispatch } from '~/redux/store';
@@ -12,9 +12,9 @@ import { useCommentSelector } from '~/redux/selectors';
 import PostComment from './PostComment';
 import Actions from '../Actions';
 
-export type SetCommentsDispatch = Dispatch<SetStateAction<Comment[]>>;
+export type SetCommentsDispatch = Dispatch<SetStateAction<CommentFragment[]>>;
 
-const PostBody = (post: Post) => {
+const PostBody = (post: PostFragment) => {
   const { reactions, user, caption, commentCounts } = post;
 
   const { showModal } = useModalContext();

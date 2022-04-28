@@ -62,7 +62,7 @@ const Login = () => {
         message,
       });
     } else {
-      router.push(ROUTES.LOGIN);
+      router.push(ROUTES.HOME);
     }
   };
 

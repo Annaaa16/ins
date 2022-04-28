@@ -3,7 +3,7 @@ fragment userMutationResponse on UserMutationResponse {
   success
   message
   user {
-    ...userInfo
+    ...user
   }
   errors {
     ...fieldError

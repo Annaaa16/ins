@@ -5,6 +5,6 @@ import { MutationResponse } from '../shared';
 
 @ObjectType()
 export class ForgotPasswordResponse extends MutationResponse {
-  @Field({ nullable: true })
+  @Field((_type) => String, { nullable: true })
   linkReset?: string;
 }

@@ -4,7 +4,7 @@ interface SpinnerProps {
   className?: string;
 }
 
-const Spinner = ({ className }: SpinnerProps) => {
+const SpinnerLogo = ({ className }: SpinnerProps) => {
   return (
     <svg
       className={clsx('animate-spinner', className)}
@@ -36,4 +36,4 @@ const Spinner = ({ className }: SpinnerProps) => {
   );
 };
 
-export default Spinner;
+export default SpinnerLogo;

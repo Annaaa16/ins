@@ -3,6 +3,6 @@ fragment commentMutationResponse on CommentMutationResponse {
   success
   message
   comment {
-    ...commentInfo
+    ...comment
   }
 }

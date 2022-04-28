@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 
-import { Comment } from '~/types/generated';
+import { CommentFragment } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { displayLikeCounts } from '~/helpers/format';
@@ -14,7 +14,7 @@ import Skeleton from '~/components/Skeleton';
 import avatar from '~/assets/avatar.png';
 
 interface DetailCommentProps {
-  comment: Comment;
+  comment: CommentFragment;
   postId: string;
   onShowActionsModal: () => void;
 }

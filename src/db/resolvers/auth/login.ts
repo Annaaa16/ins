@@ -23,7 +23,9 @@ const login = (Base: ClassType) => {
       const handler = async () => {
         const { username, password } = loginInput;
 
-        const existingUser = await User.findOne({ username }).lean();
+        const existingUser = await User.findOne({ username })
+          .populate(['followers', 'following'])
+          .lean();
 
         if (!existingUser)
           return {

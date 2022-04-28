@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 
-import { Comment } from '~/types/generated';
+import { CommentFragment } from '~/types/generated';
 import { useComment } from '~/hooks';
 
 import IconHeart from '../Icon/IconHeart';
 
 interface PostCommentProps {
   postId: string;
-  comment: Comment;
+  comment: CommentFragment;
 }
 
 const PostComment = ({ comment, postId }: PostCommentProps) => {

@@ -4,7 +4,7 @@ query GetComments($postId: ID!, $limit: Int!, $cursor: String) {
     success
     message
     comments {
-      ...commentInfo
+      ...comment
     }
     cursor
     hasMore

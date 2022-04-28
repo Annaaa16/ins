@@ -15,7 +15,7 @@ const getSession = (Base: ClassType) => {
     @UseMiddleware(verifyAuth)
     getSession(@Ctx() { req: { userId, accessToken } }: Context): Promise<GetSessionResponse> {
       const handler = async () => {
-        const user = await User.findById(userId).lean();
+        const user = await User.findById(userId).populate(['followers', 'following']).lean();
 
         return {
           code: 200,

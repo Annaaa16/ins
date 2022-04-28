@@ -7,7 +7,7 @@ import {
   CommentSliceState,
   ReactCommentReducer,
 } from '../types/comment';
-import { Comment, ReactionType } from '~/types/generated';
+import { CommentFragment, ReactionType } from '~/types/generated';
 
 const initialState: CommentSliceState = {
   comments: {},
@@ -53,10 +53,10 @@ const commentSlice = createSlice({
       state.comments[postId].hasMore = hasMore;
     },
 
-    deleteComment: (state, { payload }: PayloadAction<Comment>) => {
+    deleteComment: (state, { payload }: PayloadAction<CommentFragment>) => {
       const comment = state.comments[payload.postId];
 
-      const filterComments = (comments: Comment[]) =>
+      const filterComments = (comments: CommentFragment[]) =>
         comments.filter((comment) => comment._id !== payload._id);
 
       comment.data = filterComments(comment.data);
@@ -69,7 +69,7 @@ const commentSlice = createSlice({
     ) => {
       if (state.comments[postId] == null) return;
 
-      const handleReactComment = (comments: Comment[]) => {
+      const handleReactComment = (comments: CommentFragment[]) => {
         comments.forEach((comment) => {
           if (comment._id !== commentId) return;
 
@@ -86,7 +86,7 @@ const commentSlice = createSlice({
     },
 
     // Selected to implement actions
-    setSelectedComment: (state, action: PayloadAction<Comment | null>) => {
+    setSelectedComment: (state, action: PayloadAction<CommentFragment | null>) => {
       state.selectedComment = action.payload;
     },
   },

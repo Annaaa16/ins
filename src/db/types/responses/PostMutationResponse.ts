@@ -7,6 +7,6 @@ import { Post } from '~/db/entities/Post';
 
 @ObjectType()
 export class PostMutationResponse extends MutationResponse {
-  @Field({ nullable: true })
+  @Field((_type) => Post, { nullable: true })
   post?: Post;
 }

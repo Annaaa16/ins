@@ -1,4 +1,4 @@
-fragment postInfo on Post {
+fragment post on Post {
   _id
   caption
   photo
@@ -11,7 +11,7 @@ fragment postInfo on Post {
     avatar
   }
   user {
-    ...userInfo
+    ...user
   }
   createdAt
   updatedAt

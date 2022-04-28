@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import clsx from 'clsx';
 
-import { Post } from '~/types/generated';
+import { PostFragment } from '~/types/generated';
 import { usePost, useDoubleTab } from '~/hooks';
 
 import Skeleton from '../Skeleton';
 import IconHeart from '../Icon/IconHeart';
 
-const PostPhoto = (props: Post) => {
+const PostPhoto = (props: PostFragment) => {
   const [isHearted, setIsHearted] = useState<boolean>(false);
 
   const { photo } = props;

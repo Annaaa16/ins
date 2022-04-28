@@ -5,3 +5,4 @@ export * from './PaginatedPostsResponse';
 export * from './GetSessionResponse';
 export * from './PaginatedCommentsResponse';
 export * from './CommentMutationResponse';
+export * from './SearchUserResponse';

@@ -1,0 +1,17 @@
+fragment userField on User {
+  _id
+  email
+  username
+  account
+  avatar
+}
+
+fragment user on User {
+  ...userField
+  followers {
+    ...userField
+  }
+  following {
+    ...userField
+  }
+}

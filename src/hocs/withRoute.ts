@@ -1,10 +1,10 @@
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 // types
-import { GetSessionDocument, GetSessionQuery } from '~/types/generated';
 import { StoreDispatch } from '~/types/store';
 import { AddParameters } from '~/types/utils';
 
+import { GetSessionDocument, GetSessionQuery } from '~/types/generated';
 import { COOKIE_NAMES, ROUTES } from '~/constants';
 import { clearAllCookies, setCookie } from '~/helpers/cookie';
 import { initializeApollo } from '~/lib/apolloClient';

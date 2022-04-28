@@ -1,6 +1,11 @@
 // types
-import { User } from '~/types/generated';
+import { FollowType, UserFragment } from '~/types/generated';
 
 export interface AuthSliceState {
-  currentUser: User | null;
+  currentUser: UserFragment | null;
+}
+
+export interface FollowUserReducer {
+  user: UserFragment;
+  followType: FollowType;
 }

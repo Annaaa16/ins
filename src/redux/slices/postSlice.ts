@@ -5,12 +5,13 @@ import {
   AddFetchedPostsReducer,
   CurrentAction,
   DeletePostReducer,
+  FollowUserReducer,
   IncreaseCommentCountsReducer,
   PostSliceState,
   ReactPostReducer,
 } from '../types/post';
 
-import { Post, ReactionType } from '~/types/generated';
+import { FollowType, PostFragment, ReactionType } from '~/types/generated';
 
 const initialState: PostSliceState = {
   posts: [],
@@ -23,7 +24,7 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    addNewPost: (state, action: PayloadAction<Post>) => {
+    addNewPost: (state, action: PayloadAction<PostFragment>) => {
       state.posts.unshift(action.payload);
     },
 
@@ -35,14 +36,14 @@ const postSlice = createSlice({
       state.cursor = cursor;
     },
 
-    updatePost: (state, { payload: updatedPost }: PayloadAction<Post>) => {
+    updatePost: (state, { payload: updatedPost }: PayloadAction<PostFragment>) => {
       state.posts = state.posts.map((post) => (post._id === updatedPost._id ? updatedPost : post));
     },
 
     reactPost: (state, { payload }: PayloadAction<ReactPostReducer>) => {
       const { postId, currentUser, reaction } = payload;
 
-      const handleReactPost = (post: Post) => {
+      const handleReactPost = (post: PostFragment) => {
         if (reaction === ReactionType.Like) post.reactions.push(currentUser);
         else
           post.reactions = post.reactions.filter(
@@ -63,8 +64,23 @@ const postSlice = createSlice({
       state.posts = state.posts.filter((post) => post._id !== payload.postId);
     },
 
+    followUserByPost: (
+      state,
+      { payload: { postId, currentUser, followType } }: PayloadAction<FollowUserReducer>,
+    ) => {
+      state.posts.forEach((post) => {
+        if (post._id !== postId) return;
+
+        if (followType === FollowType.Follow) post.user.followers.push(currentUser);
+        else
+          post.user.followers = post.user.followers.filter(
+            (followedUser) => followedUser._id !== currentUser._id,
+          );
+      });
+    },
+
     // Selected to implement actions
-    setSelectedPost: (state, action: PayloadAction<Post | null>) => {
+    setSelectedPost: (state, action: PayloadAction<PostFragment | null>) => {
       state.selectedPost = action.payload;
     },
 
