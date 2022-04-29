@@ -1,13 +1,15 @@
 import { Arg, ClassType, ID, Int, Query, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
-import { PaginatedCommentsResponse } from '~/db/types/responses';
+import { PaginatedCommentsResponse } from '~/db/types/responses/comment';
 
 // models
 import { Comment } from '~/db/models';
 
-import { verifyAuth } from '~/db/middlewares';
+// entities
 import { Comment as CommentEntity } from '~/db/entities';
+
+import { verifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
 import paginate from '~/helpers/paginate';
 

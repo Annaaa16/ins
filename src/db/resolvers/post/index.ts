@@ -1,6 +1,8 @@
 import { Query, Resolver } from 'type-graphql';
 
+// entities
 import { Post } from '~/db/entities';
+
 import extender from '~/helpers/extender';
 
 // sub resolvers

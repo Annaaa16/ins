@@ -3,14 +3,17 @@ import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-gra
 // types
 import type { Context } from '~/db/types/context';
 import { UpdatePostInput } from '~/db/types/inputs';
-import { PostMutationResponse } from '~/db/types/responses';
+import { PostMutationResponse } from '~/db/types/responses/post';
 
 // models
 import { Post } from '~/db/models';
 
+// entities
 import { Post as PostEntity } from '~/db/entities';
+
 import { verifyAuth } from '~/db/middlewares';
 import { updatePhoto } from '~/helpers/cloudinary';
+import { isEmptyInput } from '~/helpers/string';
 import respond from '~/helpers/respond';
 
 const updatePost = (Base: ClassType) => {
@@ -22,7 +25,7 @@ const updatePost = (Base: ClassType) => {
       @Arg('updatePostInput') { postId, caption, newBase64Photo, oldPhotoUrl }: UpdatePostInput,
       @Ctx() { req: { userId } }: Context,
     ): Promise<PostMutationResponse> {
-      if (!caption?.trim() && !newBase64Photo)
+      if (isEmptyInput(caption) && !newBase64Photo)
         return Promise.resolve({
           code: 400,
           success: false,

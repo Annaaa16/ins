@@ -10,13 +10,15 @@ import {
 } from 'type-graphql';
 
 // types
-import { PaginatedPostsResponse } from '~/db/types/responses';
+import { PaginatedPostsResponse } from '~/db/types/responses/post';
 
 // models
 import { Comment, Post } from '~/db/models';
 
-import { verifyAuth } from '~/db/middlewares';
+// entities
 import { Post as PostEntity } from '~/db/entities';
+
+import { verifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
 import paginate from '~/helpers/paginate';
 
