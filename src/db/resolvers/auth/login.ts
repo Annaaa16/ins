@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 // types
 import type { Context } from '~/db/types/context';
 import { LoginInput } from '~/db/types/inputs';
-import { UserMutationResponse } from '~/db/types/responses';
+import { UserMutationResponse } from '~/db/types/responses/user';
 
 // models
 import { User } from '~/db/models';

@@ -3,7 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 
 // types
 import type { Context } from '~/db/types/context';
-import { UserMutationResponse } from '~/db/types/responses';
+import { UserMutationResponse } from '~/db/types/responses/user';
 
 // models
 import { User } from '~/db/models';

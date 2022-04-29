@@ -2,7 +2,7 @@ import { Arg, ClassType, Mutation, Resolver } from 'type-graphql';
 import bcrypt from 'bcrypt';
 
 // types
-import { UserMutationResponse } from '~/db/types/responses';
+import { UserMutationResponse } from '~/db/types/responses/user';
 
 // models
 import { User, Token } from '~/db/models';
