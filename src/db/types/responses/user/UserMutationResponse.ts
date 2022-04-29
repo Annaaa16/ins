@@ -1,12 +1,13 @@
 import { Field, ObjectType } from 'type-graphql';
 
 // types
-import { MutationResponse } from '../shared';
+import { MutationResponse } from '~/db/types/shared';
 
-import { User } from '~/db/entities/User';
+// entities
+import { User } from '~/db/entities';
 
 @ObjectType()
 export class UserMutationResponse extends MutationResponse {
-  @Field({ nullable: true })
+  @Field((_type) => User, { nullable: true })
   user?: User;
 }

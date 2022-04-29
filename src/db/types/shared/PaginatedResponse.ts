@@ -1,15 +1,10 @@
 import { Field, ObjectType } from 'type-graphql';
 
 // types
-import QueryResponse from '../shared/QueryResponse';
-
-import { Post } from '~/db/entities';
+import QueryResponse from './QueryResponse';
 
 @ObjectType()
-export class PaginatedPostsResponse extends QueryResponse {
-  @Field((_type) => [Post], { nullable: true })
-  posts?: Post[];
-
+export class PaginatedResponse extends QueryResponse {
   @Field((_type) => String, { nullable: true })
   cursor?: string | null;
 

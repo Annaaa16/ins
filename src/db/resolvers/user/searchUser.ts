@@ -2,7 +2,7 @@ import { Arg, ClassType, Int, Mutation, Resolver, UseMiddleware } from 'type-gra
 import { User } from '~/db/models';
 
 // types
-import { SearchUserResponse } from '~/db/types/responses';
+import { SearchUserResponse } from '~/db/types/responses/user';
 
 import { verifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
@@ -21,6 +21,7 @@ const searchUser = (Base: ClassType) => {
           $or: [{ username: { $regex: query } }, { email: { $regex: query } }],
         })
           .limit(limit)
+          .populate(['followers', 'following'])
           .lean();
 
         return {

@@ -1,7 +1,7 @@
 import { Field, ObjectType } from 'type-graphql';
 
 // types
-import QueryResponse from '../shared/QueryResponse';
+import QueryResponse from '~/db/types/shared/QueryResponse';
 
 // entities
 import { User } from '~/db/entities';

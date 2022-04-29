@@ -2,7 +2,7 @@ import { Arg, ClassType, Mutation, Resolver } from 'type-graphql';
 import { nanoid } from 'nanoid';
 
 // types
-import { ForgotPasswordResponse } from '~/db/types/responses';
+import { ForgotPasswordResponse } from '~/db/types/responses/auth';
 
 // models
 import { User, Token } from '~/db/models';

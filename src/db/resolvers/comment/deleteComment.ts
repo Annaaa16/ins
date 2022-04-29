@@ -1,4 +1,4 @@
-import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, ClassType, Ctx, ID, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
 import type { Context } from '~/db/types/context';
@@ -16,7 +16,7 @@ const deleteComment = (Base: ClassType) => {
     @Mutation((_returns) => BaseResponse)
     @UseMiddleware(verifyAuth)
     deleteComment(
-      @Arg('commentId') commentId: string,
+      @Arg('commentId', (_type) => ID) commentId: string,
       @Ctx() { req: { userId } }: Context,
     ): Promise<BaseResponse> {
       const handler = async () => {
@@ -25,7 +25,7 @@ const deleteComment = (Base: ClassType) => {
         if (!deletedComment)
           return {
             code: 400,
-            success: true,
+            success: false,
             message: 'Comment not found',
           };
 

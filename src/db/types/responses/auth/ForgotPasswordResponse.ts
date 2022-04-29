@@ -1,7 +1,7 @@
 import { Field, ObjectType } from 'type-graphql';
 
 // types
-import { MutationResponse } from '../shared';
+import { MutationResponse } from '~/db/types/shared';
 
 @ObjectType()
 export class ForgotPasswordResponse extends MutationResponse {

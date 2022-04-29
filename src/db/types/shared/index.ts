@@ -2,3 +2,4 @@ export * from './BaseResponse';
 export * from './FieldError';
 export * from './MutationResponse';
 export * from './QueryResponse';
+export * from './PaginatedResponse';

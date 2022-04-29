@@ -2,11 +2,14 @@ import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-gra
 
 // types
 import type { Context } from '~/db/types/context';
+import { CommentMutationResponse } from '~/db/types/responses/comment';
+
+// models
+import { Comment } from '~/db/models';
 
 import { verifyAuth } from '~/db/middlewares';
+import { isEmptyInput } from '~/helpers/string';
 import respond from '~/helpers/respond';
-import { CommentMutationResponse } from '~/db/types/responses';
-import { Comment } from '~/db/models';
 
 const createComment = (Base: ClassType) => {
   @Resolver()
@@ -18,7 +21,7 @@ const createComment = (Base: ClassType) => {
       @Arg('postId') postId: string,
       @Ctx() { req: { userId } }: Context,
     ): Promise<CommentMutationResponse> {
-      if (!caption.trim())
+      if (isEmptyInput(caption))
         return Promise.resolve({
           code: 400,
           success: false,

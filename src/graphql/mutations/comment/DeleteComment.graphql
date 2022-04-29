@@ -1,4 +1,4 @@
-mutation DeleteComment($commentId: String!) {
+mutation DeleteComment($commentId: ID!) {
   deleteComment(commentId: $commentId) {
     code
     success

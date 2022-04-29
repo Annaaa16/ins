@@ -2,7 +2,7 @@ import { Resolver, ClassType, Query, UseMiddleware, Ctx } from 'type-graphql';
 
 // types
 import type { Context } from '~/db/types/context';
-import { GetSessionResponse } from '~/db/types/responses';
+import { GetSessionResponse } from '~/db/types/responses/auth';
 
 import { verifyAuth } from '~/db/middlewares';
 import { User } from '~/db/models';

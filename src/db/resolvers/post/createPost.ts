@@ -2,12 +2,15 @@ import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-gra
 
 // types
 import type { Context } from '~/db/types/context';
-import { PostMutationResponse } from '~/db/types/responses';
+import { PostMutationResponse } from '~/db/types/responses/post';
 import { CreatePostInput } from '~/db/types/inputs';
 
-import { verifyAuth } from '~/db/middlewares';
+// models
 import { Post } from '~/db/models';
+
+import { verifyAuth } from '~/db/middlewares';
 import { uploadPhoto } from '~/helpers/cloudinary';
+import { isEmptyInput } from '~/helpers/string';
 import respond from '~/helpers/respond';
 
 const createPost = (Base: ClassType) => {
@@ -19,7 +22,7 @@ const createPost = (Base: ClassType) => {
       @Arg('createPostInput') { caption, base64Photo }: CreatePostInput,
       @Ctx() { req: { userId } }: Context,
     ): Promise<PostMutationResponse> {
-      if (!caption.trim() || !base64Photo)
+      if (isEmptyInput(caption) || !base64Photo)
         return Promise.resolve({
           code: 400,
           success: false,

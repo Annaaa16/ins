@@ -1,8 +1,9 @@
 import { Field, ObjectType } from 'type-graphql';
 
 // types
-import { MutationResponse } from '../shared';
+import { MutationResponse } from '~/db/types/shared';
 
+// entities
 import { User } from '~/db/entities';
 
 @ObjectType()
