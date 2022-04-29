@@ -1,0 +1,8 @@
+fragment commentMutationResponse on CommentMutationResponse {
+  code
+  success
+  message
+  comment {
+    ...comment
+  }
+}

@@ -1,0 +1,9 @@
+fragment message on Message {
+  _id
+  conversationId
+  text
+  createdAt
+  user {
+    ...user
+  }
+}

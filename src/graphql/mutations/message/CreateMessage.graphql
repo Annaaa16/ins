@@ -1,0 +1,10 @@
+mutation CreateMessage($createMessageInput: CreateMessageInput!) {
+  createMessage(createMessageInput: $createMessageInput) {
+    code
+    success
+    message
+    newMessage {
+      ...message
+    }
+  }
+}
