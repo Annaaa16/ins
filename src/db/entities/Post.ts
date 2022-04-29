@@ -1,9 +1,10 @@
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
+import type { Ref } from '@typegoose/typegoose';
 import { prop } from '@typegoose/typegoose';
 import { Field, ID, ObjectType } from 'type-graphql';
 import mongoose from 'mongoose';
 
-import { User } from '.';
+import { User } from './User';
 
 @ObjectType()
 export class Post extends TimeStamps {
@@ -24,7 +25,7 @@ export class Post extends TimeStamps {
 
   @Field((_type) => User)
   @prop({ type: mongoose.Types.ObjectId, ref: () => User, required: true })
-  user!: mongoose.Types.ObjectId;
+  user!: Ref<User>;
 
   @Field((_type) => Date)
   createdAt!: Date;

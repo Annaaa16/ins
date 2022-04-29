@@ -1,18 +1,19 @@
+import type { Ref } from '@typegoose/typegoose';
+import { prop } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Field, ID, ObjectType } from 'type-graphql';
-import { prop } from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 
-import { User } from '.';
+import { User } from './User';
 
 @ObjectType()
 export class Comment extends TimeStamps {
   @Field((_type) => ID)
-  _id!: string;
+  readonly _id!: string;
 
   @Field((_type) => User)
   @prop({ type: mongoose.Types.ObjectId, ref: () => User, required: true })
-  user!: mongoose.Types.ObjectId;
+  user!: Ref<User>;
 
   @Field()
   @prop({ type: String, required: true })
@@ -24,7 +25,7 @@ export class Comment extends TimeStamps {
 
   @Field((_type) => [User])
   @prop({ type: [mongoose.Types.ObjectId], ref: () => User, default: [] })
-  reactions!: string[];
+  reactions!: Ref<User>[];
 
   @Field((_type) => Date)
   createdAt!: Date;

@@ -1,5 +1,5 @@
-import { prop } from '@typegoose/typegoose';
-import { ObjectType, Field, ID, Int } from 'type-graphql';
+import { prop, Ref } from '@typegoose/typegoose';
+import { ObjectType, Field, ID } from 'type-graphql';
 import mongoose from 'mongoose';
 
 enum Account {
@@ -35,9 +35,9 @@ export class User {
 
   @Field((_type) => [User])
   @prop({ type: [mongoose.Types.ObjectId], ref: () => User, default: [] })
-  followers!: string[];
+  followers!: Ref<User>[];
 
   @Field((_type) => [User])
   @prop({ type: [mongoose.Types.ObjectId], ref: () => User, default: [] })
-  following!: string[];
+  following!: Ref<User>[];
 }
