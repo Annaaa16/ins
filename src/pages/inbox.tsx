@@ -1,5 +1,7 @@
 import clsx from 'clsx';
 
+import { withRoute } from '~/hocs';
+
 import Header from '../components/Header';
 import InboxSidebar from '~/features/inbox/InboxSidebar';
 import InboxMessage from '~/features/inbox/InboxMessage';
@@ -29,3 +31,5 @@ const Inbox = () => {
 };
 
 export default Inbox;
+
+export const getServerSideProps = withRoute({ isProtected: true })();

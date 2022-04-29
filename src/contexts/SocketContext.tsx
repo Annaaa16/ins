@@ -14,6 +14,7 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
   useEffect(() => {
     (async () => {
       await fetch('/api/socket');
+
       setSocket(
         io({
           withCredentials: true,

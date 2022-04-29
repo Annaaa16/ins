@@ -1,11 +1,51 @@
+import { useEffect } from 'react';
 import clsx from 'clsx';
 
-import IconNewMessage from '~/components/Icon/IconNewMessage';
-import Skeleton from '~/components/Skeleton';
+import { LIMITS } from '~/constants';
+import { useGetConversationsLazyQuery } from '~/types/generated';
+import { useStoreDispatch } from '~/redux/store';
+import { conversationActions } from '~/redux/slices/conversationSlice';
+import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
+import { useIntersectionObserver } from '~/hooks';
 
-import avatar from '~/assets/avatar.png';
+import IconNewMessage from '~/components/Icon/IconNewMessage';
+import SidebarConversation from './SidebarConversation';
 
 const InboxSidebar = () => {
+  const { isIntersecting, containerObserverRef, observerRef } = useIntersectionObserver({
+    rootMargin: '200px',
+  });
+
+  const { conversations } = useConversationSelector();
+  const { currentUser } = useAuthSelector();
+
+  const [getConversations] = useGetConversationsLazyQuery();
+  const dispatch = useStoreDispatch();
+
+  useEffect(() => {
+    if (!isIntersecting) return;
+
+    (async () => {
+      const response = await getConversations({
+        variables: {
+          limit: LIMITS.CONVERSATIONS,
+          cursor: null,
+        },
+      });
+
+      const data = response.data?.getConversations;
+
+      if (data?.success)
+        dispatch(
+          conversationActions.addFetchedConversations({
+            conversations: data.conversations!,
+            hasMore: !!data.hasMore,
+            cursor: data.cursor ?? null,
+          }),
+        );
+    })();
+  }, [isIntersecting, getConversations, dispatch]);
+
   return (
     <>
       <div className={clsx('relative', 'flex-shrink-0 h-header-h border-b border-line')}>
@@ -15,17 +55,16 @@ const InboxSidebar = () => {
         <IconNewMessage className={clsx('abs-center-y right-5', 'cursor-pointer')} />
       </div>
 
-      <div className='overflow-y-auto'>
-        <div className={clsx('flex items-center px-4 py-2.5', 'bg-gray-100')}>
-          <Skeleton className='mr-3 w-12 h-12' objectFit='cover' rounded src={avatar.src} />
-          <div className='min-w-0 text-sm-1 lg:text-sm'>
-            <div>igdev</div>
-            <div className={clsx('flex mt-0.5', 'text-base-gray')}>
-              <div className='mr-1.5 truncate'>hello worldworldworldworldworldworldworld</div>
-              <div className='flex-1'>41s</div>
-            </div>
-          </div>
-        </div>
+      <div ref={containerObserverRef} className='overflow-y-auto'>
+        {conversations.map((conversation) => (
+          <SidebarConversation
+            key={conversation._id}
+            currentUser={currentUser}
+            conversation={conversation}
+          />
+        ))}
+
+        <div ref={observerRef} />
       </div>
     </>
   );

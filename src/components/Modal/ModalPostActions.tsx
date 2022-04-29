@@ -6,7 +6,7 @@ import { useDeletePostMutation } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
 
-import PostActions from '~/helpers/postActions';
+import PostActions from '~/helpers/modalActions/post';
 import ModalWrapper from './ModalWrapper';
 import Loading from '../Loading';
 

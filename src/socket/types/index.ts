@@ -11,3 +11,8 @@ export type NextApiResponseServerIO = NextApiResponse & {
     };
   };
 };
+
+export interface SocketUser {
+  userId: string;
+  socketId: string;
+}

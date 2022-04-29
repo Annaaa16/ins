@@ -44,6 +44,29 @@ export type CommentMutationResponse = {
   success: Scalars['Boolean'];
 };
 
+export type Conversation = {
+  __typename?: 'Conversation';
+  _id: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  creators: Array<User>;
+  lastMessage?: Maybe<Message>;
+  members: Array<User>;
+};
+
+export type ConversationMutationResponse = {
+  __typename?: 'ConversationMutationResponse';
+  code: Scalars['Float'];
+  conversation?: Maybe<Conversation>;
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type CreateMessageInput = {
+  conversationId: Scalars['String'];
+  text: Scalars['String'];
+};
+
 export type CreatePostInput = {
   base64Photo: Scalars['String'];
   caption: Scalars['String'];
@@ -84,12 +107,34 @@ export type LoginInput = {
   username: Scalars['String'];
 };
 
+export type Message = {
+  __typename?: 'Message';
+  _id: Scalars['ID'];
+  conversationId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  text: Scalars['String'];
+  user: User;
+};
+
+export type MessageMutationResponse = {
+  __typename?: 'MessageMutationResponse';
+  code: Scalars['Float'];
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  newMessage?: Maybe<Message>;
+  success: Scalars['Boolean'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: UserMutationResponse;
   createComment: CommentMutationResponse;
+  createConversation: ConversationMutationResponse;
+  createMessage: MessageMutationResponse;
   createPost: PostMutationResponse;
+  deleteChat: BaseResponse;
   deleteComment: BaseResponse;
+  deleteMessage: BaseResponse;
   deletePost: BaseResponse;
   followUser: UserMutationResponse;
   forgotPassword: ForgotPasswordResponse;
@@ -115,12 +160,28 @@ export type MutationCreateCommentArgs = {
   postId: Scalars['String'];
 };
 
+export type MutationCreateConversationArgs = {
+  receiverId: Scalars['String'];
+};
+
+export type MutationCreateMessageArgs = {
+  createMessageInput: CreateMessageInput;
+};
+
 export type MutationCreatePostArgs = {
   createPostInput: CreatePostInput;
 };
 
+export type MutationDeleteChatArgs = {
+  conversationId: Scalars['String'];
+};
+
 export type MutationDeleteCommentArgs = {
-  commentId: Scalars['String'];
+  commentId: Scalars['ID'];
+};
+
+export type MutationDeleteMessageArgs = {
+  messageId: Scalars['ID'];
 };
 
 export type MutationDeletePostArgs = {
@@ -184,6 +245,28 @@ export type PaginatedCommentsResponse = {
   success: Scalars['Boolean'];
 };
 
+export type PaginatedConversationsResponse = {
+  __typename?: 'PaginatedConversationsResponse';
+  code: Scalars['Float'];
+  conversations?: Maybe<Array<Conversation>>;
+  cursor?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<FieldError>>;
+  hasMore?: Maybe<Scalars['Boolean']>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
+export type PaginatedMessagesResponse = {
+  __typename?: 'PaginatedMessagesResponse';
+  code: Scalars['Float'];
+  cursor?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<FieldError>>;
+  hasMore?: Maybe<Scalars['Boolean']>;
+  message?: Maybe<Scalars['String']>;
+  messages?: Maybe<Array<Message>>;
+  success: Scalars['Boolean'];
+};
+
 export type PaginatedPostsResponse = {
   __typename?: 'PaginatedPostsResponse';
   code: Scalars['Float'];
@@ -219,6 +302,8 @@ export type PostMutationResponse = {
 export type Query = {
   __typename?: 'Query';
   getComments: PaginatedCommentsResponse;
+  getConversations: PaginatedConversationsResponse;
+  getMessages: PaginatedMessagesResponse;
   getPosts: PaginatedPostsResponse;
   getSession: GetSessionResponse;
   hello: Scalars['String'];
@@ -228,6 +313,17 @@ export type QueryGetCommentsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
   postId: Scalars['ID'];
+};
+
+export type QueryGetConversationsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+export type QueryGetMessagesArgs = {
+  conversationId: Scalars['ID'];
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 export type QueryGetPostsArgs = {
@@ -371,7 +467,100 @@ export type CommentMutationResponseFragment = {
   } | null;
 };
 
+export type ConversationFragment = {
+  __typename?: 'Conversation';
+  _id: string;
+  createdAt: any;
+  creators: Array<{
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+    followers: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    following: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+  }>;
+  members: Array<{
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+    followers: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    following: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+  }>;
+  lastMessage?: {
+    __typename?: 'Message';
+    _id: string;
+    text: string;
+    createdAt: any;
+    user: { __typename?: 'User'; _id: string; email: string; username: string };
+  } | null;
+};
+
 export type FieldErrorFragment = { __typename?: 'FieldError'; field: string; message: string };
+
+export type MessageFragment = {
+  __typename?: 'Message';
+  _id: string;
+  conversationId: string;
+  text: string;
+  createdAt: any;
+  user: {
+    __typename?: 'User';
+    _id: string;
+    email: string;
+    username: string;
+    account: string;
+    avatar?: string | null;
+    followers: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    following: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+  };
+};
 
 export type PostFragment = {
   __typename?: 'Post';
@@ -800,12 +989,159 @@ export type CreateCommentMutation = {
 };
 
 export type DeleteCommentMutationVariables = Exact<{
-  commentId: Scalars['String'];
+  commentId: Scalars['ID'];
 }>;
 
 export type DeleteCommentMutation = {
   __typename?: 'Mutation';
   deleteComment: {
+    __typename?: 'BaseResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+  };
+};
+
+export type CreateConversationMutationVariables = Exact<{
+  receiverId: Scalars['String'];
+}>;
+
+export type CreateConversationMutation = {
+  __typename?: 'Mutation';
+  createConversation: {
+    __typename?: 'ConversationMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    conversation?: {
+      __typename?: 'Conversation';
+      _id: string;
+      createdAt: any;
+      creators: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+      }>;
+      members: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+      }>;
+      lastMessage?: {
+        __typename?: 'Message';
+        _id: string;
+        text: string;
+        createdAt: any;
+        user: { __typename?: 'User'; _id: string; email: string; username: string };
+      } | null;
+    } | null;
+  };
+};
+
+export type DeleteChatMutationVariables = Exact<{
+  conversationId: Scalars['String'];
+}>;
+
+export type DeleteChatMutation = {
+  __typename?: 'Mutation';
+  deleteChat: {
+    __typename?: 'BaseResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+  };
+};
+
+export type CreateMessageMutationVariables = Exact<{
+  createMessageInput: CreateMessageInput;
+}>;
+
+export type CreateMessageMutation = {
+  __typename?: 'Mutation';
+  createMessage: {
+    __typename?: 'MessageMutationResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    newMessage?: {
+      __typename?: 'Message';
+      _id: string;
+      conversationId: string;
+      text: string;
+      createdAt: any;
+      user: {
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+      };
+    } | null;
+  };
+};
+
+export type DeleteMessageMutationVariables = Exact<{
+  messageId: Scalars['ID'];
+}>;
+
+export type DeleteMessageMutation = {
+  __typename?: 'Mutation';
+  deleteMessage: {
     __typename?: 'BaseResponse';
     code: number;
     success: boolean;
@@ -1138,6 +1474,131 @@ export type ReactCommentMutation = {
   };
 };
 
+export type GetConversationsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetConversationsQuery = {
+  __typename?: 'Query';
+  getConversations: {
+    __typename?: 'PaginatedConversationsResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    cursor?: string | null;
+    hasMore?: boolean | null;
+    conversations?: Array<{
+      __typename?: 'Conversation';
+      _id: string;
+      createdAt: any;
+      creators: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+      }>;
+      members: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+      }>;
+      lastMessage?: {
+        __typename?: 'Message';
+        _id: string;
+        text: string;
+        createdAt: any;
+        user: { __typename?: 'User'; _id: string; email: string; username: string };
+      } | null;
+    }> | null;
+  };
+};
+
+export type GetMessagesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  conversationId: Scalars['ID'];
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetMessagesQuery = {
+  __typename?: 'Query';
+  getMessages: {
+    __typename?: 'PaginatedMessagesResponse';
+    code: number;
+    success: boolean;
+    cursor?: string | null;
+    hasMore?: boolean | null;
+    messages?: Array<{
+      __typename?: 'Message';
+      _id: string;
+      conversationId: string;
+      text: string;
+      createdAt: any;
+      user: {
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+        followers: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+        following: Array<{
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        }>;
+      };
+    }> | null;
+  };
+};
+
 export type GetPostsQueryVariables = Exact<{
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
@@ -1247,6 +1708,41 @@ export const CommentMutationResponseFragmentDoc = gql`
     }
   }
   ${CommentFragmentDoc}
+`;
+export const ConversationFragmentDoc = gql`
+  fragment conversation on Conversation {
+    _id
+    creators {
+      ...user
+    }
+    members {
+      ...user
+    }
+    lastMessage {
+      _id
+      text
+      createdAt
+      user {
+        _id
+        email
+        username
+      }
+    }
+    createdAt
+  }
+  ${UserFragmentDoc}
+`;
+export const MessageFragmentDoc = gql`
+  fragment message on Message {
+    _id
+    conversationId
+    text
+    createdAt
+    user {
+      ...user
+    }
+  }
+  ${UserFragmentDoc}
 `;
 export const PostFragmentDoc = gql`
   fragment post on Post {
@@ -1619,7 +2115,7 @@ export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<
   CreateCommentMutationVariables
 >;
 export const DeleteCommentDocument = gql`
-  mutation DeleteComment($commentId: String!) {
+  mutation DeleteComment($commentId: ID!) {
     deleteComment(commentId: $commentId) {
       code
       success
@@ -1663,6 +2159,201 @@ export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMut
 export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<
   DeleteCommentMutation,
   DeleteCommentMutationVariables
+>;
+export const CreateConversationDocument = gql`
+  mutation CreateConversation($receiverId: String!) {
+    createConversation(receiverId: $receiverId) {
+      code
+      success
+      message
+      conversation {
+        ...conversation
+      }
+    }
+  }
+  ${ConversationFragmentDoc}
+`;
+export type CreateConversationMutationFn = Apollo.MutationFunction<
+  CreateConversationMutation,
+  CreateConversationMutationVariables
+>;
+
+/**
+ * __useCreateConversationMutation__
+ *
+ * To run a mutation, you first call `useCreateConversationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateConversationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createConversationMutation, { data, loading, error }] = useCreateConversationMutation({
+ *   variables: {
+ *      receiverId: // value for 'receiverId'
+ *   },
+ * });
+ */
+export function useCreateConversationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateConversationMutation,
+    CreateConversationMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateConversationMutation, CreateConversationMutationVariables>(
+    CreateConversationDocument,
+    options,
+  );
+}
+export type CreateConversationMutationHookResult = ReturnType<typeof useCreateConversationMutation>;
+export type CreateConversationMutationResult = Apollo.MutationResult<CreateConversationMutation>;
+export type CreateConversationMutationOptions = Apollo.BaseMutationOptions<
+  CreateConversationMutation,
+  CreateConversationMutationVariables
+>;
+export const DeleteChatDocument = gql`
+  mutation DeleteChat($conversationId: String!) {
+    deleteChat(conversationId: $conversationId) {
+      code
+      success
+      message
+    }
+  }
+`;
+export type DeleteChatMutationFn = Apollo.MutationFunction<
+  DeleteChatMutation,
+  DeleteChatMutationVariables
+>;
+
+/**
+ * __useDeleteChatMutation__
+ *
+ * To run a mutation, you first call `useDeleteChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteChatMutation, { data, loading, error }] = useDeleteChatMutation({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useDeleteChatMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteChatMutation, DeleteChatMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteChatMutation, DeleteChatMutationVariables>(
+    DeleteChatDocument,
+    options,
+  );
+}
+export type DeleteChatMutationHookResult = ReturnType<typeof useDeleteChatMutation>;
+export type DeleteChatMutationResult = Apollo.MutationResult<DeleteChatMutation>;
+export type DeleteChatMutationOptions = Apollo.BaseMutationOptions<
+  DeleteChatMutation,
+  DeleteChatMutationVariables
+>;
+export const CreateMessageDocument = gql`
+  mutation CreateMessage($createMessageInput: CreateMessageInput!) {
+    createMessage(createMessageInput: $createMessageInput) {
+      code
+      success
+      message
+      newMessage {
+        ...message
+      }
+    }
+  }
+  ${MessageFragmentDoc}
+`;
+export type CreateMessageMutationFn = Apollo.MutationFunction<
+  CreateMessageMutation,
+  CreateMessageMutationVariables
+>;
+
+/**
+ * __useCreateMessageMutation__
+ *
+ * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
+ *   variables: {
+ *      createMessageInput: // value for 'createMessageInput'
+ *   },
+ * });
+ */
+export function useCreateMessageMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateMessageMutation, CreateMessageMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateMessageMutation, CreateMessageMutationVariables>(
+    CreateMessageDocument,
+    options,
+  );
+}
+export type CreateMessageMutationHookResult = ReturnType<typeof useCreateMessageMutation>;
+export type CreateMessageMutationResult = Apollo.MutationResult<CreateMessageMutation>;
+export type CreateMessageMutationOptions = Apollo.BaseMutationOptions<
+  CreateMessageMutation,
+  CreateMessageMutationVariables
+>;
+export const DeleteMessageDocument = gql`
+  mutation DeleteMessage($messageId: ID!) {
+    deleteMessage(messageId: $messageId) {
+      code
+      success
+      message
+    }
+  }
+`;
+export type DeleteMessageMutationFn = Apollo.MutationFunction<
+  DeleteMessageMutation,
+  DeleteMessageMutationVariables
+>;
+
+/**
+ * __useDeleteMessageMutation__
+ *
+ * To run a mutation, you first call `useDeleteMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMessageMutation, { data, loading, error }] = useDeleteMessageMutation({
+ *   variables: {
+ *      messageId: // value for 'messageId'
+ *   },
+ * });
+ */
+export function useDeleteMessageMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteMessageMutation, DeleteMessageMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteMessageMutation, DeleteMessageMutationVariables>(
+    DeleteMessageDocument,
+    options,
+  );
+}
+export type DeleteMessageMutationHookResult = ReturnType<typeof useDeleteMessageMutation>;
+export type DeleteMessageMutationResult = Apollo.MutationResult<DeleteMessageMutation>;
+export type DeleteMessageMutationOptions = Apollo.BaseMutationOptions<
+  DeleteMessageMutation,
+  DeleteMessageMutationVariables
 >;
 export const CreatePostDocument = gql`
   mutation CreatePost($createPostInput: CreatePostInput!) {
@@ -2096,6 +2787,117 @@ export type ReactCommentMutationResult = Apollo.MutationResult<ReactCommentMutat
 export type ReactCommentMutationOptions = Apollo.BaseMutationOptions<
   ReactCommentMutation,
   ReactCommentMutationVariables
+>;
+export const GetConversationsDocument = gql`
+  query GetConversations($limit: Int!, $cursor: String) {
+    getConversations(limit: $limit, cursor: $cursor) {
+      code
+      success
+      message
+      cursor
+      hasMore
+      conversations {
+        ...conversation
+      }
+    }
+  }
+  ${ConversationFragmentDoc}
+`;
+
+/**
+ * __useGetConversationsQuery__
+ *
+ * To run a query within a React component, call `useGetConversationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetConversationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetConversationsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useGetConversationsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetConversationsQuery, GetConversationsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetConversationsQuery, GetConversationsQueryVariables>(
+    GetConversationsDocument,
+    options,
+  );
+}
+export function useGetConversationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetConversationsQuery, GetConversationsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetConversationsQuery, GetConversationsQueryVariables>(
+    GetConversationsDocument,
+    options,
+  );
+}
+export type GetConversationsQueryHookResult = ReturnType<typeof useGetConversationsQuery>;
+export type GetConversationsLazyQueryHookResult = ReturnType<typeof useGetConversationsLazyQuery>;
+export type GetConversationsQueryResult = Apollo.QueryResult<
+  GetConversationsQuery,
+  GetConversationsQueryVariables
+>;
+export const GetMessagesDocument = gql`
+  query GetMessages($limit: Int!, $conversationId: ID!, $cursor: String) {
+    getMessages(limit: $limit, conversationId: $conversationId, cursor: $cursor) {
+      code
+      success
+      cursor
+      hasMore
+      messages {
+        ...message
+      }
+    }
+  }
+  ${MessageFragmentDoc}
+`;
+
+/**
+ * __useGetMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessagesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      conversationId: // value for 'conversationId'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useGetMessagesQuery(
+  baseOptions: Apollo.QueryHookOptions<GetMessagesQuery, GetMessagesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetMessagesQuery, GetMessagesQueryVariables>(GetMessagesDocument, options);
+}
+export function useGetMessagesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetMessagesQuery, GetMessagesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetMessagesQuery, GetMessagesQueryVariables>(
+    GetMessagesDocument,
+    options,
+  );
+}
+export type GetMessagesQueryHookResult = ReturnType<typeof useGetMessagesQuery>;
+export type GetMessagesLazyQueryHookResult = ReturnType<typeof useGetMessagesLazyQuery>;
+export type GetMessagesQueryResult = Apollo.QueryResult<
+  GetMessagesQuery,
+  GetMessagesQueryVariables
 >;
 export const GetPostsDocument = gql`
   query GetPosts($cursor: String, $limit: Int!) {

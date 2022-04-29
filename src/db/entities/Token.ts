@@ -2,7 +2,7 @@ import { prop } from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 
 export class Token {
-  _id!: mongoose.Types.ObjectId;
+  readonly _id!: mongoose.Types.ObjectId;
 
   @prop({ type: String, required: true, unique: true })
   userId!: string;

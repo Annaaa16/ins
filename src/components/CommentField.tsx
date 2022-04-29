@@ -2,6 +2,8 @@ import { Dispatch, FormEvent, SetStateAction } from 'react';
 
 import clsx from 'clsx';
 
+import { isEmptyInput } from '~/helpers/string';
+
 import IconEmoji from './Icon/IconEmoji';
 
 interface CommentFieldProps {
@@ -31,7 +33,11 @@ const CommentField = ({ className, caption, onSetCaption, onSubmit }: CommentFie
         placeholder='Add a comment...'
       />
       <button
-        className={clsx('btn ml-auto text-sm', 'text-primary', !caption.trim() && 'btn--disabled')}
+        className={clsx(
+          'btn ml-auto text-sm',
+          'text-primary',
+          isEmptyInput(caption) && 'btn--disabled',
+        )}
       >
         Post
       </button>

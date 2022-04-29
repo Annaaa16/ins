@@ -37,4 +37,5 @@ yarn-error.log*
 # others
 .vscode
 .env
+*.txt
 README.md

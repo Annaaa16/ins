@@ -1,5 +1,5 @@
-export const isEmptyInput = (str?: string) => {
-  if (str == null) return false;
+export const isEmptyInput = (str: string | undefined) => {
+  if (str == null) return true;
 
-  return !str.trim();
+  return str.trim() === '';
 };

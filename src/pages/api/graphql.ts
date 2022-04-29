@@ -9,8 +9,10 @@ import { Context } from '~/db/types/context';
 import AuthResolver from '~/db/resolvers/auth';
 import PostResolver from '~/db/resolvers/post';
 import CommentResolver from '~/db/resolvers/comment';
-import connectToDb from '~/db/connectToDb';
 import UserResolver from '~/db/resolvers/user';
+import ConversationResolver from '~/db/resolvers/conversation';
+import connectToDb from '~/db/connectToDb';
+import MessageResolver from '~/db/resolvers/message';
 
 connectToDb();
 
@@ -21,7 +23,14 @@ const cors = Cors({
 
 const server = new ApolloServer({
   schema: await buildSchema({
-    resolvers: [AuthResolver, UserResolver, PostResolver, CommentResolver],
+    resolvers: [
+      AuthResolver,
+      UserResolver,
+      PostResolver,
+      CommentResolver,
+      ConversationResolver,
+      MessageResolver,
+    ],
   }),
   context: ({ req, res }): Context => ({ req, res }),
 });
