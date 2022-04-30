@@ -13,7 +13,7 @@ export const usePost = (post: PostFragment) => {
   const isLiked = post.reactions.some((reaction) => reaction._id === currentUser?._id);
 
   const reactPost = () => {
-    if (typeof isLiked === 'undefined' || !currentUser) return;
+    if (typeof isLiked === 'undefined' || currentUser == null) return;
 
     const reactionType = isLiked ? ReactionType.Unlike : ReactionType.Like;
 
