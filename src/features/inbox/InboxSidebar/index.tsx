@@ -35,10 +35,10 @@ const InboxSidebar = () => {
 
       const data = response.data?.getConversations;
 
-      if (data?.success)
+      if (data?.success && data.conversations)
         dispatch(
           conversationActions.addFetchedConversations({
-            conversations: data.conversations!,
+            conversations: data.conversations,
             hasMore: !!data.hasMore,
             cursor: data.cursor ?? null,
           }),
@@ -50,7 +50,7 @@ const InboxSidebar = () => {
     <>
       <div className={clsx('relative', 'flex-shrink-0 h-header-h border-b border-line')}>
         <div className='flex-center h-full w-full font-medium text-sm lg:text-base'>
-          minhhunghuynh1106
+          {currentUser!.username}
         </div>
         <IconNewMessage className={clsx('abs-center-y right-5', 'cursor-pointer')} />
       </div>

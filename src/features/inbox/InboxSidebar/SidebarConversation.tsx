@@ -1,6 +1,11 @@
 import clsx from 'clsx';
 
-import { ConversationFragment, UserFragment } from '~/types/generated';
+import { LIMITS } from '~/constants';
+import { ConversationFragment, useGetMessagesLazyQuery, UserFragment } from '~/types/generated';
+import { useConversationSelector } from '~/redux/selectors';
+import { useStoreDispatch } from '~/redux/store';
+import { useSocketContext } from '~/contexts/SocketContext';
+import { conversationActions } from '~/redux/slices/conversationSlice';
 
 import Skeleton from '~/components/Skeleton';
 
@@ -12,14 +17,60 @@ interface SidebarConversationProps {
 }
 
 const SidebarConversation = ({ conversation, currentUser }: SidebarConversationProps) => {
+  const { conversationHandler } = useSocketContext();
+  const { selectedConversation, messages } = useConversationSelector();
+
+  const [getMessages] = useGetMessagesLazyQuery();
+  const dispatch = useStoreDispatch();
+
   if (currentUser == null) return null;
 
-  const { _id: _conversationId, members, lastMessage } = conversation;
+  const { _id: conversationId, members, lastMessage } = conversation;
 
   const receiver = members.filter((member) => member._id !== currentUser._id)[0];
 
+  const handleSelectConversation = async () => {
+    // Prevent click on same conversation
+    if (selectedConversation?._id === conversationId) return;
+
+    dispatch(conversationActions.setSelectedConversation(conversation));
+
+    conversationHandler.joinConversation(conversationId);
+
+    const hasMessagesCache =
+      messages[conversationId] != null && messages[conversationId]!.data.length > 0;
+
+    if (hasMessagesCache) return;
+
+    const response = await getMessages({
+      variables: {
+        conversationId,
+        cursor: null,
+        limit: LIMITS.MESSAGES,
+      },
+    });
+
+    const data = response.data?.getMessages;
+
+    if (data?.success && data.messages)
+      dispatch(
+        conversationActions.addFetchedMessages({
+          conversationId,
+          messages: data.messages,
+          cursor: data.cursor ?? null,
+          hasMore: !!data.hasMore,
+        }),
+      );
+  };
+
   return (
-    <div className={clsx('flex items-center px-4 py-2.5', 'bg-gray-100')}>
+    <div
+      onClick={handleSelectConversation}
+      className={clsx(
+        'flex items-center px-4 py-2.5',
+        selectedConversation?._id === conversation._id && 'bg-gray-100',
+      )}
+    >
       <Skeleton
         className='mr-3 w-12 h-12'
         objectFit='cover'

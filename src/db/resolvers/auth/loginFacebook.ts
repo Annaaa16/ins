@@ -4,7 +4,7 @@ import axios from 'axios';
 // types
 import type { Context } from '~/db/types/context';
 import { FacebookLoginResponse } from '~/types/auth';
-import { UserMutationResponse } from '~/db/types/responses';
+import { UserMutationResponse } from '~/db/types/responses/user';
 
 // models
 import { User } from '~/db/models';

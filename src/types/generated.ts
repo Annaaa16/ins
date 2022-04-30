@@ -63,7 +63,6 @@ export type ConversationMutationResponse = {
 };
 
 export type CreateMessageInput = {
-  conversationId: Scalars['String'];
   text: Scalars['String'];
 };
 
@@ -165,6 +164,7 @@ export type MutationCreateConversationArgs = {
 };
 
 export type MutationCreateMessageArgs = {
+  conversationId: Scalars['ID'];
   createMessageInput: CreateMessageInput;
 };
 
@@ -1092,6 +1092,7 @@ export type DeleteChatMutation = {
 
 export type CreateMessageMutationVariables = Exact<{
   createMessageInput: CreateMessageInput;
+  conversationId: Scalars['ID'];
 }>;
 
 export type CreateMessageMutation = {
@@ -2260,8 +2261,8 @@ export type DeleteChatMutationOptions = Apollo.BaseMutationOptions<
   DeleteChatMutationVariables
 >;
 export const CreateMessageDocument = gql`
-  mutation CreateMessage($createMessageInput: CreateMessageInput!) {
-    createMessage(createMessageInput: $createMessageInput) {
+  mutation CreateMessage($createMessageInput: CreateMessageInput!, $conversationId: ID!) {
+    createMessage(createMessageInput: $createMessageInput, conversationId: $conversationId) {
       code
       success
       message
@@ -2291,6 +2292,7 @@ export type CreateMessageMutationFn = Apollo.MutationFunction<
  * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
  *   variables: {
  *      createMessageInput: // value for 'createMessageInput'
+ *      conversationId: // value for 'conversationId'
  *   },
  * });
  */

@@ -4,7 +4,4 @@ import { Field, InputType } from 'type-graphql';
 export class CreateMessageInput {
   @Field()
   text!: string;
-
-  @Field()
-  conversationId!: string;
 }

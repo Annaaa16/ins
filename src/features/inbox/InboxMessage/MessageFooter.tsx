@@ -1,9 +1,15 @@
 import { FormEvent, useState } from 'react';
 
+import { nanoid } from 'nanoid';
 import clsx from 'clsx';
 
+import { useStoreDispatch } from '~/redux/store';
 import { useAutoFocus } from '~/hooks';
-// import { useSocketContext } from '~/contexts/SocketContext';
+import { useCreateMessageMutation } from '~/types/generated';
+import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
+import { useSocketContext } from '~/contexts/SocketContext';
+import { conversationActions } from '~/redux/slices/conversationSlice';
+import { getCurrentTime } from '~/helpers/time';
 
 import IconEmoji from '~/components/Icon/IconEmoji';
 import IconHeart from '~/components/Icon/IconHeart';
@@ -12,14 +18,56 @@ import IconPhoto from '~/components/Icon/IconPhoto';
 const MessageFooter = () => {
   const [message, setMessage] = useState<string>('');
 
-  // const { sendMessage } = useSocketContext();
+  const { conversationHandler } = useSocketContext();
+  const { selectedConversation } = useConversationSelector();
+  const { currentUser } = useAuthSelector();
 
+  const [createMessage] = useCreateMessageMutation();
   const { focusRef } = useAutoFocus();
+  const dispatch = useStoreDispatch();
 
-  const handleSendMessage = (e: FormEvent<HTMLFormElement>) => {
+  const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // sendMessage(message);
+    const fakeMessage = {
+      _id: nanoid(12), // fake id to send to socket before receive real message
+      text: message,
+      conversationId: selectedConversation!._id,
+      createdAt: getCurrentTime(),
+    };
+
+    conversationHandler.sendMessage({
+      ...fakeMessage,
+      userId: currentUser!._id,
+    });
+
+    dispatch(
+      conversationActions.addFakeMessage({
+        ...fakeMessage,
+        user: currentUser!,
+      }),
+    );
+
+    setMessage('');
+
+    const response = await createMessage({
+      variables: {
+        conversationId: selectedConversation!._id,
+        createMessageInput: {
+          text: message,
+        },
+      },
+    });
+
+    const data = response.data?.createMessage;
+
+    if (data?.success && data.newMessage)
+      dispatch(
+        conversationActions.updateRealMessage({
+          fakeMessageId: fakeMessage._id,
+          message: data.newMessage,
+        }),
+      );
   };
 
   return (

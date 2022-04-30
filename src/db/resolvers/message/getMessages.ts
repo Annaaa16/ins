@@ -32,7 +32,7 @@ const getMessages = (Base: ClassType) => {
         const messages = await Message.find(filterQuery)
           .limit(limit)
           .sort([sort])
-          .populate('user')
+          .populate({ path: 'user', populate: ['followers', 'following'] })
           .lean();
 
         const { cursor: nextCursor, hasMore } = await getNextCursor(messages);
@@ -40,7 +40,7 @@ const getMessages = (Base: ClassType) => {
         return {
           code: 200,
           success: true,
-          messages: messages,
+          messages,
           cursor: nextCursor,
           hasMore,
         };
