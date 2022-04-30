@@ -1,4 +1,4 @@
-import { Arg, ClassType, Ctx, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, ClassType, Ctx, ID, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
 import type { Context } from '~/db/types/context';
@@ -17,7 +17,8 @@ const createMessage = (Base: ClassType) => {
     @Mutation((_returns) => MessageMutationResponse)
     @UseMiddleware(verifyAuth)
     createMessage(
-      @Arg('createMessageInput') { conversationId, text }: CreateMessageInput,
+      @Arg('conversationId', (_type) => ID) conversationId: string,
+      @Arg('createMessageInput') { text }: CreateMessageInput,
       @Ctx() { req: { userId } }: Context,
     ): Promise<MessageMutationResponse> {
       return respond(async () => {
@@ -35,7 +36,7 @@ const createMessage = (Base: ClassType) => {
           conversationId,
           text,
         })
-          .then((res) => res.populate('user'))
+          .then((res) => res.populate({ path: 'user', populate: ['followers', 'following'] }))
           .then((res) => res.toObject());
 
         return {
