@@ -6,12 +6,13 @@ import Cors from 'micro-cors';
 // types
 import { Context } from '~/db/types/context';
 
+import connectToDb from '~/db/connectToDb';
+
 import AuthResolver from '~/db/resolvers/auth';
 import PostResolver from '~/db/resolvers/post';
 import CommentResolver from '~/db/resolvers/comment';
 import UserResolver from '~/db/resolvers/user';
 import ConversationResolver from '~/db/resolvers/conversation';
-import connectToDb from '~/db/connectToDb';
 import MessageResolver from '~/db/resolvers/message';
 
 connectToDb();
