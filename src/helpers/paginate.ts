@@ -30,7 +30,10 @@ const paginate = <T extends AnyParamConstructor<any>>(
       cursor = lastItem[sortField] > lastDoc[sortField] ? lastItem[sortField] : null;
     }
 
-    return { cursor, hasMore: lastDoc[sortField].toString() !== lastItem[sortField].toString() };
+    return {
+      cursor,
+      hasMore: JSON.stringify(lastDoc[sortField]) !== JSON.stringify(lastItem[sortField]),
+    };
   };
 
   return { filterQuery, sort, getNextCursor };
