@@ -3,4 +3,5 @@ export const LIMITS = {
   COMMENTS: 5,
   SEARCH_USER: 5,
   CONVERSATIONS: 10,
+  MESSAGES: 15,
 };
