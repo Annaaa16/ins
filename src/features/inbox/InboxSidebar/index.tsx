@@ -35,14 +35,15 @@ const InboxSidebar = () => {
 
       const data = response.data?.getConversations;
 
-      if (data?.success && data.conversations)
+      if (data?.success) {
         dispatch(
           conversationActions.addFetchedConversations({
-            conversations: data.conversations,
+            conversations: data.conversations!,
             hasMore: !!data.hasMore,
             cursor: data.cursor ?? null,
           }),
         );
+      }
     })();
   }, [isIntersecting, getConversations, dispatch]);
 
