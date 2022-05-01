@@ -12,6 +12,7 @@ import {
   ServerToClientEvents,
 } from '~/socket/types';
 
+// TODO: Use class instead function
 const socketHandler = (_req: NextApiRequest, res: NextApiResponseServerIO) => {
   if (!res.socket.server.io) {
     const httpServer = res.socket.server;
