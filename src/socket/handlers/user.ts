@@ -12,7 +12,9 @@ interface CurrentSockets {
 const onlineUsers: OnlineUsers = {};
 const currentSockets: CurrentSockets = {};
 
-const addOnlineUser = (userId: string, socketId: string) => {
+const addOnlineUser = (userId: string, socketId: string, socket: SocketIO) => {
+  socket.broadcast.emit('receiveOnlineUserId', userId);
+
   if (onlineUsers[userId] != null) return;
 
   onlineUsers[userId] = { userId, socketId };
@@ -24,7 +26,7 @@ const addCurrentSocket = (userId: string, socketId: string) => {
   else currentSockets[userId].push(socketId);
 };
 
-const handleDisconnect = (userId: string, socketId: string) => {
+const handleDisconnect = (userId: string, socketId: string, socket: SocketIO) => {
   if (currentSockets[userId] == null) return;
 
   currentSockets[userId].splice(currentSockets[userId].indexOf(socketId), 1);
@@ -32,20 +34,35 @@ const handleDisconnect = (userId: string, socketId: string) => {
   if (currentSockets[userId].length === 0) {
     delete currentSockets[userId];
     delete onlineUsers[userId];
+
+    socket.broadcast.emit('receiveOfflineUserId', userId);
   }
 };
 
-const userHandler = (_io: ServerIO, socket: SocketIO) => {
+const getOnlineUserIds = (userId: string) => {
+  const userIds = Object.keys(onlineUsers);
+
+  userIds.splice(userIds.indexOf(userId), 1);
+
+  return userIds;
+};
+
+const userHandler = async (_io: ServerIO, socket: SocketIO) => {
   const userId = socket.handshake.query.userId as string;
   const socketId = socket.id;
 
+  // Current user connected
+  socket.on('getOnlineUserIds', () => {
+    socket.emit('receiveOnlineUserIds', getOnlineUserIds(userId));
+  });
+
   socket.on('addOnlineUser', () => {
     addCurrentSocket(userId, socketId);
-    addOnlineUser(userId, socketId);
+    addOnlineUser(userId, socketId, socket);
   });
 
   socket.on('disconnect', () => {
-    handleDisconnect(userId, socketId);
+    handleDisconnect(userId, socketId, socket);
 
     socket.disconnect();
   });

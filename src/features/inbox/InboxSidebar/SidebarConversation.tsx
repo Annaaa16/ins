@@ -1,7 +1,10 @@
 import clsx from 'clsx';
 
+// types
+import { ConversationWithOnlineStatus } from '~/redux/types/conversation';
+
 import { LIMITS } from '~/constants';
-import { ConversationFragment, useGetMessagesLazyQuery, UserFragment } from '~/types/generated';
+import { useGetMessagesLazyQuery, UserFragment } from '~/types/generated';
 import { useConversationSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
 import { useSocketContext } from '~/contexts/SocketContext';
@@ -13,7 +16,7 @@ import avatar from '~/assets/avatar.png';
 
 interface SidebarConversationProps {
   currentUser: UserFragment | null;
-  conversation: ConversationFragment;
+  conversation: ConversationWithOnlineStatus;
 }
 
 const SidebarConversation = ({ conversation, currentUser }: SidebarConversationProps) => {
@@ -52,11 +55,11 @@ const SidebarConversation = ({ conversation, currentUser }: SidebarConversationP
 
     const data = response.data?.getMessages;
 
-    if (data?.success && data.messages)
+    if (data?.success)
       dispatch(
         conversationActions.addFetchedMessages({
           conversationId,
-          messages: data.messages,
+          messages: data.messages!,
           cursor: data.cursor ?? null,
           hasMore: !!data.hasMore,
         }),
@@ -75,6 +78,7 @@ const SidebarConversation = ({ conversation, currentUser }: SidebarConversationP
         className='mr-3 w-12 h-12'
         objectFit='cover'
         rounded
+        online={receiver.isOnline}
         src={receiver.avatar ?? avatar.src}
       />
       <div className='min-w-0 text-sm-1 lg:text-sm'>

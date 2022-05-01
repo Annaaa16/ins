@@ -22,16 +22,21 @@ export interface Message {
   userId: string;
   text: string;
   conversationId: string;
+  createdAt: string;
 }
 
 export interface ServerToClientEvents {
   receiveMessage: (response: Message) => void;
+  receiveOnlineUserId: (userId: string) => void;
+  receiveOfflineUserId: (userId: string) => void;
+  receiveOnlineUserIds: (userIds: string[]) => void;
 }
 
 export interface ClientToServerEvents {
   addOnlineUser: () => void;
   sendMessage: (payload: Message) => void;
   joinConversation: (conversationId: string) => void;
+  getOnlineUserIds: () => void;
 }
 
 export type ServerIO = Server<ClientToServerEvents, ServerToClientEvents>;

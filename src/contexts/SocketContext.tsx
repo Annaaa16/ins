@@ -1,4 +1,5 @@
 import { ReactNode, createContext, useEffect, useContext, useState, useMemo } from 'react';
+import { useRouter } from 'next/router';
 
 import { io } from 'socket.io-client';
 
@@ -32,6 +33,7 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
 
   const { currentUser } = useAuthSelector();
 
+  const router = useRouter();
   const dispatch = useStoreDispatch();
 
   const userId = currentUser?._id;
@@ -75,8 +77,26 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
   useEffect(() => {
     if (socket == null) return;
 
+    socket.emit('getOnlineUserIds');
+  }, [socket, router.pathname]);
+
+  useEffect(() => {
+    if (socket == null) return;
+
     socket.on('receiveMessage', (message) => {
       dispatch(conversationActions.addIncomingSocketMessage(message));
+    });
+
+    socket.on('receiveOnlineUserId', (userId) => {
+      dispatch(conversationActions.setOnlineStatus({ userId }));
+    });
+
+    socket.on('receiveOfflineUserId', (userId) => {
+      dispatch(conversationActions.seOfflineStatus({ userId }));
+    });
+
+    socket.on('receiveOnlineUserIds', (userIds) => {
+      dispatch(conversationActions.initOnlineStatus({ userIds }));
     });
 
     return () => {

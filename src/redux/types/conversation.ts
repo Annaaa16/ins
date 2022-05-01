@@ -1,5 +1,9 @@
 import { ConversationFragment, MessageFragment } from '~/types/generated';
 
+export interface ConversationWithOnlineStatus extends ConversationFragment {
+  members: Array<ConversationFragment['creators'][0] & { isOnline?: boolean }>;
+}
+
 export interface ConversationSliceState {
   messages: {
     [conversationId: string]: {
@@ -8,14 +12,15 @@ export interface ConversationSliceState {
       hasMore: boolean;
     } | null;
   };
-  conversations: ConversationFragment[];
-  selectedConversation: ConversationFragment | null;
+  conversations: ConversationWithOnlineStatus[];
+  selectedConversation: ConversationWithOnlineStatus | null;
   cursor: string | null;
   hasMore: boolean;
+  onlineUserIds: string[];
 }
 
 export interface AddFetchedConversationsReducer {
-  conversations: ConversationFragment[];
+  conversations: ConversationWithOnlineStatus[];
   cursor: string | null;
   hasMore: boolean;
 }
