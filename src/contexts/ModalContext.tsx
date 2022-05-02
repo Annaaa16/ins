@@ -10,6 +10,7 @@ import ModalPostActions from '~/components/Modal/ModalPostActions';
 import ModalPostCreator from '~/components/Modal/ModalPostCreator';
 import ModalPostDetail from '~/components/Modal/ModalPostDetail';
 import ModalCommentActions from '~/components/Modal/ModalCommentActions';
+import ModalNewMessage from '~/components/Modal/ModalNewMessage';
 
 interface ModalInitState {
   showModal: (modalType: ModalType, callback?: Callback) => void;
@@ -27,6 +28,7 @@ export const MODAL_TYPES = {
   POST_DETAIL: 'POST_DETAIL',
   POST_ACTIONS: 'POST_ACTIONS',
   COMMENT_ACTIONS: 'COMMENT_ACTIONS',
+  NEW_MESSAGE: 'NEW_MESSAGE',
 } as const;
 
 const MODALS = {
@@ -34,6 +36,7 @@ const MODALS = {
   [MODAL_TYPES.POST_DETAIL]: <ModalPostDetail key={MODAL_TYPES.POST_DETAIL} />,
   [MODAL_TYPES.POST_ACTIONS]: <ModalPostActions key={MODAL_TYPES.POST_ACTIONS} />,
   [MODAL_TYPES.COMMENT_ACTIONS]: <ModalCommentActions key={MODAL_TYPES.COMMENT_ACTIONS} />,
+  [MODAL_TYPES.NEW_MESSAGE]: <ModalNewMessage key={MODAL_TYPES.NEW_MESSAGE} />,
 } as const;
 
 const ModalContext = createContext<ModalInitState>({
