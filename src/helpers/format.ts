@@ -3,5 +3,5 @@ export const displayLikeCounts = (items: any[], displayed: string) => {
 };
 
 export const getNameInMail = (mail?: string) => {
-  return mail?.split('@')[0] ?? 'name';
+  return mail == null ? 'John Smith' : mail.split('@')[0];
 };
