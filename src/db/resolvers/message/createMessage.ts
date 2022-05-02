@@ -31,6 +31,14 @@ const createMessage = (Base: ClassType) => {
             message: 'Conversation not found',
           };
 
+        existingConversation.members.forEach(async (memberId) => {
+          if (!existingConversation.creators.includes(memberId))
+            await Conversation.updateOne(
+              { _id: conversationId },
+              { $push: { creators: memberId } },
+            );
+        });
+
         const newMessage = await Message.create({
           user: userId,
           conversationId,

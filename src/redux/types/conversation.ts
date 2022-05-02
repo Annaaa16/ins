@@ -1,4 +1,11 @@
+// types
+import { UserWithOnlineStatus } from './shared';
+
 import { ConversationFragment, MessageFragment } from '~/types/generated';
+
+export interface ConversationWithOnlineStatus extends ConversationFragment {
+  members: UserWithOnlineStatus[];
+}
 
 export interface ConversationSliceState {
   messages: {
@@ -8,16 +15,17 @@ export interface ConversationSliceState {
       hasMore: boolean;
     } | null;
   };
-  conversations: ConversationFragment[];
-  selectedConversation: ConversationFragment | null;
+  conversations: ConversationWithOnlineStatus[];
+  selectedConversation: ConversationWithOnlineStatus | null;
   cursor: string | null;
   hasMore: boolean;
+  onlineUserIds: string[];
 }
 
 export interface AddFetchedConversationsReducer {
-  conversations: ConversationFragment[];
-  cursor: string | null;
-  hasMore: boolean;
+  conversations: ConversationWithOnlineStatus[];
+  cursor?: string | null;
+  hasMore?: boolean;
 }
 
 export interface AddFetchedMessagesReducer {

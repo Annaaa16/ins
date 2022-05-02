@@ -16,7 +16,7 @@ import avatar from '~/assets/avatar.png';
 import SpinnerLogo from '../Spinner/SpinnerLogo';
 
 const HeaderMiddle = () => {
-  const [searchedUser, setSearchedUser] = useState<UserFragment[]>([]);
+  const [searchedUsers, setSearchedUsers] = useState<UserFragment[]>([]);
   const [isOpenSearchList, setIsOpenSearchList] = useState<boolean>(false);
 
   const searchListRef = useRef<HTMLUListElement>(null);
@@ -36,14 +36,14 @@ const HeaderMiddle = () => {
 
     const data = response.data?.searchUser;
 
-    if (data?.success && data.users) setSearchedUser(data.users);
+    if (data?.success) setSearchedUsers(data.users!);
   };
 
-  const handleInputChange = handleDebounce(handleSearchUser, () => setSearchedUser([]));
+  const handleInputChange = handleDebounce(handleSearchUser, () => setSearchedUsers([]));
 
   useClickOutside(searchListRef, () => {
     setIsOpenSearchList(false);
-    setSearchedUser([]);
+    setSearchedUsers([]);
   });
 
   return (
@@ -69,13 +69,13 @@ const HeaderMiddle = () => {
             'bg-white',
           )}
         >
-          {debouncing && searchedUser.length === 0 ? (
+          {debouncing && searchedUsers.length === 0 ? (
             <div className='flex-center h-full'>
               <SpinnerLogo className='w-14 h-14' />
             </div>
           ) : (
             <ul ref={searchListRef} className='w-full h-full'>
-              {searchedUser.map((user) => (
+              {searchedUsers.map((user) => (
                 <li
                   key={user._id}
                   className={clsx(

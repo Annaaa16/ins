@@ -91,6 +91,15 @@ export type ForgotPasswordResponse = {
   success: Scalars['Boolean'];
 };
 
+export type GetConversationByIdResponse = {
+  __typename?: 'GetConversationByIdResponse';
+  code: Scalars['Float'];
+  conversation?: Maybe<Conversation>;
+  errors?: Maybe<Array<FieldError>>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 export type GetSessionResponse = {
   __typename?: 'GetSessionResponse';
   accessToken?: Maybe<Scalars['String']>;
@@ -302,6 +311,7 @@ export type PostMutationResponse = {
 export type Query = {
   __typename?: 'Query';
   getComments: PaginatedCommentsResponse;
+  getConversationById: GetConversationByIdResponse;
   getConversations: PaginatedConversationsResponse;
   getMessages: PaginatedMessagesResponse;
   getPosts: PaginatedPostsResponse;
@@ -313,6 +323,10 @@ export type QueryGetCommentsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
   postId: Scalars['ID'];
+};
+
+export type QueryGetConversationByIdArgs = {
+  conversationId: Scalars['String'];
 };
 
 export type QueryGetConversationsArgs = {
@@ -478,22 +492,6 @@ export type ConversationFragment = {
     username: string;
     account: string;
     avatar?: string | null;
-    followers: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
-    following: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
   }>;
   members: Array<{
     __typename?: 'User';
@@ -502,29 +500,20 @@ export type ConversationFragment = {
     username: string;
     account: string;
     avatar?: string | null;
-    followers: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
-    following: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
   }>;
   lastMessage?: {
     __typename?: 'Message';
     _id: string;
     text: string;
     createdAt: any;
-    user: { __typename?: 'User'; _id: string; email: string; username: string };
+    user: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    };
   } | null;
 };
 
@@ -1024,22 +1013,6 @@ export type CreateConversationMutation = {
         username: string;
         account: string;
         avatar?: string | null;
-        followers: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
-        following: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
       }>;
       members: Array<{
         __typename?: 'User';
@@ -1048,29 +1021,20 @@ export type CreateConversationMutation = {
         username: string;
         account: string;
         avatar?: string | null;
-        followers: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
-        following: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
       }>;
       lastMessage?: {
         __typename?: 'Message';
         _id: string;
         text: string;
         createdAt: any;
-        user: { __typename?: 'User'; _id: string; email: string; username: string };
+        user: {
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        };
       } | null;
     } | null;
   };
@@ -1475,6 +1439,55 @@ export type ReactCommentMutation = {
   };
 };
 
+export type GetConversationByIdQueryVariables = Exact<{
+  conversationId: Scalars['String'];
+}>;
+
+export type GetConversationByIdQuery = {
+  __typename?: 'Query';
+  getConversationById: {
+    __typename?: 'GetConversationByIdResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    conversation?: {
+      __typename?: 'Conversation';
+      _id: string;
+      createdAt: any;
+      creators: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      members: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      lastMessage?: {
+        __typename?: 'Message';
+        _id: string;
+        text: string;
+        createdAt: any;
+        user: {
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        };
+      } | null;
+    } | null;
+  };
+};
+
 export type GetConversationsQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: InputMaybe<Scalars['String']>;
@@ -1500,22 +1513,6 @@ export type GetConversationsQuery = {
         username: string;
         account: string;
         avatar?: string | null;
-        followers: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
-        following: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
       }>;
       members: Array<{
         __typename?: 'User';
@@ -1524,29 +1521,20 @@ export type GetConversationsQuery = {
         username: string;
         account: string;
         avatar?: string | null;
-        followers: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
-        following: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
       }>;
       lastMessage?: {
         __typename?: 'Message';
         _id: string;
         text: string;
         createdAt: any;
-        user: { __typename?: 'User'; _id: string; email: string; username: string };
+        user: {
+          __typename?: 'User';
+          _id: string;
+          email: string;
+          username: string;
+          account: string;
+          avatar?: string | null;
+        };
       } | null;
     }> | null;
   };
@@ -1714,24 +1702,22 @@ export const ConversationFragmentDoc = gql`
   fragment conversation on Conversation {
     _id
     creators {
-      ...user
+      ...userField
     }
     members {
-      ...user
+      ...userField
     }
     lastMessage {
       _id
       text
       createdAt
       user {
-        _id
-        email
-        username
+        ...userField
       }
     }
     createdAt
   }
-  ${UserFragmentDoc}
+  ${UserFieldFragmentDoc}
 `;
 export const MessageFragmentDoc = gql`
   fragment message on Message {
@@ -2789,6 +2775,65 @@ export type ReactCommentMutationResult = Apollo.MutationResult<ReactCommentMutat
 export type ReactCommentMutationOptions = Apollo.BaseMutationOptions<
   ReactCommentMutation,
   ReactCommentMutationVariables
+>;
+export const GetConversationByIdDocument = gql`
+  query GetConversationById($conversationId: String!) {
+    getConversationById(conversationId: $conversationId) {
+      code
+      success
+      message
+      conversation {
+        ...conversation
+      }
+    }
+  }
+  ${ConversationFragmentDoc}
+`;
+
+/**
+ * __useGetConversationByIdQuery__
+ *
+ * To run a query within a React component, call `useGetConversationByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetConversationByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetConversationByIdQuery({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useGetConversationByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<GetConversationByIdQuery, GetConversationByIdQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetConversationByIdQuery, GetConversationByIdQueryVariables>(
+    GetConversationByIdDocument,
+    options,
+  );
+}
+export function useGetConversationByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetConversationByIdQuery,
+    GetConversationByIdQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetConversationByIdQuery, GetConversationByIdQueryVariables>(
+    GetConversationByIdDocument,
+    options,
+  );
+}
+export type GetConversationByIdQueryHookResult = ReturnType<typeof useGetConversationByIdQuery>;
+export type GetConversationByIdLazyQueryHookResult = ReturnType<
+  typeof useGetConversationByIdLazyQuery
+>;
+export type GetConversationByIdQueryResult = Apollo.QueryResult<
+  GetConversationByIdQuery,
+  GetConversationByIdQueryVariables
 >;
 export const GetConversationsDocument = gql`
   query GetConversations($limit: Int!, $cursor: String) {

@@ -8,6 +8,7 @@ import extender from '~/helpers/extender';
 // sub resolvers
 import createConversation from './createConversation';
 import deleteChat from './deleteChat';
+import getConversationById from './getConversationById';
 import getConversations from './getConversations';
 
 @Resolver((_of) => Conversation)
@@ -15,6 +16,7 @@ export default class ConversationResolver extends extender(
   createConversation,
   getConversations,
   deleteChat,
+  getConversationById,
 ) {
   @Query((_returns) => String)
   hello() {

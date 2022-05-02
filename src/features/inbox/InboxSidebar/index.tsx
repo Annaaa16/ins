@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import clsx from 'clsx';
 
 import { LIMITS } from '~/constants';
+import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import { useGetConversationsLazyQuery } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { conversationActions } from '~/redux/slices/conversationSlice';
@@ -16,6 +17,7 @@ const InboxSidebar = () => {
     rootMargin: '200px',
   });
 
+  const { showModal } = useModalContext();
   const { conversations } = useConversationSelector();
   const { currentUser } = useAuthSelector();
 
@@ -35,14 +37,15 @@ const InboxSidebar = () => {
 
       const data = response.data?.getConversations;
 
-      if (data?.success && data.conversations)
+      if (data?.success) {
         dispatch(
           conversationActions.addFetchedConversations({
-            conversations: data.conversations,
+            conversations: data.conversations!,
             hasMore: !!data.hasMore,
             cursor: data.cursor ?? null,
           }),
         );
+      }
     })();
   }, [isIntersecting, getConversations, dispatch]);
 
@@ -52,7 +55,10 @@ const InboxSidebar = () => {
         <div className='flex-center h-full w-full font-medium text-sm lg:text-base'>
           {currentUser!.username}
         </div>
-        <IconNewMessage className={clsx('abs-center-y right-5', 'cursor-pointer')} />
+        <IconNewMessage
+          onClick={() => showModal(MODAL_TYPES.NEW_MESSAGE)}
+          className={clsx('abs-center-y right-5', 'cursor-pointer')}
+        />
       </div>
 
       <div ref={containerObserverRef} className='overflow-y-auto'>

@@ -6,6 +6,7 @@ module.exports = {
     black: '#262626',
     gray: '#8e8e8e',
     red: '#db4437',
+    green: '#78de45',
   },
   modal: {
     DEFAULT: 'rgb(0 0 0 / 0.85)',

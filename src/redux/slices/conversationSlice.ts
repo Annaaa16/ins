@@ -7,6 +7,7 @@ import {
   ConversationSliceState,
   UpdateRealMessageReducer,
 } from '../types/conversation';
+import { UserWithOnlineStatus } from '../types/shared';
 import { SocketMessage } from '~/types/socket';
 
 import { ConversationFragment, MessageFragment } from '~/types/generated';
@@ -16,18 +17,54 @@ const initialState: ConversationSliceState = {
   messages: {},
   conversations: [],
   cursor: null,
-  hasMore: false,
+  hasMore: true,
   selectedConversation: null,
+  onlineUserIds: [],
 };
 
 const updateLastMessage = (
-  conversations: ConversationSliceState['conversations'],
+  state: ConversationSliceState,
   conversationId: string,
   lastMessage: ConversationFragment['lastMessage'],
 ) => {
-  conversations.forEach((conversation) => {
+  state.conversations.forEach((conversation) => {
     // TODO: Filter unneeded fields of lastMessage
     if (conversation._id === conversationId) conversation.lastMessage = lastMessage;
+  });
+};
+
+const setOnlineStatus = (
+  state: ConversationSliceState,
+  status: 'online' | 'offline',
+  userId: string,
+) => {
+  outer: for (const conversation of state.conversations) {
+    for (const member of conversation.members) {
+      if (member._id === userId) {
+        member.isOnline = status === 'online';
+
+        break outer;
+      }
+    }
+  }
+
+  const isOnline = state.onlineUserIds.includes(userId);
+
+  if (!isOnline && status === 'online') state.onlineUserIds.push(userId);
+  else if (isOnline && status === 'offline')
+    state.onlineUserIds.splice(state.onlineUserIds.indexOf(userId), 1);
+};
+
+const updateConversations = (
+  conversations: ConversationSliceState['conversations'],
+  onlineUserIds: string[],
+) => {
+  return conversations.map((conversation) => {
+    const updatedMembers = conversation.members.map((member) => {
+      return { ...member, isOnline: onlineUserIds.includes(member._id) };
+    });
+
+    return { ...conversation, members: updatedMembers };
   });
 };
 
@@ -42,13 +79,53 @@ const conversationSlice = createSlice({
         payload: { conversations, cursor, hasMore },
       }: PayloadAction<AddFetchedConversationsReducer>,
     ) => {
-      state.conversations.push(...conversations);
-      state.cursor = cursor;
-      state.hasMore = hasMore;
+      const updatedConversations = updateConversations(conversations, state.onlineUserIds);
+
+      state.cursor = cursor ?? state.cursor;
+      state.hasMore = hasMore ?? state.hasMore;
+      state.conversations.push(...updatedConversations);
+    },
+
+    addConversation: (
+      state,
+      { payload: { conversation } }: PayloadAction<{ conversation: ConversationFragment }>,
+    ) => {
+      state.conversations.push(conversation);
+
+      const updatedConversations = updateConversations(state.conversations, state.onlineUserIds);
+
+      state.conversations = updatedConversations;
+    },
+
+    addCreator: (
+      state,
+      {
+        payload: { conversationId, creator },
+      }: PayloadAction<{ conversationId: string; creator: UserWithOnlineStatus }>,
+    ) => {
+      state.conversations.map((conversation) => {
+        if (conversation._id === conversationId) conversation.creators.push(creator);
+      });
     },
 
     setSelectedConversation: (state, action: PayloadAction<ConversationFragment>) => {
       state.selectedConversation = action.payload;
+    },
+
+    setOnlineStatus: (state, { payload: { userId } }: PayloadAction<{ userId: string }>) => {
+      setOnlineStatus(state, 'online', userId);
+    },
+
+    seOfflineStatus: (state, { payload: { userId } }: PayloadAction<{ userId: string }>) => {
+      setOnlineStatus(state, 'offline', userId);
+    },
+
+    initOnlineStatus: (state, { payload: { userIds } }: PayloadAction<{ userIds: string[] }>) => {
+      const onlineUserIds = [...new Set([...userIds, ...state.onlineUserIds])];
+      const updatedConversations = updateConversations(state.conversations, onlineUserIds);
+
+      state.conversations = updatedConversations;
+      state.onlineUserIds = onlineUserIds;
     },
 
     // SECTION: Message
@@ -58,16 +135,16 @@ const conversationSlice = createSlice({
     ) => {
       if (state.messages[conversationId] == null)
         state.messages[conversationId] = {
-          data: messages,
+          data: messages.reverse(),
           ...rest,
         };
-      else state.messages[conversationId]!.data.unshift(...messages);
+      else state.messages[conversationId]!.data.unshift(...messages.reverse());
     },
 
     addFakeMessage: (state, { payload }: PayloadAction<MessageFragment>) => {
       state.messages[payload.conversationId]?.data.push(payload);
 
-      updateLastMessage(state.conversations, payload.conversationId, payload);
+      updateLastMessage(state, payload.conversationId, payload);
     },
 
     updateRealMessage: (
@@ -83,7 +160,7 @@ const conversationSlice = createSlice({
         }
       });
 
-      updateLastMessage(state.conversations, conversationId, realMessage);
+      updateLastMessage(state, conversationId, realMessage);
     },
 
     addIncomingSocketMessage: (
@@ -104,9 +181,10 @@ const conversationSlice = createSlice({
         createdAt: getCurrentTime(),
       };
 
-      state.messages[conversationId]?.data.push(socketMessage);
+      // TODO: Filter sender fields
+      state.messages[conversationId]?.data.push(socketMessage as any);
 
-      updateLastMessage(state.conversations, conversationId, socketMessage);
+      updateLastMessage(state, conversationId, socketMessage);
     },
   },
 });
