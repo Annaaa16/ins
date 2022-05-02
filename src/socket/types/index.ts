@@ -15,6 +15,7 @@ export type NextApiResponseServerIO = NextApiResponse & {
 export interface User {
   userId: string;
   socketId: string;
+  rooms: string[];
 }
 
 export interface Message {
@@ -30,13 +31,15 @@ export interface ServerToClientEvents {
   receiveOnlineUserId: (userId: string) => void;
   receiveOfflineUserId: (userId: string) => void;
   receiveOnlineUserIds: (userIds: string[]) => void;
+  receiveStrangeConversation: (conversationId: string) => void;
 }
 
 export interface ClientToServerEvents {
   addOnlineUser: () => void;
   sendMessage: (payload: Message) => void;
-  joinConversation: (conversationId: string) => void;
+  joinRooms: (conversationIds: string[]) => void;
   getOnlineUserIds: () => void;
+  sendStrangeConversation: (payload: { receiverId: string; conversationId: string }) => void;
 }
 
 export type ServerIO = Server<ClientToServerEvents, ServerToClientEvents>;

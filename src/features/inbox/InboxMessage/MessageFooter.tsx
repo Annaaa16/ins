@@ -19,7 +19,7 @@ const MessageFooter = () => {
   const [message, setMessage] = useState<string>('');
 
   const { conversationHandler } = useSocketContext();
-  const { selectedConversation } = useConversationSelector();
+  const { conversations, selectedConversation } = useConversationSelector();
   const { currentUser } = useAuthSelector();
 
   const [createMessage] = useCreateMessageMutation();
@@ -29,10 +29,34 @@ const MessageFooter = () => {
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const conversationId = selectedConversation!._id;
+
+    await Promise.resolve(
+      selectedConversation!.members.forEach((member) => {
+        const isInCreators = conversations.some((conversation) =>
+          conversation.creators.some((creator) => creator._id === member._id),
+        );
+
+        if (member._id === currentUser!._id || isInCreators) return;
+
+        dispatch(
+          conversationActions.addCreator({
+            conversationId,
+            creator: member,
+          }),
+        );
+
+        conversationHandler.sendStrangeConversation({
+          receiverId: member._id,
+          conversationId,
+        });
+      }),
+    );
+
     const fakeMessage = {
       _id: nanoid(12), // fake id to send to socket before receive real message
       text: message,
-      conversationId: selectedConversation!._id,
+      conversationId,
       createdAt: getCurrentTime(),
     };
 
@@ -52,7 +76,7 @@ const MessageFooter = () => {
 
     const response = await createMessage({
       variables: {
-        conversationId: selectedConversation!._id,
+        conversationId,
         createMessageInput: {
           text: message,
         },

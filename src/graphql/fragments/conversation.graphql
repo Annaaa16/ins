@@ -1,19 +1,17 @@
 fragment conversation on Conversation {
   _id
   creators {
-    ...user
+    ...userField
   }
   members {
-    ...user
+    ...userField
   }
   lastMessage {
     _id
     text
     createdAt
     user {
-      _id
-      email
-      username
+      ...userField
     }
   }
   createdAt

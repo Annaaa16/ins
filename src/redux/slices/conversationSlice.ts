@@ -7,6 +7,7 @@ import {
   ConversationSliceState,
   UpdateRealMessageReducer,
 } from '../types/conversation';
+import { UserWithOnlineStatus } from '../types/shared';
 import { SocketMessage } from '~/types/socket';
 
 import { ConversationFragment, MessageFragment } from '~/types/generated';
@@ -80,9 +81,31 @@ const conversationSlice = createSlice({
     ) => {
       const updatedConversations = updateConversations(conversations, state.onlineUserIds);
 
-      state.cursor = cursor;
-      state.hasMore = hasMore;
+      state.cursor = cursor ?? state.cursor;
+      state.hasMore = hasMore ?? state.hasMore;
       state.conversations.push(...updatedConversations);
+    },
+
+    addConversation: (
+      state,
+      { payload: { conversation } }: PayloadAction<{ conversation: ConversationFragment }>,
+    ) => {
+      state.conversations.push(conversation);
+
+      const updatedConversations = updateConversations(state.conversations, state.onlineUserIds);
+
+      state.conversations = updatedConversations;
+    },
+
+    addCreator: (
+      state,
+      {
+        payload: { conversationId, creator },
+      }: PayloadAction<{ conversationId: string; creator: UserWithOnlineStatus }>,
+    ) => {
+      state.conversations.map((conversation) => {
+        if (conversation._id === conversationId) conversation.creators.push(creator);
+      });
     },
 
     setSelectedConversation: (state, action: PayloadAction<ConversationFragment>) => {
@@ -158,7 +181,8 @@ const conversationSlice = createSlice({
         createdAt: getCurrentTime(),
       };
 
-      state.messages[conversationId]?.data.push(socketMessage);
+      // TODO: Filter sender fields
+      state.messages[conversationId]?.data.push(socketMessage as any);
 
       updateLastMessage(state, conversationId, socketMessage);
     },

@@ -2,11 +2,11 @@
 import { ServerIO, SocketIO, User } from '../types';
 
 interface OnlineUsers {
-  [userId: string]: User;
+  [userId: string]: User | null;
 }
 
 interface CurrentSockets {
-  [userId: string]: string[];
+  [userId: string]: string[] | null;
 }
 
 const onlineUsers: OnlineUsers = {};
@@ -17,21 +17,23 @@ const addOnlineUser = (userId: string, socketId: string, socket: SocketIO) => {
 
   if (onlineUsers[userId] != null) return;
 
-  onlineUsers[userId] = { userId, socketId };
+  onlineUsers[userId] = { userId, socketId, rooms: [socketId] };
 };
 
 // Track open new tab
 const addCurrentSocket = (userId: string, socketId: string) => {
   if (onlineUsers[userId] == null) currentSockets[userId] = [socketId];
-  else currentSockets[userId].push(socketId);
+  else currentSockets[userId]!.push(socketId);
 };
 
 const handleDisconnect = (userId: string, socketId: string, socket: SocketIO) => {
-  if (currentSockets[userId] == null) return;
+  const currentSocket = currentSockets[userId];
 
-  currentSockets[userId].splice(currentSockets[userId].indexOf(socketId), 1);
+  if (currentSocket == null) return;
 
-  if (currentSockets[userId].length === 0) {
+  currentSocket.splice(currentSocket.indexOf(socketId), 1);
+
+  if (currentSocket.length === 0) {
     delete currentSockets[userId];
     delete onlineUsers[userId];
 
@@ -59,6 +61,28 @@ const userHandler = async (_io: ServerIO, socket: SocketIO) => {
   socket.on('addOnlineUser', () => {
     addCurrentSocket(userId, socketId);
     addOnlineUser(userId, socketId, socket);
+  });
+
+  socket.on('sendStrangeConversation', ({ receiverId, conversationId }) => {
+    const receivedSocketId = onlineUsers[receiverId]?.socketId;
+
+    if (receivedSocketId == null) return;
+
+    socket.to(receivedSocketId).emit('receiveStrangeConversation', conversationId);
+  });
+
+  socket.on('joinRooms', (conversationIds) => {
+    const user = onlineUsers[userId];
+
+    if (user == null) return;
+
+    user.rooms = [...new Set([...user.rooms, ...conversationIds])];
+
+    socket.join(user.rooms);
+  });
+
+  socket.on('sendMessage', (message) => {
+    socket.broadcast.to(message.conversationId).emit('receiveMessage', message);
   });
 
   socket.on('disconnect', () => {

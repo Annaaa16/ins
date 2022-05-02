@@ -6,9 +6,10 @@ import { io } from 'socket.io-client';
 // types
 import { SocketIO, SocketMessage } from '~/types/socket';
 
-import { useAuthSelector } from '~/redux/selectors';
+import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
 import { conversationActions } from '~/redux/slices/conversationSlice';
+import { useGetConversationByIdLazyQuery } from '~/types/generated';
 
 interface SocketProviderProps {
   children: ReactNode;
@@ -16,15 +17,15 @@ interface SocketProviderProps {
 
 interface SocketInitContext {
   conversationHandler: {
-    joinConversation: (conversationId: string) => void;
     sendMessage: (message: SocketMessage) => void;
+    sendStrangeConversation: (payload: { receiverId: string; conversationId: string }) => void;
   };
 }
 
 export const SocketContext = createContext<SocketInitContext>({
   conversationHandler: {
-    joinConversation: () => {},
     sendMessage: () => {},
+    sendStrangeConversation: () => {},
   },
 });
 
@@ -32,7 +33,9 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
   const [socket, setSocket] = useState<SocketIO | null>(null);
 
   const { currentUser } = useAuthSelector();
+  const { conversations } = useConversationSelector();
 
+  const [getConversationById] = useGetConversationByIdLazyQuery();
   const router = useRouter();
   const dispatch = useStoreDispatch();
 
@@ -40,17 +43,18 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
 
   const conversationHandler = useMemo(
     () => ({
-      joinConversation(conversationId: string) {
-        socket?.emit('joinConversation', conversationId);
-      },
-
       sendMessage(message: SocketMessage) {
         socket?.emit('sendMessage', message);
+      },
+
+      sendStrangeConversation(payload: { receiverId: string; conversationId: string }) {
+        socket?.emit('sendStrangeConversation', payload);
       },
     }),
     [socket],
   );
 
+  // Init socket
   useEffect(() => {
     if (userId == null) return;
 
@@ -80,10 +84,21 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
     socket.emit('getOnlineUserIds');
   }, [socket, router.pathname]);
 
+  // Add new room(s) after fetching new conversations
+  useEffect(() => {
+    if (conversations.length === 0 || socket == null) return;
+
+    socket.emit(
+      'joinRooms',
+      conversations.map((conversation) => conversation._id),
+    );
+  }, [socket, conversations]);
+
   useEffect(() => {
     if (socket == null) return;
 
     socket.on('receiveMessage', (message) => {
+      console.log('message', message);
       dispatch(conversationActions.addIncomingSocketMessage(message));
     });
 
@@ -99,10 +114,23 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
       dispatch(conversationActions.initOnlineStatus({ userIds }));
     });
 
+    socket.on('receiveStrangeConversation', async (conversationId) => {
+      const response = await getConversationById({
+        variables: {
+          conversationId,
+        },
+      });
+
+      const data = response.data?.getConversationById;
+
+      if (data?.success)
+        dispatch(conversationActions.addConversation({ conversation: data.conversation! }));
+    });
+
     return () => {
       socket.close();
     };
-  }, [socket, dispatch]);
+  }, [socket, getConversationById, dispatch]);
 
   return (
     <SocketContext.Provider value={{ conversationHandler }}>{children}</SocketContext.Provider>

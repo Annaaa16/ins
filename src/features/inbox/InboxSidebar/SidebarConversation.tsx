@@ -7,7 +7,6 @@ import { LIMITS } from '~/constants';
 import { useGetMessagesLazyQuery, UserFragment } from '~/types/generated';
 import { useConversationSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
-import { useSocketContext } from '~/contexts/SocketContext';
 import { conversationActions } from '~/redux/slices/conversationSlice';
 
 import Skeleton from '~/components/Skeleton';
@@ -20,7 +19,6 @@ interface SidebarConversationProps {
 }
 
 const SidebarConversation = ({ conversation, currentUser }: SidebarConversationProps) => {
-  const { conversationHandler } = useSocketContext();
   const { selectedConversation, messages } = useConversationSelector();
 
   const [getMessages] = useGetMessagesLazyQuery();
@@ -37,8 +35,6 @@ const SidebarConversation = ({ conversation, currentUser }: SidebarConversationP
     if (selectedConversation?._id === conversationId) return;
 
     dispatch(conversationActions.setSelectedConversation(conversation));
-
-    conversationHandler.joinConversation(conversationId);
 
     const hasMessagesCache =
       messages[conversationId] != null && messages[conversationId]!.data.length > 0;
