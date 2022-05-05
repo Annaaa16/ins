@@ -5,7 +5,14 @@ import { Callback } from '~/types/utils';
 
 import { isEmptyInput } from '~/helpers/string';
 
-export const useDebounce = (timing = 300) => {
+type HandleDebounce = <T>(
+  callback: (value: string) => Promise<T>,
+  emptyInputHandler?: Callback,
+) => (e: ChangeEvent<HTMLInputElement>) => void;
+
+type UseDebounceReturn = readonly [boolean, HandleDebounce];
+
+export const useDebounce = (timing = 300): UseDebounceReturn => {
   const [debouncing, setDebouncing] = useState<boolean>(false);
 
   const debounceRef = useRef<number | null>(null);
@@ -14,10 +21,7 @@ export const useDebounce = (timing = 300) => {
     if (debounceRef.current != null) clearTimeout(debounceRef.current);
   };
 
-  const handleDebounce = <T>(
-    callback: (value: string) => Promise<T>,
-    emptyInputHandler?: Callback,
-  ) => {
+  const handleDebounce: HandleDebounce = (callback, emptyInputHandler) => {
     return (e: ChangeEvent<HTMLInputElement>) => {
       if (isEmptyInput(e.target.value)) {
         if (emptyInputHandler) emptyInputHandler();

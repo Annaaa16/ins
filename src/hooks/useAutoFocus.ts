@@ -1,6 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 
-export const useAutoFocus = (deps?: any[]) => {
+interface UseAutoFocusReturn {
+  focusRef: MutableRefObject<any>;
+}
+
+export const useAutoFocus = (deps?: any[]): UseAutoFocusReturn => {
   const focusRef = useRef<any>(null);
 
   useEffect(() => {
