@@ -18,14 +18,16 @@ const InboxSidebar = () => {
   });
 
   const { showModal } = useModalContext();
-  const { conversations } = useConversationSelector();
   const { currentUser } = useAuthSelector();
+  const conversationSelector = useConversationSelector();
 
   const [getConversations] = useGetConversationsLazyQuery();
   const dispatch = useStoreDispatch();
 
+  const { conversations, hasMore } = conversationSelector;
+
   useEffect(() => {
-    if (!isIntersecting) return;
+    if (!isIntersecting || !hasMore) return;
 
     (async () => {
       const response = await getConversations({
@@ -47,7 +49,7 @@ const InboxSidebar = () => {
         );
       }
     })();
-  }, [isIntersecting, getConversations, dispatch]);
+  }, [isIntersecting, hasMore, getConversations, dispatch]);
 
   return (
     <>
@@ -64,6 +66,7 @@ const InboxSidebar = () => {
       <div ref={containerObserverRef} className='overflow-y-auto'>
         {conversations.map((conversation) => (
           <SidebarConversation
+            conversationSelector={conversationSelector}
             key={conversation._id}
             currentUser={currentUser}
             conversation={conversation}
