@@ -44,6 +44,7 @@ const SidebarConversation = ({
     if (selectedConversation?._id === conversationId) return;
 
     conversationHandler.setCurrentRoomId(conversationId);
+    conversationHandler.readMessage(conversationId);
 
     dispatch(conversationActions.setSelectedConversation(conversation));
 
@@ -72,8 +73,6 @@ const SidebarConversation = ({
         hasMore: !!data.hasMore,
       }),
     );
-
-    conversationHandler.readMessage(conversationId);
   };
 
   return (
