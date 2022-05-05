@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react';
 
-import { useConversationSelector } from '~/redux/selectors';
+import clsx from 'clsx';
+
+import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
 
 import ContentText from './ContentText';
 
 const MessageContent = () => {
   const { messages, selectedConversation } = useConversationSelector();
+  const { currentUser } = useAuthSelector();
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -23,8 +26,17 @@ const MessageContent = () => {
 
   return (
     <div ref={containerRef} className='flex flex-col py-4 px-5 overflow-y-auto space-y-2'>
-      {selectedMessages.map((message) => (
-        <ContentText key={message._id} {...message} />
+      {selectedMessages.map((message, index) => (
+        <>
+          <ContentText key={message._id} {...message} />
+          {message.seen &&
+            index === selectedMessages.length - 1 &&
+            currentUser!._id === message.user._id && (
+              <span className={clsx('text-sm-1 max-w-max ml-auto pr-2', 'text-base-gray')}>
+                Seen
+              </span>
+            )}
+        </>
       ))}
     </div>
   );

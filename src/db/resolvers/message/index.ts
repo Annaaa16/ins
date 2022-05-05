@@ -6,9 +6,15 @@ import extender from '~/helpers/extender';
 import createMessage from './createMessage';
 import deleteMessage from './deleteMessage';
 import getMessages from './getMessages';
+import readMessage from './readMessage';
 
 @Resolver()
-export default class MessageResolver extends extender(createMessage, getMessages, deleteMessage) {
+export default class MessageResolver extends extender(
+  createMessage,
+  getMessages,
+  deleteMessage,
+  readMessage,
+) {
   @Query((_returns) => String)
   hello() {
     return 'Hello World';

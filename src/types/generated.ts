@@ -120,6 +120,7 @@ export type Message = {
   _id: Scalars['ID'];
   conversationId: Scalars['String'];
   createdAt: Scalars['DateTime'];
+  seen: Scalars['Boolean'];
   text: Scalars['String'];
   user: User;
 };
@@ -152,6 +153,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   reactComment: BaseResponse;
   reactPost: BaseResponse;
+  readMessage: BaseResponse;
   register: UserMutationResponse;
   searchUser: SearchUserResponse;
   updatePost: PostMutationResponse;
@@ -228,6 +230,10 @@ export type MutationReactCommentArgs = {
 export type MutationReactPostArgs = {
   postId: Scalars['String'];
   reaction: ReactionType;
+};
+
+export type MutationReadMessageArgs = {
+  messageId: Scalars['ID'];
 };
 
 export type MutationRegisterArgs = {
@@ -506,6 +512,7 @@ export type ConversationFragment = {
     _id: string;
     text: string;
     createdAt: any;
+    seen: boolean;
     user: {
       __typename?: 'User';
       _id: string;
@@ -513,6 +520,53 @@ export type ConversationFragment = {
       username: string;
       account: string;
       avatar?: string | null;
+    };
+  } | null;
+};
+
+export type ConversationMutationResponseFragment = {
+  __typename?: 'CommentMutationResponse';
+  code: number;
+  success: boolean;
+  message?: string | null;
+  comment?: {
+    __typename?: 'Comment';
+    _id: string;
+    caption: string;
+    postId: string;
+    createdAt: any;
+    updatedAt: any;
+    reactions: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }>;
+    user: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
     };
   } | null;
 };
@@ -525,6 +579,7 @@ export type MessageFragment = {
   conversationId: string;
   text: string;
   createdAt: any;
+  seen: boolean;
   user: {
     __typename?: 'User';
     _id: string;
@@ -1027,6 +1082,7 @@ export type CreateConversationMutation = {
         _id: string;
         text: string;
         createdAt: any;
+        seen: boolean;
         user: {
           __typename?: 'User';
           _id: string;
@@ -1072,6 +1128,7 @@ export type CreateMessageMutation = {
       conversationId: string;
       text: string;
       createdAt: any;
+      seen: boolean;
       user: {
         __typename?: 'User';
         _id: string;
@@ -1110,6 +1167,20 @@ export type DeleteMessageMutation = {
     __typename?: 'BaseResponse';
     code: number;
     success: boolean;
+    message?: string | null;
+  };
+};
+
+export type ReadMessageMutationVariables = Exact<{
+  messageId: Scalars['ID'];
+}>;
+
+export type ReadMessageMutation = {
+  __typename?: 'Mutation';
+  readMessage: {
+    __typename?: 'BaseResponse';
+    success: boolean;
+    code: number;
     message?: string | null;
   };
 };
@@ -1475,6 +1546,7 @@ export type GetConversationByIdQuery = {
         _id: string;
         text: string;
         createdAt: any;
+        seen: boolean;
         user: {
           __typename?: 'User';
           _id: string;
@@ -1527,6 +1599,7 @@ export type GetConversationsQuery = {
         _id: string;
         text: string;
         createdAt: any;
+        seen: boolean;
         user: {
           __typename?: 'User';
           _id: string;
@@ -1560,6 +1633,7 @@ export type GetMessagesQuery = {
       conversationId: string;
       text: string;
       createdAt: any;
+      seen: boolean;
       user: {
         __typename?: 'User';
         _id: string;
@@ -1711,6 +1785,7 @@ export const ConversationFragmentDoc = gql`
       _id
       text
       createdAt
+      seen
       user {
         ...userField
       }
@@ -1719,12 +1794,24 @@ export const ConversationFragmentDoc = gql`
   }
   ${UserFieldFragmentDoc}
 `;
+export const ConversationMutationResponseFragmentDoc = gql`
+  fragment conversationMutationResponse on CommentMutationResponse {
+    code
+    success
+    message
+    comment {
+      ...comment
+    }
+  }
+  ${CommentFragmentDoc}
+`;
 export const MessageFragmentDoc = gql`
   fragment message on Message {
     _id
     conversationId
     text
     createdAt
+    seen
     user {
       ...user
     }
@@ -2342,6 +2429,52 @@ export type DeleteMessageMutationResult = Apollo.MutationResult<DeleteMessageMut
 export type DeleteMessageMutationOptions = Apollo.BaseMutationOptions<
   DeleteMessageMutation,
   DeleteMessageMutationVariables
+>;
+export const ReadMessageDocument = gql`
+  mutation ReadMessage($messageId: ID!) {
+    readMessage(messageId: $messageId) {
+      success
+      code
+      message
+    }
+  }
+`;
+export type ReadMessageMutationFn = Apollo.MutationFunction<
+  ReadMessageMutation,
+  ReadMessageMutationVariables
+>;
+
+/**
+ * __useReadMessageMutation__
+ *
+ * To run a mutation, you first call `useReadMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readMessageMutation, { data, loading, error }] = useReadMessageMutation({
+ *   variables: {
+ *      messageId: // value for 'messageId'
+ *   },
+ * });
+ */
+export function useReadMessageMutation(
+  baseOptions?: Apollo.MutationHookOptions<ReadMessageMutation, ReadMessageMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ReadMessageMutation, ReadMessageMutationVariables>(
+    ReadMessageDocument,
+    options,
+  );
+}
+export type ReadMessageMutationHookResult = ReturnType<typeof useReadMessageMutation>;
+export type ReadMessageMutationResult = Apollo.MutationResult<ReadMessageMutation>;
+export type ReadMessageMutationOptions = Apollo.BaseMutationOptions<
+  ReadMessageMutation,
+  ReadMessageMutationVariables
 >;
 export const CreatePostDocument = gql`
   mutation CreatePost($createPostInput: CreatePostInput!) {

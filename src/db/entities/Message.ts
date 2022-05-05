@@ -25,4 +25,8 @@ export class Message {
   @Field((_type) => Date)
   @prop({ type: Date, default: Date.now })
   createdAt!: Date;
+
+  @Field((_type) => Boolean)
+  @prop({ type: Boolean, default: false })
+  seen!: boolean;
 }

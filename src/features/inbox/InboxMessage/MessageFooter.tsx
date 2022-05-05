@@ -10,6 +10,7 @@ import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
 import { useSocketContext } from '~/contexts/SocketContext';
 import { conversationActions } from '~/redux/slices/conversationSlice';
 import { getCurrentTime } from '~/helpers/time';
+import { isEmptyInput } from '~/helpers/string';
 
 import IconEmoji from '~/components/Icon/IconEmoji';
 import IconHeart from '~/components/Icon/IconHeart';
@@ -23,52 +24,52 @@ const MessageFooter = () => {
   const { currentUser } = useAuthSelector();
 
   const [createMessage] = useCreateMessageMutation();
-  const { focusRef } = useAutoFocus();
+  const { focusRef } = useAutoFocus([selectedConversation]);
   const dispatch = useStoreDispatch();
 
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (isEmptyInput(message) || currentUser == null) return;
+
     const conversationId = selectedConversation!._id;
 
-    await Promise.resolve(
-      selectedConversation!.members.forEach((member) => {
-        const isInCreators = conversations.some((conversation) =>
-          conversation.creators.some((creator) => creator._id === member._id),
-        );
+    selectedConversation!.members.forEach((member) => {
+      const isInCreators = conversations.some((conversation) =>
+        conversation.creators.some((creator) => creator._id === member._id),
+      );
 
-        if (member._id === currentUser!._id || isInCreators) return;
+      if (member._id === currentUser._id || isInCreators) return;
 
-        dispatch(
-          conversationActions.addCreator({
-            conversationId,
-            creator: member,
-          }),
-        );
-
-        conversationHandler.sendStrangeConversation({
-          receiverId: member._id,
+      dispatch(
+        conversationActions.addCreator({
           conversationId,
-        });
-      }),
-    );
+          creator: member,
+        }),
+      );
+
+      conversationHandler.sendStrangeConversation({
+        receiverId: member._id,
+        conversationId,
+      });
+    });
 
     const fakeMessage = {
       _id: nanoid(12), // fake id to send to socket before receive real message
       text: message,
       conversationId,
       createdAt: getCurrentTime(),
+      seen: false,
     };
 
-    conversationHandler.sendMessage({
-      ...fakeMessage,
-      userId: currentUser!._id,
-    });
+    const receiverIds = selectedConversation!.members.map((member) => member._id);
+
+    receiverIds.splice(receiverIds.indexOf(currentUser._id), 1);
 
     dispatch(
       conversationActions.addFakeMessage({
         ...fakeMessage,
-        user: currentUser!,
+        user: currentUser,
       }),
     );
 
@@ -85,13 +86,16 @@ const MessageFooter = () => {
 
     const data = response.data?.createMessage;
 
-    if (data?.success && data.newMessage)
-      dispatch(
-        conversationActions.updateRealMessage({
-          fakeMessageId: fakeMessage._id,
-          message: data.newMessage,
-        }),
-      );
+    if (!data?.success) return;
+
+    dispatch(
+      conversationActions.updateRealMessage({
+        fakeMessageId: fakeMessage._id,
+        message: data.newMessage!,
+      }),
+    );
+
+    conversationHandler.sendMessage({ ...data.newMessage!, userId: currentUser._id }, receiverIds);
   };
 
   return (

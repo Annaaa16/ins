@@ -9,7 +9,7 @@ import { SocketIO, SocketMessage } from '~/types/socket';
 import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
 import { conversationActions } from '~/redux/slices/conversationSlice';
-import { useGetConversationByIdLazyQuery } from '~/types/generated';
+import { useGetConversationByIdLazyQuery, useReadMessageMutation } from '~/types/generated';
 
 interface SocketProviderProps {
   children: ReactNode;
@@ -17,8 +17,10 @@ interface SocketProviderProps {
 
 interface SocketInitContext {
   conversationHandler: {
-    sendMessage: (message: SocketMessage) => void;
+    sendMessage: (message: SocketMessage, receiverIds: string[]) => void;
     sendStrangeConversation: (payload: { receiverId: string; conversationId: string }) => void;
+    setCurrentRoomId: (conversationId: string) => void;
+    readMessage: (conversationId: string) => void;
   };
 }
 
@@ -26,6 +28,8 @@ export const SocketContext = createContext<SocketInitContext>({
   conversationHandler: {
     sendMessage: () => {},
     sendStrangeConversation: () => {},
+    setCurrentRoomId: () => {},
+    readMessage: () => {},
   },
 });
 
@@ -36,19 +40,28 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
   const { conversations } = useConversationSelector();
 
   const [getConversationById] = useGetConversationByIdLazyQuery();
+  const [readMessage] = useReadMessageMutation();
   const router = useRouter();
   const dispatch = useStoreDispatch();
 
-  const userId = currentUser?._id;
+  const currentUserId = currentUser?._id;
 
   const conversationHandler = useMemo(
     () => ({
-      sendMessage(message: SocketMessage) {
-        socket?.emit('sendMessage', message);
+      sendMessage(message: SocketMessage, receiverIds: string[]) {
+        socket?.emit('sendMessage', message, receiverIds);
       },
 
       sendStrangeConversation(payload: { receiverId: string; conversationId: string }) {
         socket?.emit('sendStrangeConversation', payload);
+      },
+
+      setCurrentRoomId(conversationId: string) {
+        socket?.emit('setCurrentRoomId', conversationId);
+      },
+
+      readMessage(conversationId: string) {
+        socket?.emit('readMessage', conversationId);
       },
     }),
     [socket],
@@ -56,7 +69,7 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
 
   // Init socket
   useEffect(() => {
-    if (userId == null) return;
+    if (currentUserId == null) return;
 
     (async () => {
       await fetch('/api/socket');
@@ -64,19 +77,19 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
       const socket = io({
         withCredentials: true,
         query: {
-          userId,
+          userId: currentUserId,
         },
       });
 
       setSocket(socket);
     })();
-  }, [userId]);
+  }, [currentUserId]);
 
   useEffect(() => {
-    if (userId == null || socket == null) return;
+    if (currentUserId == null || socket == null) return;
 
     socket.emit('addOnlineUser');
-  }, [userId, socket]);
+  }, [currentUserId, socket]);
 
   useEffect(() => {
     if (socket == null) return;
@@ -97,9 +110,25 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
   useEffect(() => {
     if (socket == null) return;
 
-    socket.on('receiveMessage', (message) => {
-      console.log('message', message);
+    socket.on('receiveMessage', async (message) => {
+      if (message.userId === currentUserId) return;
+
       dispatch(conversationActions.addIncomingSocketMessage(message));
+
+      // If in current chat then mark message as read
+      if (message.seen) {
+        const response = await readMessage({
+          variables: {
+            messageId: message._id,
+          },
+        });
+
+        if (response.data?.readMessage.success) socket.emit('readMessage', message.conversationId);
+      }
+    });
+
+    socket.on('receiveSeenConversationId', (conversationId) => {
+      dispatch(conversationActions.readMessage({ conversationId }));
     });
 
     socket.on('receiveOnlineUserId', (userId) => {
@@ -130,7 +159,7 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
     return () => {
       socket.close();
     };
-  }, [socket, getConversationById, dispatch]);
+  }, [socket, currentUserId, readMessage, getConversationById, dispatch]);
 
   return (
     <SocketContext.Provider value={{ conversationHandler }}>{children}</SocketContext.Provider>

@@ -11,7 +11,6 @@ import { UserWithOnlineStatus } from '../types/shared';
 import { SocketMessage } from '~/types/socket';
 
 import { ConversationFragment, MessageFragment } from '~/types/generated';
-import { getCurrentTime } from '~/helpers/time';
 
 const initialState: ConversationSliceState = {
   messages: {},
@@ -108,8 +107,13 @@ const conversationSlice = createSlice({
       });
     },
 
-    setSelectedConversation: (state, action: PayloadAction<ConversationFragment>) => {
-      state.selectedConversation = action.payload;
+    setSelectedConversation: (state, { payload }: PayloadAction<ConversationFragment>) => {
+      state.conversations.forEach((conversation) => {
+        if (conversation._id === payload._id && conversation.lastMessage != null)
+          conversation.lastMessage.seen = true;
+      });
+
+      state.selectedConversation = payload;
     },
 
     setOnlineStatus: (state, { payload: { userId } }: PayloadAction<{ userId: string }>) => {
@@ -165,7 +169,7 @@ const conversationSlice = createSlice({
 
     addIncomingSocketMessage: (
       state,
-      { payload: { _id, text, conversationId, userId } }: PayloadAction<SocketMessage>,
+      { payload: { conversationId, userId, ...rest } }: PayloadAction<SocketMessage>,
     ) => {
       const sender = state.conversations
         .find((conversation) => conversation._id === conversationId)
@@ -174,17 +178,23 @@ const conversationSlice = createSlice({
       if (sender == null) return;
 
       const socketMessage = {
-        _id,
+        ...rest,
         conversationId,
-        text,
         user: sender,
-        createdAt: getCurrentTime(),
       };
 
       // TODO: Filter sender fields
       state.messages[conversationId]?.data.push(socketMessage as any);
 
       updateLastMessage(state, conversationId, socketMessage);
+    },
+
+    readMessage(state, { payload: { conversationId } }: PayloadAction<{ conversationId: string }>) {
+      const messages = state.messages[conversationId]?.data;
+
+      if (messages == null) return;
+
+      messages[messages.length - 1].seen = true;
     },
   },
 });

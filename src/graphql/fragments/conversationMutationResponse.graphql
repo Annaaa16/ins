@@ -1,4 +1,4 @@
-fragment commentMutationResponse on CommentMutationResponse {
+fragment conversationMutationResponse on CommentMutationResponse {
   code
   success
   message

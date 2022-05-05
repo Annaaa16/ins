@@ -1,6 +1,7 @@
-import { Arg, ClassType, ID, Int, Query, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, ClassType, Ctx, ID, Int, Query, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
+import type { Context } from '~/db/types/context';
 import { PaginatedMessagesResponse } from '~/db/types/responses/message';
 import { FilterQuery } from '~/db/types/utils';
 
@@ -23,6 +24,7 @@ const getMessages = (Base: ClassType) => {
       @Arg('conversationId', (_type) => ID) conversationId: string,
       @Arg('limit', (_type) => Int) limit: number,
       @Arg('cursor', { nullable: true }) cursor: string,
+      @Ctx() { req: { userId } }: Context,
     ): Promise<PaginatedMessagesResponse> {
       return respond(async () => {
         const { filterQuery, sort, getNextCursor } = paginate(Message, ['createdAt', -1], cursor, {
@@ -34,6 +36,11 @@ const getMessages = (Base: ClassType) => {
           .sort([sort])
           .populate({ path: 'user', populate: ['followers', 'following'] })
           .lean();
+
+        await Message.updateMany(
+          { conversationId, user: { $not: { $eq: userId } } },
+          { $set: { seen: true } },
+        );
 
         const { cursor: nextCursor, hasMore } = await getNextCursor(messages);
 

@@ -3,6 +3,7 @@ fragment message on Message {
   conversationId
   text
   createdAt
+  seen
   user {
     ...user
   }

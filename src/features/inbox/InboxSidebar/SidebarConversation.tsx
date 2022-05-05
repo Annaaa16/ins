@@ -1,13 +1,15 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 
 // types
-import { ConversationWithOnlineStatus } from '~/redux/types/conversation';
+import { ConversationSliceState, ConversationWithOnlineStatus } from '~/redux/types/conversation';
 
 import { LIMITS } from '~/constants';
 import { useGetMessagesLazyQuery, UserFragment } from '~/types/generated';
-import { useConversationSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
 import { conversationActions } from '~/redux/slices/conversationSlice';
+import { useSocketContext } from '~/contexts/SocketContext';
 
 import Skeleton from '~/components/Skeleton';
 
@@ -16,10 +18,17 @@ import avatar from '~/assets/avatar.png';
 interface SidebarConversationProps {
   currentUser: UserFragment | null;
   conversation: ConversationWithOnlineStatus;
+  conversationSelector: ConversationSliceState;
 }
 
-const SidebarConversation = ({ conversation, currentUser }: SidebarConversationProps) => {
-  const { selectedConversation, messages } = useConversationSelector();
+const SidebarConversation = ({
+  conversation,
+  currentUser,
+  conversationSelector,
+}: SidebarConversationProps) => {
+  const { selectedConversation, messages } = conversationSelector;
+
+  const { conversationHandler } = useSocketContext();
 
   const [getMessages] = useGetMessagesLazyQuery();
   const dispatch = useStoreDispatch();
@@ -33,6 +42,8 @@ const SidebarConversation = ({ conversation, currentUser }: SidebarConversationP
   const handleSelectConversation = async () => {
     // Prevent click on same conversation
     if (selectedConversation?._id === conversationId) return;
+
+    conversationHandler.setCurrentRoomId(conversationId);
 
     dispatch(conversationActions.setSelectedConversation(conversation));
 
@@ -51,15 +62,18 @@ const SidebarConversation = ({ conversation, currentUser }: SidebarConversationP
 
     const data = response.data?.getMessages;
 
-    if (data?.success)
-      dispatch(
-        conversationActions.addFetchedMessages({
-          conversationId,
-          messages: data.messages!,
-          cursor: data.cursor ?? null,
-          hasMore: !!data.hasMore,
-        }),
-      );
+    if (!data?.success) return;
+
+    dispatch(
+      conversationActions.addFetchedMessages({
+        conversationId,
+        messages: data.messages!,
+        cursor: data.cursor ?? null,
+        hasMore: !!data.hasMore,
+      }),
+    );
+
+    conversationHandler.readMessage(conversationId);
   };
 
   return (
@@ -78,11 +92,30 @@ const SidebarConversation = ({ conversation, currentUser }: SidebarConversationP
         src={receiver.avatar ?? avatar.src}
       />
       <div className='min-w-0 text-sm-1 lg:text-sm'>
-        <div>{receiver.username}</div>
+        <div
+          className={clsx(
+            lastMessage != null &&
+              !lastMessage.seen &&
+              currentUser._id !== lastMessage.user._id &&
+              'font-medium',
+          )}
+        >
+          {receiver.username}
+        </div>
         {lastMessage && (
-          <div className={clsx('flex mt-0.5', 'text-base-gray')}>
-            <div className='mr-1.5 truncate'>{lastMessage.text}</div>
-            <div className='flex-1'>41s</div>
+          <div className={clsx('flex items-center mt-0.5')}>
+            <span
+              className={clsx(
+                'truncate',
+                lastMessage.seen || currentUser._id === lastMessage.user._id
+                  ? 'text-base-gray'
+                  : 'font-medium',
+              )}
+            >
+              {lastMessage.text}
+            </span>
+            <FontAwesomeIcon className='w-0.5 h-0.5 mx-1.5' icon={faCircle} />
+            <span className={clsx('flex-1', 'text-base-gray')}>41s</span>
           </div>
         )}
       </div>

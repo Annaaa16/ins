@@ -10,6 +10,7 @@ fragment conversation on Conversation {
     _id
     text
     createdAt
+    seen
     user {
       ...userField
     }

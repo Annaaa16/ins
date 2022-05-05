@@ -17,7 +17,7 @@ const addOnlineUser = (userId: string, socketId: string, socket: SocketIO) => {
 
   if (onlineUsers[userId] != null) return;
 
-  onlineUsers[userId] = { userId, socketId, rooms: [socketId] };
+  onlineUsers[userId] = { userId, socketId, roomIds: [socketId], currentRoomId: null };
 };
 
 // Track open new tab
@@ -50,17 +50,17 @@ const getOnlineUserIds = (userId: string) => {
 };
 
 const userHandler = async (_io: ServerIO, socket: SocketIO) => {
-  const userId = socket.handshake.query.userId as string;
+  const currentUserId = socket.handshake.query.userId as string;
   const socketId = socket.id;
 
   // Current user connected
   socket.on('getOnlineUserIds', () => {
-    socket.emit('receiveOnlineUserIds', getOnlineUserIds(userId));
+    socket.emit('receiveOnlineUserIds', getOnlineUserIds(currentUserId));
   });
 
   socket.on('addOnlineUser', () => {
-    addCurrentSocket(userId, socketId);
-    addOnlineUser(userId, socketId, socket);
+    addCurrentSocket(currentUserId, socketId);
+    addOnlineUser(currentUserId, socketId, socket);
   });
 
   socket.on('sendStrangeConversation', ({ receiverId, conversationId }) => {
@@ -72,21 +72,43 @@ const userHandler = async (_io: ServerIO, socket: SocketIO) => {
   });
 
   socket.on('joinRooms', (conversationIds) => {
-    const user = onlineUsers[userId];
+    const user = onlineUsers[currentUserId];
 
     if (user == null) return;
 
-    user.rooms = [...new Set([...user.rooms, ...conversationIds])];
+    user.roomIds = [...new Set([...user.roomIds, ...conversationIds])];
 
-    socket.join(user.rooms);
+    socket.join(user.roomIds);
   });
 
-  socket.on('sendMessage', (message) => {
+  socket.on('setCurrentRoomId', (conversationId) => {
+    const user = onlineUsers[currentUserId];
+
+    if (user == null) return;
+
+    user.currentRoomId = conversationId;
+  });
+
+  socket.on('sendMessage', (message, receiverIds) => {
+    for (const receiverId of receiverIds) {
+      const user = onlineUsers[receiverId];
+
+      if (user == null) continue;
+
+      if (user.currentRoomId === message.conversationId && user.userId !== currentUserId)
+        message.seen = true;
+    }
+
+    // TODO: Only mark message as read when user in room is current (for group)
     socket.broadcast.to(message.conversationId).emit('receiveMessage', message);
   });
 
+  socket.on('readMessage', (conversationId) => {
+    socket.broadcast.to(conversationId).emit('receiveSeenConversationId', conversationId);
+  });
+
   socket.on('disconnect', () => {
-    handleDisconnect(userId, socketId, socket);
+    handleDisconnect(currentUserId, socketId, socket);
 
     socket.disconnect();
   });
