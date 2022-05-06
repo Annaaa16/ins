@@ -3,7 +3,9 @@ import { useRef } from 'react';
 // types
 import { Callback } from '~/types/utils';
 
-export const useDoubleTab = (delay = 300) => {
+type UseDoubleTabReturn = readonly [(callback: Callback) => void];
+
+export const useDoubleTab = (delay = 300): UseDoubleTabReturn => {
   const lastTabRef = useRef<number>(0);
 
   const doubleTab = (callback: Callback) => {

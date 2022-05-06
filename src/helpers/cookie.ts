@@ -11,7 +11,10 @@ interface Cookie {
   value: string;
 }
 
-export const setCookie = (res: NextApiResponse | ServerResponse, payload: Cookie | Cookie[]) => {
+export const setCookie = (
+  res: NextApiResponse | ServerResponse,
+  payload: Cookie | Cookie[],
+): void => {
   if (Array.isArray(payload)) {
     res.setHeader(
       'Set-Cookie',
@@ -26,7 +29,7 @@ export const setCookie = (res: NextApiResponse | ServerResponse, payload: Cookie
   }
 };
 
-export const clearAllCookies = (res: NextApiResponse | ServerResponse) => {
+export const clearAllCookies = (res: NextApiResponse | ServerResponse): void => {
   res.setHeader(
     'Set-Cookie',
     Object.values(COOKIE_NAMES).map((key) =>

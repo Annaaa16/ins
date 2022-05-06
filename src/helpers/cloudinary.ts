@@ -3,14 +3,18 @@ import { UploadApiOptions } from 'cloudinary';
 import { CLOUDINARY_FOLDERS } from '~/constants';
 import cloudinary from '~/configs/cloudinary';
 
-export const getPhotoIdFromUrl = (url: string) => {
+export const getPhotoIdFromUrl = (url: string): string | undefined => {
   const prefix = CLOUDINARY_FOLDERS.POSTS;
   const regex = new RegExp(prefix + '/(?:vd+/)?([^.]+)');
 
   return url.match(regex)?.[0];
 };
 
-export const uploadPhoto = async (photo: string) => {
+export const uploadPhoto = async (
+  photo: string,
+): Promise<{
+  photo: string;
+}> => {
   const { secure_url } = await cloudinary.uploader.upload(photo, {
     folder: CLOUDINARY_FOLDERS.POSTS,
   });
@@ -18,7 +22,12 @@ export const uploadPhoto = async (photo: string) => {
   return { photo: secure_url };
 };
 
-export const updatePhoto = async (photo: string, photoUrl?: string) => {
+export const updatePhoto = async (
+  photo: string,
+  photoUrl?: string,
+): Promise<{
+  photoUrl: string;
+}> => {
   const options: UploadApiOptions = {};
 
   // Update
@@ -38,7 +47,7 @@ export const updatePhoto = async (photo: string, photoUrl?: string) => {
   return { photoUrl: secure_url };
 };
 
-export const deletePhoto = async (photoUrl?: string) => {
+export const deletePhoto = async (photoUrl?: string): Promise<void> => {
   if (!photoUrl) return;
 
   const photoId = getPhotoIdFromUrl(photoUrl);

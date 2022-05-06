@@ -1,7 +1,7 @@
-export const displayLikeCounts = (items: any[], displayed: string) => {
+export const displayLikeCounts = (items: any[], displayed: string): string => {
   return `${items.length} ${displayed}${items.length > 1 ? 's' : ''}`;
 };
 
-export const getNameInMail = (mail?: string) => {
+export const getNameInMail = (mail?: string): string => {
   return mail == null ? 'John Smith' : mail.split('@')[0];
 };
