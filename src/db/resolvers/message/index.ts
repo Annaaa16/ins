@@ -1,4 +1,4 @@
-import { Query, Resolver } from 'type-graphql';
+import { Resolver } from 'type-graphql';
 
 import extender from '~/helpers/extender';
 
@@ -14,9 +14,4 @@ export default class MessageResolver extends extender(
   getMessages,
   deleteMessage,
   readMessage,
-) {
-  @Query((_returns) => String)
-  hello() {
-    return 'Hello World';
-  }
-}
+) {}
