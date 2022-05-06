@@ -1,13 +1,13 @@
-import { Arg, ClassType, FieldResolver, Query, Resolver, Root, UseMiddleware } from 'type-graphql';
+import { Arg, ClassType, Query, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
 import { GetConversationByIdResponse } from '~/db/types/responses/conversation';
 
 // models
-import { Conversation, Message } from '~/db/models';
+import { Conversation } from '~/db/models';
 
 // entities
-import { Conversation as ConversationEntity, Message as MessageEntity } from '~/db/entities';
+import { Conversation as ConversationEntity } from '~/db/entities';
 
 import { verifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
@@ -15,14 +15,6 @@ import respond from '~/helpers/respond';
 const getConversationById = (Base: ClassType) => {
   @Resolver((_of) => ConversationEntity)
   class GetConversationById extends Base {
-    @FieldResolver((_returns) => MessageEntity, { nullable: true })
-    async lastMessage(@Root() conversation: ConversationEntity): Promise<MessageEntity | null> {
-      return await Message.findOne({ conversationId: conversation._id })
-        .sort([['createdAt', -1]])
-        .populate({ path: 'user' })
-        .lean();
-    }
-
     @Query((_returns) => GetConversationByIdResponse)
     @UseMiddleware(verifyAuth)
     getConversationById(
@@ -30,10 +22,7 @@ const getConversationById = (Base: ClassType) => {
     ): Promise<GetConversationByIdResponse> {
       return respond(async () => {
         const conversation = await Conversation.findById(conversationId)
-          .populate([
-            { path: 'creators', populate: ['followers', 'following'] },
-            { path: 'members', populate: ['followers', 'following'] },
-          ])
+          .populate(['creators', 'members'])
           .lean();
 
         if (conversation == null)
