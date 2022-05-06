@@ -48,8 +48,10 @@ const Login = () => {
       },
     });
 
-    if (response.data?.login.errors) {
-      const { message } = toErrorMap(response.data.login.errors);
+    const data = response.data?.login;
+
+    if (data?.errors) {
+      const { message } = toErrorMap(data.errors);
 
       setError(
         'username',
