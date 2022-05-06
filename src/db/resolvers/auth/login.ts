@@ -20,14 +20,14 @@ const login = (Base: ClassType) => {
       @Arg('loginInput') loginInput: LoginInput,
       @Ctx() { res }: Context,
     ): Promise<UserMutationResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const { username, password } = loginInput;
 
         const existingUser = await User.findOne({ username })
           .populate(['followers', 'following'])
           .lean();
 
-        if (!existingUser)
+        if (existingUser == null)
           return {
             code: 400,
             success: false,
@@ -63,9 +63,7 @@ const login = (Base: ClassType) => {
           message: 'Logged in successfully',
           user: existingUser,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

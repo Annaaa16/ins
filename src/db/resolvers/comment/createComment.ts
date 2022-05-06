@@ -28,22 +28,20 @@ const createComment = (Base: ClassType) => {
           message: 'Caption is missing',
         });
 
-      const handler = async () => {
+      return respond(async () => {
         const newComment = await Comment.create({
           user: userId,
           caption,
           postId,
-        });
+        }).then((res) => res.populate('user'));
 
         return {
           code: 201,
           success: true,
           message: 'The comment has been created successfully',
-          comment: (await newComment.populate('user')).toObject(),
+          comment: newComment.toObject(),
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

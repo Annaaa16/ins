@@ -1,4 +1,4 @@
-import { Arg, ClassType, Int, Mutation, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, ClassType, Int, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { User } from '~/db/models';
 
 // types
@@ -10,13 +10,13 @@ import respond from '~/helpers/respond';
 const searchUser = (Base: ClassType) => {
   @Resolver()
   class SearchUser extends Base {
-    @Mutation((_returns) => SearchUserResponse)
+    @Query((_returns) => SearchUserResponse)
     @UseMiddleware(verifyAuth)
     searchUser(
       @Arg('query') query: string,
       @Arg('limit', (_type) => Int) limit: number,
     ): Promise<SearchUserResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const users = await User.find({
           $or: [{ username: { $regex: query } }, { email: { $regex: query } }],
         })
@@ -29,9 +29,7 @@ const searchUser = (Base: ClassType) => {
           success: true,
           users,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

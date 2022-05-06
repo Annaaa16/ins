@@ -22,12 +22,12 @@ const loginGoogle = (Base: ClassType) => {
       @Arg('clientId') clientId: string,
       @Ctx() { res }: Context,
     ): Promise<UserMutationResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const loginTicket = await client.verifyIdToken({ idToken: tokenId, audience: clientId });
 
         const payload = loginTicket.getPayload();
 
-        if (!payload)
+        if (payload == null)
           return {
             code: 400,
             success: false,
@@ -52,7 +52,7 @@ const loginGoogle = (Base: ClassType) => {
 
         let existingUser = await User.findOne({ email, account: 'google' }).lean();
 
-        if (!existingUser)
+        if (existingUser == null)
           existingUser = (
             await User.create({
               email,
@@ -71,9 +71,7 @@ const loginGoogle = (Base: ClassType) => {
           message: 'Logged in successfully',
           user: existingUser,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

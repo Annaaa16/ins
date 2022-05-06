@@ -29,7 +29,7 @@ const createPost = (Base: ClassType) => {
           message: 'Field is missing',
         });
 
-      const handler = async () => {
+      return respond(async () => {
         const { photo } = await uploadPhoto(base64Photo);
 
         const newPost = await Post.create({
@@ -44,9 +44,7 @@ const createPost = (Base: ClassType) => {
           message: 'The post has been created successfully',
           post: (await newPost.populate('user')).toObject(),
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

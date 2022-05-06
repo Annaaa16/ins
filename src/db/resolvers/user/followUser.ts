@@ -37,7 +37,7 @@ const followUser = (Base: ClassType) => {
       @Arg('followType') followType: FollowType,
       @Ctx() { req: { userId: currentUserId } }: Context,
     ): Promise<UserMutationResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const existingUser = await User.findById(userId);
 
         if (existingUser == null)
@@ -91,9 +91,7 @@ const followUser = (Base: ClassType) => {
         if (followType === FollowType.FOLLOW) return handleFollowUser(true);
 
         return handleFollowUser(false);
-      };
-
-      return respond(handler);
+      });
     }
   }
 

@@ -20,7 +20,7 @@ const deletePost = (Base: ClassType) => {
       @Arg('postId') postId: string,
       @Ctx() { req: { userId } }: Context,
     ): Promise<BaseResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const deletedPost = await Post.findOneAndDelete({ _id: postId, user: userId });
 
         if (!deletedPost)
@@ -38,9 +38,7 @@ const deletePost = (Base: ClassType) => {
           success: true,
           message: 'Post deleted',
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

@@ -19,7 +19,7 @@ const deleteChat = (Base: ClassType) => {
       @Arg('conversationId') conversationId: string,
       @Ctx() { req: { userId } }: Context,
     ): Promise<BaseResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const conversation = await Conversation.findById(conversationId);
 
         if (conversation == null) {
@@ -47,9 +47,7 @@ const deleteChat = (Base: ClassType) => {
           success: true,
           message: 'Chat deleted',
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

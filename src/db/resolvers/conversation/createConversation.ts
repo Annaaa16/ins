@@ -19,7 +19,7 @@ const createConversation = (Base: ClassType) => {
       @Arg('receiverId') receiverId: string,
       @Ctx() { req: { userId } }: Context,
     ): Promise<ConversationMutationResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const existingConversation = await Conversation.findOne({
           members: { $all: [userId, receiverId] },
         });
@@ -61,9 +61,7 @@ const createConversation = (Base: ClassType) => {
           success: true,
           conversation,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

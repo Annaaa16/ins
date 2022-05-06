@@ -21,9 +21,9 @@ const getComments = (Base: ClassType) => {
     getComments(
       @Arg('postId', (_type) => ID) postId: string,
       @Arg('limit', (_type) => Int) limit: number,
-      @Arg('cursor', { nullable: true }) cursor: string,
+      @Arg('cursor', { nullable: true }) cursor: string | null,
     ): Promise<PaginatedCommentsResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const { filterQuery, sort, getNextCursor } = paginate(Comment, ['createdAt', -1], cursor, {
           postId,
         } as CommentEntity);
@@ -45,9 +45,7 @@ const getComments = (Base: ClassType) => {
           cursor: nextCursor,
           hasMore,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 
