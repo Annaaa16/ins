@@ -1,9 +1,9 @@
-mutation SearchUser($query: String!, $limit: Int!) {
+query SearchUser($query: String!, $limit: Int!) {
   searchUser(query: $query, limit: $limit) {
     code
     success
     users {
-      ...user
+      ...baseUser
     }
   }
 }

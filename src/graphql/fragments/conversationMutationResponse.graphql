@@ -1,8 +1,0 @@
-fragment conversationMutationResponse on CommentMutationResponse {
-  code
-  success
-  message
-  comment {
-    ...comment
-  }
-}

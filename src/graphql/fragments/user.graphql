@@ -1,4 +1,4 @@
-fragment userField on User {
+fragment baseUser on User {
   _id
   email
   username
@@ -7,11 +7,11 @@ fragment userField on User {
 }
 
 fragment user on User {
-  ...userField
+  ...baseUser
   followers {
-    ...userField
+    ...baseUser
   }
   following {
-    ...userField
+    ...baseUser
   }
 }

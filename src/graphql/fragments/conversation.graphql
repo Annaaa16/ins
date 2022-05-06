@@ -1,10 +1,10 @@
 fragment conversation on Conversation {
   _id
   creators {
-    ...userField
+    ...baseUser
   }
   members {
-    ...userField
+    ...baseUser
   }
   lastMessage {
     _id
@@ -12,7 +12,7 @@ fragment conversation on Conversation {
     createdAt
     seen
     user {
-      ...userField
+      ...baseUser
     }
   }
   createdAt
