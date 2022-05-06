@@ -155,7 +155,6 @@ export type Mutation = {
   reactPost: BaseResponse;
   readMessage: BaseResponse;
   register: UserMutationResponse;
-  searchUser: SearchUserResponse;
   updatePost: PostMutationResponse;
 };
 
@@ -240,11 +239,6 @@ export type MutationRegisterArgs = {
   registerInput: RegisterInput;
 };
 
-export type MutationSearchUserArgs = {
-  limit: Scalars['Int'];
-  query: Scalars['String'];
-};
-
 export type MutationUpdatePostArgs = {
   updatePostInput: UpdatePostInput;
 };
@@ -323,6 +317,7 @@ export type Query = {
   getPosts: PaginatedPostsResponse;
   getSession: GetSessionResponse;
   hello: Scalars['String'];
+  searchUser: SearchUserResponse;
 };
 
 export type QueryGetCommentsArgs = {
@@ -349,6 +344,11 @@ export type QueryGetMessagesArgs = {
 export type QueryGetPostsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
+};
+
+export type QuerySearchUserArgs = {
+  limit: Scalars['Int'];
+  query: Scalars['String'];
 };
 
 export enum ReactionType {
@@ -421,70 +421,7 @@ export type CommentFragment = {
     username: string;
     account: string;
     avatar?: string | null;
-    followers: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
-    following: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
   };
-};
-
-export type CommentMutationResponseFragment = {
-  __typename?: 'CommentMutationResponse';
-  code: number;
-  success: boolean;
-  message?: string | null;
-  comment?: {
-    __typename?: 'Comment';
-    _id: string;
-    caption: string;
-    postId: string;
-    createdAt: any;
-    updatedAt: any;
-    reactions: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
-    user: {
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-      followers: Array<{
-        __typename?: 'User';
-        _id: string;
-        email: string;
-        username: string;
-        account: string;
-        avatar?: string | null;
-      }>;
-      following: Array<{
-        __typename?: 'User';
-        _id: string;
-        email: string;
-        username: string;
-        account: string;
-        avatar?: string | null;
-      }>;
-    };
-  } | null;
 };
 
 export type ConversationFragment = {
@@ -524,53 +461,6 @@ export type ConversationFragment = {
   } | null;
 };
 
-export type ConversationMutationResponseFragment = {
-  __typename?: 'CommentMutationResponse';
-  code: number;
-  success: boolean;
-  message?: string | null;
-  comment?: {
-    __typename?: 'Comment';
-    _id: string;
-    caption: string;
-    postId: string;
-    createdAt: any;
-    updatedAt: any;
-    reactions: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
-    user: {
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-      followers: Array<{
-        __typename?: 'User';
-        _id: string;
-        email: string;
-        username: string;
-        account: string;
-        avatar?: string | null;
-      }>;
-      following: Array<{
-        __typename?: 'User';
-        _id: string;
-        email: string;
-        username: string;
-        account: string;
-        avatar?: string | null;
-      }>;
-    };
-  } | null;
-};
-
 export type FieldErrorFragment = { __typename?: 'FieldError'; field: string; message: string };
 
 export type MessageFragment = {
@@ -587,22 +477,6 @@ export type MessageFragment = {
     username: string;
     account: string;
     avatar?: string | null;
-    followers: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
-    following: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-    }>;
   };
 };
 
@@ -696,7 +570,7 @@ export type PostMutationResponseFragment = {
   } | null;
 };
 
-export type UserFieldFragment = {
+export type BaseUserFragment = {
   __typename?: 'User';
   _id: string;
   email: string;
@@ -1011,22 +885,6 @@ export type CreateCommentMutation = {
         username: string;
         account: string;
         avatar?: string | null;
-        followers: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
-        following: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
       };
     } | null;
   };
@@ -1039,6 +897,21 @@ export type DeleteCommentMutationVariables = Exact<{
 export type DeleteCommentMutation = {
   __typename?: 'Mutation';
   deleteComment: {
+    __typename?: 'BaseResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+  };
+};
+
+export type ReactCommentMutationVariables = Exact<{
+  reaction: ReactionType;
+  commentId: Scalars['String'];
+}>;
+
+export type ReactCommentMutation = {
+  __typename?: 'Mutation';
+  reactComment: {
     __typename?: 'BaseResponse';
     code: number;
     success: boolean;
@@ -1136,22 +1009,6 @@ export type CreateMessageMutation = {
         username: string;
         account: string;
         avatar?: string | null;
-        followers: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
-        following: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
       };
     } | null;
   };
@@ -1363,44 +1220,6 @@ export type FollowUserMutation = {
   };
 };
 
-export type SearchUserMutationVariables = Exact<{
-  query: Scalars['String'];
-  limit: Scalars['Int'];
-}>;
-
-export type SearchUserMutation = {
-  __typename?: 'Mutation';
-  searchUser: {
-    __typename?: 'SearchUserResponse';
-    code: number;
-    success: boolean;
-    users?: Array<{
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-      followers: Array<{
-        __typename?: 'User';
-        _id: string;
-        email: string;
-        username: string;
-        account: string;
-        avatar?: string | null;
-      }>;
-      following: Array<{
-        __typename?: 'User';
-        _id: string;
-        email: string;
-        username: string;
-        account: string;
-        avatar?: string | null;
-      }>;
-    }> | null;
-  };
-};
-
 export type GetSessionQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetSessionQuery = {
@@ -1474,39 +1293,8 @@ export type GetCommentsQuery = {
         username: string;
         account: string;
         avatar?: string | null;
-        followers: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
-        following: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
       };
     }> | null;
-  };
-};
-
-export type ReactCommentMutationVariables = Exact<{
-  reaction: ReactionType;
-  commentId: Scalars['String'];
-}>;
-
-export type ReactCommentMutation = {
-  __typename?: 'Mutation';
-  reactComment: {
-    __typename?: 'BaseResponse';
-    code: number;
-    success: boolean;
-    message?: string | null;
   };
 };
 
@@ -1641,22 +1429,6 @@ export type GetMessagesQuery = {
         username: string;
         account: string;
         avatar?: string | null;
-        followers: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
-        following: Array<{
-          __typename?: 'User';
-          _id: string;
-          email: string;
-          username: string;
-          account: string;
-          avatar?: string | null;
-        }>;
       };
     }> | null;
   };
@@ -1720,26 +1492,36 @@ export type GetPostsQuery = {
   };
 };
 
-export const UserFieldFragmentDoc = gql`
-  fragment userField on User {
+export type SearchUserQueryVariables = Exact<{
+  query: Scalars['String'];
+  limit: Scalars['Int'];
+}>;
+
+export type SearchUserQuery = {
+  __typename?: 'Query';
+  searchUser: {
+    __typename?: 'SearchUserResponse';
+    code: number;
+    success: boolean;
+    users?: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+    }> | null;
+  };
+};
+
+export const BaseUserFragmentDoc = gql`
+  fragment baseUser on User {
     _id
     email
     username
     account
     avatar
   }
-`;
-export const UserFragmentDoc = gql`
-  fragment user on User {
-    ...userField
-    followers {
-      ...userField
-    }
-    following {
-      ...userField
-    }
-  }
-  ${UserFieldFragmentDoc}
 `;
 export const CommentFragmentDoc = gql`
   fragment comment on Comment {
@@ -1754,32 +1536,21 @@ export const CommentFragmentDoc = gql`
       avatar
     }
     user {
-      ...user
+      ...baseUser
     }
     createdAt
     updatedAt
   }
-  ${UserFragmentDoc}
-`;
-export const CommentMutationResponseFragmentDoc = gql`
-  fragment commentMutationResponse on CommentMutationResponse {
-    code
-    success
-    message
-    comment {
-      ...comment
-    }
-  }
-  ${CommentFragmentDoc}
+  ${BaseUserFragmentDoc}
 `;
 export const ConversationFragmentDoc = gql`
   fragment conversation on Conversation {
     _id
     creators {
-      ...userField
+      ...baseUser
     }
     members {
-      ...userField
+      ...baseUser
     }
     lastMessage {
       _id
@@ -1787,23 +1558,12 @@ export const ConversationFragmentDoc = gql`
       createdAt
       seen
       user {
-        ...userField
+        ...baseUser
       }
     }
     createdAt
   }
-  ${UserFieldFragmentDoc}
-`;
-export const ConversationMutationResponseFragmentDoc = gql`
-  fragment conversationMutationResponse on CommentMutationResponse {
-    code
-    success
-    message
-    comment {
-      ...comment
-    }
-  }
-  ${CommentFragmentDoc}
+  ${BaseUserFragmentDoc}
 `;
 export const MessageFragmentDoc = gql`
   fragment message on Message {
@@ -1813,10 +1573,22 @@ export const MessageFragmentDoc = gql`
     createdAt
     seen
     user {
-      ...user
+      ...baseUser
     }
   }
-  ${UserFragmentDoc}
+  ${BaseUserFragmentDoc}
+`;
+export const UserFragmentDoc = gql`
+  fragment user on User {
+    ...baseUser
+    followers {
+      ...baseUser
+    }
+    following {
+      ...baseUser
+    }
+  }
+  ${BaseUserFragmentDoc}
 `;
 export const PostFragmentDoc = gql`
   fragment post on Post {
@@ -2145,10 +1917,15 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<
 export const CreateCommentDocument = gql`
   mutation CreateComment($caption: String!, $postId: String!) {
     createComment(caption: $caption, postId: $postId) {
-      ...commentMutationResponse
+      code
+      success
+      message
+      comment {
+        ...comment
+      }
     }
   }
-  ${CommentMutationResponseFragmentDoc}
+  ${CommentFragmentDoc}
 `;
 export type CreateCommentMutationFn = Apollo.MutationFunction<
   CreateCommentMutation,
@@ -2233,6 +2010,53 @@ export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMut
 export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<
   DeleteCommentMutation,
   DeleteCommentMutationVariables
+>;
+export const ReactCommentDocument = gql`
+  mutation ReactComment($reaction: ReactionType!, $commentId: String!) {
+    reactComment(reaction: $reaction, commentId: $commentId) {
+      code
+      success
+      message
+    }
+  }
+`;
+export type ReactCommentMutationFn = Apollo.MutationFunction<
+  ReactCommentMutation,
+  ReactCommentMutationVariables
+>;
+
+/**
+ * __useReactCommentMutation__
+ *
+ * To run a mutation, you first call `useReactCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReactCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [reactCommentMutation, { data, loading, error }] = useReactCommentMutation({
+ *   variables: {
+ *      reaction: // value for 'reaction'
+ *      commentId: // value for 'commentId'
+ *   },
+ * });
+ */
+export function useReactCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<ReactCommentMutation, ReactCommentMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ReactCommentMutation, ReactCommentMutationVariables>(
+    ReactCommentDocument,
+    options,
+  );
+}
+export type ReactCommentMutationHookResult = ReturnType<typeof useReactCommentMutation>;
+export type ReactCommentMutationResult = Apollo.MutationResult<ReactCommentMutation>;
+export type ReactCommentMutationOptions = Apollo.BaseMutationOptions<
+  ReactCommentMutation,
+  ReactCommentMutationVariables
 >;
 export const CreateConversationDocument = gql`
   mutation CreateConversation($receiverId: String!) {
@@ -2710,56 +2534,6 @@ export type FollowUserMutationOptions = Apollo.BaseMutationOptions<
   FollowUserMutation,
   FollowUserMutationVariables
 >;
-export const SearchUserDocument = gql`
-  mutation SearchUser($query: String!, $limit: Int!) {
-    searchUser(query: $query, limit: $limit) {
-      code
-      success
-      users {
-        ...user
-      }
-    }
-  }
-  ${UserFragmentDoc}
-`;
-export type SearchUserMutationFn = Apollo.MutationFunction<
-  SearchUserMutation,
-  SearchUserMutationVariables
->;
-
-/**
- * __useSearchUserMutation__
- *
- * To run a mutation, you first call `useSearchUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSearchUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [searchUserMutation, { data, loading, error }] = useSearchUserMutation({
- *   variables: {
- *      query: // value for 'query'
- *      limit: // value for 'limit'
- *   },
- * });
- */
-export function useSearchUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<SearchUserMutation, SearchUserMutationVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SearchUserMutation, SearchUserMutationVariables>(
-    SearchUserDocument,
-    options,
-  );
-}
-export type SearchUserMutationHookResult = ReturnType<typeof useSearchUserMutation>;
-export type SearchUserMutationResult = Apollo.MutationResult<SearchUserMutation>;
-export type SearchUserMutationOptions = Apollo.BaseMutationOptions<
-  SearchUserMutation,
-  SearchUserMutationVariables
->;
 export const GetSessionDocument = gql`
   query GetSession {
     getSession {
@@ -2861,53 +2635,6 @@ export type GetCommentsLazyQueryHookResult = ReturnType<typeof useGetCommentsLaz
 export type GetCommentsQueryResult = Apollo.QueryResult<
   GetCommentsQuery,
   GetCommentsQueryVariables
->;
-export const ReactCommentDocument = gql`
-  mutation ReactComment($reaction: ReactionType!, $commentId: String!) {
-    reactComment(reaction: $reaction, commentId: $commentId) {
-      code
-      success
-      message
-    }
-  }
-`;
-export type ReactCommentMutationFn = Apollo.MutationFunction<
-  ReactCommentMutation,
-  ReactCommentMutationVariables
->;
-
-/**
- * __useReactCommentMutation__
- *
- * To run a mutation, you first call `useReactCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useReactCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [reactCommentMutation, { data, loading, error }] = useReactCommentMutation({
- *   variables: {
- *      reaction: // value for 'reaction'
- *      commentId: // value for 'commentId'
- *   },
- * });
- */
-export function useReactCommentMutation(
-  baseOptions?: Apollo.MutationHookOptions<ReactCommentMutation, ReactCommentMutationVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<ReactCommentMutation, ReactCommentMutationVariables>(
-    ReactCommentDocument,
-    options,
-  );
-}
-export type ReactCommentMutationHookResult = ReturnType<typeof useReactCommentMutation>;
-export type ReactCommentMutationResult = Apollo.MutationResult<ReactCommentMutation>;
-export type ReactCommentMutationOptions = Apollo.BaseMutationOptions<
-  ReactCommentMutation,
-  ReactCommentMutationVariables
 >;
 export const GetConversationByIdDocument = gql`
   query GetConversationById($conversationId: String!) {
@@ -3127,3 +2854,51 @@ export function useGetPostsLazyQuery(
 export type GetPostsQueryHookResult = ReturnType<typeof useGetPostsQuery>;
 export type GetPostsLazyQueryHookResult = ReturnType<typeof useGetPostsLazyQuery>;
 export type GetPostsQueryResult = Apollo.QueryResult<GetPostsQuery, GetPostsQueryVariables>;
+export const SearchUserDocument = gql`
+  query SearchUser($query: String!, $limit: Int!) {
+    searchUser(query: $query, limit: $limit) {
+      code
+      success
+      users {
+        ...baseUser
+      }
+    }
+  }
+  ${BaseUserFragmentDoc}
+`;
+
+/**
+ * __useSearchUserQuery__
+ *
+ * To run a query within a React component, call `useSearchUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchUserQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useSearchUserQuery(
+  baseOptions: Apollo.QueryHookOptions<SearchUserQuery, SearchUserQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SearchUserQuery, SearchUserQueryVariables>(SearchUserDocument, options);
+}
+export function useSearchUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SearchUserQuery, SearchUserQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SearchUserQuery, SearchUserQueryVariables>(
+    SearchUserDocument,
+    options,
+  );
+}
+export type SearchUserQueryHookResult = ReturnType<typeof useSearchUserQuery>;
+export type SearchUserLazyQueryHookResult = ReturnType<typeof useSearchUserLazyQuery>;
+export type SearchUserQueryResult = Apollo.QueryResult<SearchUserQuery, SearchUserQueryVariables>;
