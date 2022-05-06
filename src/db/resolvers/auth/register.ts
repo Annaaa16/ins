@@ -15,7 +15,7 @@ const register = (Base: ClassType) => {
   class Register extends Base {
     @Mutation((_returns) => UserMutationResponse)
     register(@Arg('registerInput') registerInput: RegisterInput): Promise<UserMutationResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const { email, username, password } = registerInput;
 
         const existingUser = await User.findOne({
@@ -23,7 +23,7 @@ const register = (Base: ClassType) => {
           account: 'default',
         });
 
-        if (existingUser)
+        if (existingUser != null)
           return {
             code: 400,
             success: false,
@@ -51,9 +51,7 @@ const register = (Base: ClassType) => {
           message: 'User registration successful',
           user: newUser.toObject(),
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

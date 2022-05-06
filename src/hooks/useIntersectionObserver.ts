@@ -1,6 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 
-export const useIntersectionObserver = (options?: IntersectionObserverInit) => {
+interface UseIntersectionObserverReturn {
+  observerRef: MutableRefObject<HTMLDivElement | null>;
+  containerObserverRef: MutableRefObject<HTMLDivElement | null>;
+  isIntersecting: boolean;
+}
+
+export const useIntersectionObserver = (
+  options?: IntersectionObserverInit,
+): UseIntersectionObserverReturn => {
   const [isIntersecting, setIsIntersecting] = useState<boolean>(false);
 
   const observerRef = useRef<HTMLDivElement | null>(null);

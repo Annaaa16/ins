@@ -9,8 +9,8 @@ import { LIMITS } from '~/constants';
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import {
   useCreateConversationMutation,
-  UserFragment,
-  useSearchUserMutation,
+  BaseUserFragment,
+  useSearchUserLazyQuery,
 } from '~/types/generated';
 import { useAutoFocus, useDebounce } from '~/hooks';
 import { getNameInMail } from '~/helpers/format';
@@ -28,14 +28,14 @@ import SpinnerRing from '../Spinner/SpinnerRing';
 import avatar from '~/assets/avatar.png';
 
 const ModalNewMessage = () => {
-  const [searchedUsers, setSearchedUsers] = useState<UserFragment[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<UserFragment[]>([]);
+  const [searchedUsers, setSearchedUsers] = useState<BaseUserFragment[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<BaseUserFragment[]>([]);
 
   const { hideModal } = useModalContext();
   const { conversations } = useConversationSelector();
 
   const [debouncing, handleDebounce] = useDebounce();
-  const [searchUser] = useSearchUserMutation();
+  const [searchUser] = useSearchUserLazyQuery();
   const [createConversation, { loading: createConversationLoading }] =
     useCreateConversationMutation();
   const dispatch = useStoreDispatch();
@@ -65,14 +65,14 @@ const ModalNewMessage = () => {
       });
   };
 
-  const isUserSelected = (user: UserFragment) =>
+  const isUserSelected = (user: BaseUserFragment) =>
     selectedUsers.some((selectedUser) => selectedUser._id === user._id);
 
-  const removeSelectedUser = (user: UserFragment) => {
+  const removeSelectedUser = (user: BaseUserFragment) => {
     return selectedUsers.filter((selectedUser) => selectedUser._id !== user._id);
   };
 
-  const handleSelectUser = (user: UserFragment) => {
+  const handleSelectUser = (user: BaseUserFragment) => {
     setSelectedUsers(() => {
       return isUserSelected(user) ? removeSelectedUser(user) : [...selectedUsers, user];
     });

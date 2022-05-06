@@ -184,7 +184,7 @@ const conversationSlice = createSlice({
       };
 
       // TODO: Filter sender fields
-      state.messages[conversationId]?.data.push(socketMessage as any);
+      state.messages[conversationId]?.data.push(socketMessage);
 
       updateLastMessage(state, conversationId, socketMessage);
     },

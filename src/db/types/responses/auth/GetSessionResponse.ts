@@ -1,13 +1,11 @@
 import { Field, ObjectType } from 'type-graphql';
 
-// types
-import QueryResponse from '~/db/types/shared/QueryResponse';
-
 // entities
 import { User } from '~/db/entities';
+import { BaseResponse } from '~/db/types/shared';
 
 @ObjectType()
-export class GetSessionResponse extends QueryResponse {
+export class GetSessionResponse extends BaseResponse {
   @Field((_type) => User, { nullable: true })
   user?: User | null;
 

@@ -3,7 +3,12 @@ import { useAuthSelector } from '~/redux/selectors';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { useStoreDispatch } from '~/redux/store';
 
-export const useComment = (comment: CommentFragment, postId: string) => {
+interface UseCommentReturn {
+  isLiked: boolean;
+  reactComment: () => void;
+}
+
+export const useComment = (comment: CommentFragment, postId: string): UseCommentReturn => {
   const { currentUser } = useAuthSelector();
 
   const [reactCommentMutate] = useReactCommentMutation();

@@ -1,5 +1,5 @@
-import { UserFragment } from '~/types/generated';
+import { BaseUserFragment } from '~/types/generated';
 
-export type UserWithOnlineStatus = Omit<UserFragment, 'followers' | 'following'> & {
+export type UserWithOnlineStatus = BaseUserFragment & {
   isOnline?: boolean;
 };

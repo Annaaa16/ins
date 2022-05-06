@@ -1,22 +1,28 @@
 import clsx from 'clsx';
 
 import { MessageFragment } from '~/types/generated';
-import { useAuthSelector } from '~/redux/selectors';
 
-const ContentText = ({ text, user }: MessageFragment) => {
-  const { currentUser } = useAuthSelector();
+interface ContentTextProps {
+  message: MessageFragment;
+  isMessageOwner: boolean;
+  isSeen: boolean;
+}
 
-  const isMessageOwner = currentUser?._id === user._id;
-
+const ContentText = ({ isMessageOwner, isSeen, message }: ContentTextProps) => {
   return (
-    <div
-      className={clsx(
-        'text-sm max-w-max w-[55%] break-words py-3 px-[19px] rounded-[22px]',
-        isMessageOwner ? ['ml-auto', 'text-white bg-primary'] : 'bg-gray-100',
+    <>
+      <div
+        className={clsx(
+          'text-sm max-w-max w-[55%] break-words py-3 px-[19px] rounded-[22px]',
+          isMessageOwner ? ['ml-auto', 'text-white bg-primary'] : 'bg-gray-100',
+        )}
+      >
+        {message.text}
+      </div>
+      {isSeen && (
+        <span className={clsx('text-sm-1 max-w-max ml-auto pr-2', 'text-base-gray')}>Seen</span>
       )}
-    >
-      {text}
-    </div>
+    </>
   );
 };
 

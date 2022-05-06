@@ -1,5 +1,4 @@
 import { Mutation, Arg, Ctx, Resolver, ClassType } from 'type-graphql';
-import axios from 'axios';
 
 // types
 import type { Context } from '~/db/types/context';
@@ -23,12 +22,14 @@ const loginFacebook = (Base: ClassType) => {
     ): Promise<UserMutationResponse> {
       const urlGraphFacebook = `https://graph.facebook.com/v12.0/${userId}/?fields=id,name,email,picture.type(large)&access_token=${accessToken}`;
 
-      const handler = async () => {
-        const { data } = await axios.get<FacebookLoginResponse>(urlGraphFacebook);
+      return respond(async () => {
+        const data = await fetch(urlGraphFacebook)
+          .then((res) => res.json())
+          .then((data: FacebookLoginResponse) => data);
 
         let existingUser = await User.findOne({ email: data.email, account: 'facebook' }).lean();
 
-        if (!existingUser)
+        if (existingUser == null)
           existingUser = (
             await User.create({
               email: data.email,
@@ -47,9 +48,7 @@ const loginFacebook = (Base: ClassType) => {
           message: 'Logged in successfully',
           user: existingUser,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

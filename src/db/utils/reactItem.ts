@@ -3,22 +3,23 @@ import { AnyParamConstructor, BeAnObject } from '@typegoose/typegoose/lib/types'
 
 // types
 import { ReactionType } from '../types/utils';
+import { BaseResponse } from '../types/shared';
 
-interface ReactItemParams<T extends AnyParamConstructor<any>> {
+type ReactItem = <T extends AnyParamConstructor<any>>(params: {
   model: ReturnModelType<T, BeAnObject>;
   reaction: ReactionType;
   itemId: string;
   userId: string;
   modelName: string;
-}
+}) => Promise<BaseResponse>;
 
-export const reactItem = async <T extends AnyParamConstructor<any>>({
+export const reactItem: ReactItem = async ({
   model: Model,
   reaction,
   itemId,
   userId,
   modelName,
-}: ReactItemParams<T>) => {
+}) => {
   const reactionItem = await Model.findById(itemId);
 
   if (!reactionItem)

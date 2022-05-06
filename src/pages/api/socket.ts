@@ -1,18 +1,20 @@
 import { NextApiRequest } from 'next';
 
 import { Server as ServerIO } from 'socket.io';
-import conversationHandler from '~/socket/handlers/conversation';
-
-import userHandler from '~/socket/handlers/user';
 
 // types
 import {
   ClientToServerEvents,
+  CurrentSockets,
+  Handler,
   NextApiResponseServerIO,
+  OnlineUsers,
   ServerToClientEvents,
 } from '~/socket/types';
 
-// TODO: Use class instead function
+import conversationHandler from '~/socket/handlers/conversation';
+import userHandler from '~/socket/handlers/user';
+
 const socketHandler = (_req: NextApiRequest, res: NextApiResponseServerIO) => {
   if (!res.socket.server.io) {
     const httpServer = res.socket.server;
@@ -23,9 +25,21 @@ const socketHandler = (_req: NextApiRequest, res: NextApiResponseServerIO) => {
 
     console.log('Socket connected 🍺');
 
+    // Put vars outside to avoid reset when new user connected
+    const onlineUsers: OnlineUsers = {};
+    const currentSockets: CurrentSockets = {};
+
     io.on('connection', (socket) => {
-      userHandler(io, socket);
-      conversationHandler(io, socket);
+      const handlerParams: Parameters<Handler>[0] = {
+        io,
+        socket,
+        onlineUsers,
+        currentSockets,
+        currentUserId: socket.handshake.query.userId as string,
+      };
+
+      userHandler(handlerParams);
+      conversationHandler(handlerParams);
     });
   } else {
     console.log('Socket already connected ⚡');

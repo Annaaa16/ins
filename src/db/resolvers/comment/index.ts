@@ -1,4 +1,4 @@
-import { Query, Resolver } from 'type-graphql';
+import { Resolver } from 'type-graphql';
 
 import extender from '~/helpers/extender';
 
@@ -14,9 +14,4 @@ export default class CommentResolver extends extender(
   getComments,
   deleteComment,
   reactComment,
-) {
-  @Query((_returns) => String)
-  hello() {
-    return 'Hello World';
-  }
-}
+) {}

@@ -19,7 +19,7 @@ const deleteMessage = (Base: ClassType) => {
       @Arg('messageId', (_type) => ID) messageId: string,
       @Ctx() { req: { userId } }: Context,
     ): Promise<BaseResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const deletedMessage = await Message.findOneAndDelete({ _id: messageId, user: userId });
 
         if (deletedMessage == null)
@@ -34,9 +34,7 @@ const deleteMessage = (Base: ClassType) => {
           success: true,
           message: 'Message deleted',
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

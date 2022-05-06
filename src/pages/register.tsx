@@ -47,8 +47,10 @@ const Register = () => {
       },
     });
 
-    if (response.data?.register.errors) {
-      const { field, message } = toErrorMap(response.data.register.errors);
+    const data = response.data?.register;
+
+    if (data?.errors) {
+      const { field, message } = toErrorMap(data.errors);
 
       setError(field, {
         message,

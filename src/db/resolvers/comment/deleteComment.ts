@@ -19,10 +19,10 @@ const deleteComment = (Base: ClassType) => {
       @Arg('commentId', (_type) => ID) commentId: string,
       @Ctx() { req: { userId } }: Context,
     ): Promise<BaseResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const deletedComment = await Comment.findOneAndDelete({ _id: commentId, user: userId });
 
-        if (!deletedComment)
+        if (deletedComment == null)
           return {
             code: 400,
             success: false,
@@ -34,9 +34,7 @@ const deleteComment = (Base: ClassType) => {
           success: true,
           message: 'Comment deleted',
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

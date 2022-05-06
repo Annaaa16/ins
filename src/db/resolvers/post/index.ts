@@ -1,4 +1,4 @@
-import { Query, Resolver } from 'type-graphql';
+import { Resolver } from 'type-graphql';
 
 // entities
 import { Post } from '~/db/entities';
@@ -19,9 +19,4 @@ export default class PostResolver extends extender(
   getPosts,
   deletePost,
   reactPost,
-) {
-  @Query((_returns) => String)
-  hello() {
-    return 'Hello World';
-  }
-}
+) {}

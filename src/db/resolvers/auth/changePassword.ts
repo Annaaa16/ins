@@ -19,7 +19,7 @@ const changePassword = (Base: ClassType) => {
       @Arg('userId') userId: string,
       @Arg('newPassword') newPassword: string,
     ): Promise<UserMutationResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const tokenRecord = await Token.findOne({ userId });
 
         if (!tokenRecord)
@@ -57,9 +57,7 @@ const changePassword = (Base: ClassType) => {
           message: 'User password reset successfully',
           user: existingUser,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

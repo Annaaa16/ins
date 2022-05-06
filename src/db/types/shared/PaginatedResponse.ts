@@ -1,10 +1,10 @@
 import { Field, ObjectType } from 'type-graphql';
 
 // types
-import QueryResponse from './QueryResponse';
+import { BaseResponse } from './BaseResponse';
 
 @ObjectType()
-export class PaginatedResponse extends QueryResponse {
+export class PaginatedResponse extends BaseResponse {
   @Field((_type) => String, { nullable: true })
   cursor?: string | null;
 

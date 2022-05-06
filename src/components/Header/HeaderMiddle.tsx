@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 
 import { LIMITS } from '~/constants';
-import { UserFragment, useSearchUserMutation } from '~/types/generated';
+import { BaseUserFragment, useSearchUserLazyQuery } from '~/types/generated';
 import { getNameInMail } from '~/helpers/format';
 import { useClickOutside, useDebounce } from '~/hooks';
 
@@ -16,12 +16,12 @@ import avatar from '~/assets/avatar.png';
 import SpinnerLogo from '../Spinner/SpinnerLogo';
 
 const HeaderMiddle = () => {
-  const [searchedUsers, setSearchedUsers] = useState<UserFragment[]>([]);
+  const [searchedUsers, setSearchedUsers] = useState<BaseUserFragment[]>([]);
   const [isOpenSearchList, setIsOpenSearchList] = useState<boolean>(false);
 
   const searchListRef = useRef<HTMLUListElement>(null);
 
-  const [searchUser] = useSearchUserMutation();
+  const [searchUser] = useSearchUserLazyQuery();
   const [debouncing, handleDebounce] = useDebounce();
 
   const handleSearchUser = async (value: string) => {

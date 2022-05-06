@@ -5,6 +5,6 @@ fragment message on Message {
   createdAt
   seen
   user {
-    ...user
+    ...baseUser
   }
 }

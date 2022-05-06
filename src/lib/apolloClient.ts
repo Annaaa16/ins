@@ -13,13 +13,20 @@ interface ApolloStateProps {
   [APOLLO_STATE_PROP_NAME]: NormalizedCacheObject;
 }
 
-let apolloClient: ApolloClient<NormalizedCacheObject>;
+interface InitializeApollo {
+  headers?: IncomingHttpHeaders | null;
+  initialState?: NormalizedCacheObject | null;
+}
+
+type ApolloCache = ApolloClient<NormalizedCacheObject>;
+
+let apolloClient: ApolloCache;
 
 const errorLink = onError((errors) => {
   if (errors) console.log('Error link =>', errors);
 });
 
-const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
+const createApolloClient = (headers: IncomingHttpHeaders | null = null): ApolloCache => {
   const enhancedFetch = async (url: RequestInfo, init: RequestInit) => {
     return fetch(url, {
       ...init,
@@ -49,17 +56,12 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   });
 };
 
-interface InitializeApollo {
-  headers?: IncomingHttpHeaders | null;
-  initialState?: NormalizedCacheObject | null;
-}
-
 export const initializeApollo = (
   { headers, initialState }: InitializeApollo = {
     headers: null,
     initialState: null,
   },
-) => {
+): ApolloCache => {
   const _apolloClient = apolloClient ?? createApolloClient(headers);
 
   // If your page has Next.js data fetching methods that use Apollo Client,
@@ -91,18 +93,19 @@ export const initializeApollo = (
 };
 
 export const addApolloState = (
-  client: ApolloClient<NormalizedCacheObject>,
+  client: ApolloCache,
   pageProps: { props: ApolloStateProps },
-) => {
+): {
+  props: ApolloStateProps;
+} => {
   if (pageProps?.props) pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
 
   return pageProps;
 };
 
-export const useApollo = (pageProps: ApolloStateProps) => {
+export const useApollo = (pageProps: ApolloStateProps): ApolloCache => {
   const state = pageProps[APOLLO_STATE_PROP_NAME];
   const store = useMemo(() => initializeApollo({ initialState: state }), [state]);
 
   return store;
 };
-1;

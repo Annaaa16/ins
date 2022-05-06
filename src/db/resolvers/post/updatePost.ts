@@ -32,7 +32,7 @@ const updatePost = (Base: ClassType) => {
           message: 'Field is missing',
         });
 
-      const handler = async () => {
+      return respond(async () => {
         const selectedPost = await Post.findOne({ _id: postId, user: userId });
 
         if (!selectedPost)
@@ -80,9 +80,7 @@ const updatePost = (Base: ClassType) => {
           message: 'Post is updated',
           post: updatedPost,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

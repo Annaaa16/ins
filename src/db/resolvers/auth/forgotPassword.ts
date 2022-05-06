@@ -18,7 +18,7 @@ const forgotPassword = (Base: ClassType) => {
     forgotPassword(
       @Arg('usernameOrEmail') usernameOrEmail: string,
     ): Promise<ForgotPasswordResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const existingUser = await User.findOne({
           $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
         });
@@ -50,9 +50,7 @@ const forgotPassword = (Base: ClassType) => {
           success: true,
           linkReset,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

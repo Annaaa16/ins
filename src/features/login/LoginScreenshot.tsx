@@ -27,15 +27,15 @@ const LoginScreenshot = () => {
   return (
     <div className={clsx('relative', 'hidden lg:block h-[581.15px] mt-9')}>
       <img src={emptyScreenshot.src} alt='Screenshot' draggable={false} />
-      {screenshots.map((scr, index) => (
+      {screenshots.map((screenshot, index) => (
         <img
           className={clsx(
             'absolute right-[60px] bottom-[16px]',
             'transition-all duration-[1.5s] ease-out',
             index === visibleIndex ? 'opacity-100 visible' : 'opacity-0 invisible',
           )}
-          key={scr.src}
-          src={scr.src}
+          key={screenshot.src}
+          src={screenshot.src}
           alt='Screenshot'
           draggable={false}
         />

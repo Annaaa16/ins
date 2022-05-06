@@ -34,9 +34,9 @@ const getPosts = (Base: ClassType) => {
     @UseMiddleware(verifyAuth)
     getPosts(
       @Arg('limit', (_type) => Int) limit: number,
-      @Arg('cursor', { nullable: true }) cursor?: string,
+      @Arg('cursor', { nullable: true }) cursor: string | null,
     ): Promise<PaginatedPostsResponse> {
-      const handler = async () => {
+      return respond(async () => {
         const { filterQuery, sort, getNextCursor } = paginate(Post, ['createdAt', -1], cursor);
 
         const posts = await Post.find(filterQuery)
@@ -56,9 +56,7 @@ const getPosts = (Base: ClassType) => {
           cursor: nextCursor,
           hasMore,
         };
-      };
-
-      return respond(handler);
+      });
     }
   }
 

@@ -1,4 +1,4 @@
-export const isEmptyInput = (str: string | undefined) => {
+export const isEmptyInput = (str: string | undefined): boolean => {
   if (str == null) return true;
 
   return str.trim() === '';

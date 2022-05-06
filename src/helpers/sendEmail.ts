@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const sendEmail = async (to: string, token: string, userId: string) => {
+const sendEmail = async (to: string, token: string, userId: string): Promise<string> => {
   const testAccount = await nodemailer.createTestAccount();
 
   const transporter = nodemailer.createTransport({
@@ -24,7 +24,7 @@ const sendEmail = async (to: string, token: string, userId: string) => {
     html: `<a href='http://localhost:3000/change-password?token=${token}&userId=${userId}'>Click here to change your password</a>`,
   });
 
-  return nodemailer.getTestMessageUrl(info);
+  return nodemailer.getTestMessageUrl(info) as string;
 };
 
 export default sendEmail;
