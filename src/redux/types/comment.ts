@@ -3,7 +3,7 @@ import { CommentFragment, ReactionType, UserFragment } from '~/types/generated';
 interface CommentPerPost {
   [postId: string]: {
     data: CommentFragment[];
-    commentsPerPost: CommentFragment[];
+    displayedComments: CommentFragment[];
     cursor: string | null;
     hasMore: boolean;
   };
