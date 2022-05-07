@@ -139,7 +139,7 @@ const conversationSlice = createSlice({
     ) => {
       if (state.messages[conversationId] == null)
         state.messages[conversationId] = {
-          data: messages.reverse(),
+          data: [...messages].reverse(),
           ...rest,
         };
       else state.messages[conversationId]!.data.unshift(...messages.reverse());

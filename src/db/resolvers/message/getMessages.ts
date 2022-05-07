@@ -23,7 +23,7 @@ const getMessages = (Base: ClassType) => {
     getMessages(
       @Arg('conversationId', (_type) => ID) conversationId: string,
       @Arg('limit', (_type) => Int) limit: number,
-      @Arg('cursor', { nullable: true }) cursor: string | null,
+      @Arg('cursor', (_type) => String, { nullable: true }) cursor: string | null,
       @Ctx() { req: { userId } }: Context,
     ): Promise<PaginatedMessagesResponse> {
       return respond(async () => {

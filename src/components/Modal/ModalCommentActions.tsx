@@ -5,6 +5,7 @@ import { useAuthSelector, useCommentSelector } from '~/redux/selectors';
 import { useDeleteCommentMutation } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { commentActions } from '~/redux/slices/commentSlice';
+import { postActions } from '~/redux/slices/postSlice';
 
 import ModalWrapper from './ModalWrapper';
 import CommentActions from '~/helpers/modalActions/comment';
@@ -14,7 +15,7 @@ const ModalCommentActions = () => {
   const { currentUser } = useAuthSelector();
   const { selectedComment } = useCommentSelector();
 
-  const [deleteComment] = useDeleteCommentMutation();
+  const [deleteComment, { loading: deleteCommentLoading }] = useDeleteCommentMutation();
   const dispatch = useStoreDispatch();
 
   const isCommentOwner = selectedComment?.user._id === currentUser?._id;
@@ -34,14 +35,21 @@ const ModalCommentActions = () => {
 
     hideModal(MODAL_TYPES.COMMENT_ACTIONS);
 
-    if (response.data?.deleteComment.success)
-      dispatch(commentActions.deleteComment(selectedComment));
+    if (!response.data?.deleteComment.success) return;
+
+    dispatch(commentActions.deleteComment(selectedComment));
+    dispatch(postActions.decreaseCommentCounts({ postId: selectedComment.postId }));
   };
 
   addCommentAction('delete', handleDeleteComment);
 
   return (
-    <ModalWrapper modalType={MODAL_TYPES.COMMENT_ACTIONS} lightOverlay hideCloseButton>
+    <ModalWrapper
+      canClose={!deleteCommentLoading}
+      modalType={MODAL_TYPES.COMMENT_ACTIONS}
+      lightOverlay
+      hideCloseButton
+    >
       <ul
         className={clsx(
           'text-center rounded-lg w-100 max-w-full text-sm divide-y-2 border-line',

@@ -2,6 +2,13 @@ import { generateAction } from './shared';
 
 const sharedActions = [
   {
+    title: 'Follow',
+    actionId: 'follow',
+    action: () => {},
+    hasConfirm: false,
+    maintain: false,
+  },
+  {
     title: 'Go to post',
     actionId: 'goToPost',
     action: () => {},

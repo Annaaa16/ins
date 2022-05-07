@@ -6,6 +6,7 @@ interface UseIntersectionObserverReturn {
   isIntersecting: boolean;
 }
 
+// TODO: Disconnect when no more
 export const useIntersectionObserver = (
   options?: IntersectionObserverInit,
 ): UseIntersectionObserverReturn => {

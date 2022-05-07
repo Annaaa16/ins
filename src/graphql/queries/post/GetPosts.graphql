@@ -1,5 +1,5 @@
-query GetPosts($cursor: String, $limit: Int!) {
-  getPosts(cursor: $cursor, limit: $limit) {
+query GetPosts($cursor: String, $limit: Int!, $query: QueryPostsInput) {
+  getPosts(cursor: $cursor, limit: $limit, query: $query) {
     code
     message
     success

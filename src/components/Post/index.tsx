@@ -38,7 +38,7 @@ const PostFragment = (props: PostFragment) => {
       );
       setCaption('');
 
-      dispatch(commentActions.addNewComment({ postId, comment: data.comment }));
+      dispatch(commentActions.addDisplayedComment({ postId, comment: data.comment }));
     }
   };
 

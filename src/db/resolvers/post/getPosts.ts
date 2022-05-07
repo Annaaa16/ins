@@ -11,6 +11,7 @@ import {
 
 // types
 import { PaginatedPostsResponse } from '~/db/types/responses/post';
+import { QueryPostsInput } from '~/db/types/inputs';
 
 // models
 import { Comment, Post } from '~/db/models';
@@ -34,10 +35,16 @@ const getPosts = (Base: ClassType) => {
     @UseMiddleware(verifyAuth)
     getPosts(
       @Arg('limit', (_type) => Int) limit: number,
-      @Arg('cursor', { nullable: true }) cursor: string | null,
+      @Arg('cursor', (_type) => String, { nullable: true }) cursor: string | null,
+      @Arg('query', (_type) => QueryPostsInput, { nullable: true }) query?: QueryPostsInput,
     ): Promise<PaginatedPostsResponse> {
       return respond(async () => {
-        const { filterQuery, sort, getNextCursor } = paginate(Post, ['createdAt', -1], cursor);
+        const { filterQuery, sort, getNextCursor } = paginate(
+          Post,
+          ['createdAt', -1],
+          cursor,
+          query != null ? { [query.field]: query.value } : {},
+        );
 
         const posts = await Post.find(filterQuery)
           .limit(limit)

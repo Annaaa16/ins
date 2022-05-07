@@ -22,9 +22,14 @@ const PostBody = (post: PostFragment) => {
 
   const dispatch = useStoreDispatch();
 
+  const showModalPostDetail = () => {
+    dispatch(postActions.setSelectedPost(post));
+    showModal(MODAL_TYPES.POST_DETAIL);
+  };
+
   return (
     <div className='px-4 pt-4 pb-3'>
-      <Actions post={post} />
+      <Actions onComment={showModalPostDetail} post={post} />
 
       <div className='flex flex-col gap-y-2 text-sm-1 mt-5'>
         <span className={clsx('font-medium', 'cursor-pointer select-none')}>
@@ -40,10 +45,7 @@ const PostBody = (post: PostFragment) => {
 
         {commentCounts > 0 && (
           <span
-            onClick={() => {
-              dispatch(postActions.setSelectedPost(post));
-              showModal(MODAL_TYPES.POST_DETAIL);
-            }}
+            onClick={showModalPostDetail}
             className={clsx('text-base-gray', 'cursor-pointer select-none')}
           >
             View all {commentCounts} comments
@@ -51,7 +53,7 @@ const PostBody = (post: PostFragment) => {
         )}
 
         <div className='space-y-2'>
-          {(comments[post._id]?.commentsPerPost ?? []).map((comment) => (
+          {(comments[post._id]?.displayedComments ?? []).map((comment) => (
             <PostComment key={comment._id} postId={post._id} comment={comment} />
           ))}
         </div>

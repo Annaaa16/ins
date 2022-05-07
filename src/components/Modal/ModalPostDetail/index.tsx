@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
@@ -10,6 +12,7 @@ import { useStoreDispatch } from '~/redux/store';
 import { useIntersectionObserver } from '~/hooks';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { postActions } from '~/redux/slices/postSlice';
+import { displayLikeCounts } from '~/helpers/format';
 
 import Skeleton from '~/components/Skeleton';
 import Actions from '~/components/Actions';
@@ -17,7 +20,6 @@ import CommentField from '~/components/CommentField';
 import DetailComment from './DetailComment';
 import ModalWrapper from '../ModalWrapper';
 
-import photo from '~/assets/photo.png';
 import avatar from '~/assets/avatar.png';
 
 const ModalPostDetail = () => {
@@ -31,13 +33,14 @@ const ModalPostDetail = () => {
   const { comments } = useCommentSelector();
 
   const [getComments, { loading }] = useGetCommentsLazyQuery();
-  const [createComment] = useCreateCommentMutation();
+  const [createComment, { loading: createCommentLoading }] = useCreateCommentMutation();
   const { observerRef, containerObserverRef, isIntersecting } = useIntersectionObserver({
     rootMargin: '300px',
   });
   const dispatch = useStoreDispatch();
 
-  const postId = selectedPost!._id;
+  const { _id: postId, user, photo: postPhoto, reactions } = selectedPost!;
+
   const {
     cursor: commentsCursor = null,
     data: commentsData = [],
@@ -45,6 +48,8 @@ const ModalPostDetail = () => {
   } = comments[postId] ?? {};
 
   const handleCreateComment = async () => {
+    if (createCommentLoading) return;
+
     const response = await createComment({
       variables: {
         caption,
@@ -89,11 +94,11 @@ const ModalPostDetail = () => {
 
       const data = response.data?.getComments;
 
-      if (data?.success && data.comments) {
+      if (data?.success) {
         dispatch(
           commentActions.addFetchedComments({
             postId,
-            comments: data.comments,
+            comments: data.comments!,
             cursor: data?.cursor ?? null,
             hasMore: !!data.hasMore,
           }),
@@ -110,7 +115,9 @@ const ModalPostDetail = () => {
         'flex lg:w-[1408px] max-w-[calc(100vw-30px)] lg:max-w-[calc(90vw-110px)] h-modal-post-detail-h-mobile lg:h-modal-post-detail-h',
       )}
     >
-      <Skeleton objectFit='cover' className='hidden lg:block w-3/5 min-h-full' src={photo.src} />
+      {postPhoto != null && (
+        <Skeleton objectFit='cover' className='hidden lg:block w-3/5 min-h-full' src={postPhoto} />
+      )}
 
       <div
         className={clsx(
@@ -120,22 +127,23 @@ const ModalPostDetail = () => {
       >
         <div className='flex items-center px-4 py-3 border-b border-line flex-shrink-0'>
           <Skeleton
-            src={avatar.src}
+            src={user.avatar ?? avatar.src}
             rounded
             className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
             objectFit='cover'
           />
-          <span className={clsx('font-medium mr-3', 'cursor-pointer')}>
-            {selectedPost?.user.username}
-          </span>
+          <span className={clsx('font-medium mr-3', 'cursor-pointer')}>{user.username}</span>
           <button className={clsx('btn', 'text-primary', 'cursor-pointer')}>Follow</button>
+          <button onClick={() => showModal(MODAL_TYPES.POST_ACTIONS)} className='btn ml-auto'>
+            <FontAwesomeIcon className='text-lg' icon={faEllipsis} />
+          </button>
         </div>
 
         <div ref={containerObserverRef} className='px-4 overflow-y-auto'>
           {commentsData.map((comment) => (
             <DetailComment
               key={comment._id}
-              postId={selectedPost!._id}
+              postId={postId}
               comment={comment}
               onShowActionsModal={() => showModal(MODAL_TYPES.COMMENT_ACTIONS)}
             />
@@ -147,8 +155,16 @@ const ModalPostDetail = () => {
           <Actions post={selectedPost!} />
 
           <div className='mt-3'>
-            Be the first to <span className={clsx('font-medium', 'cursor-pointer')}>like this</span>
+            {reactions.length === 0 ? (
+              <span>
+                Be the first to{' '}
+                <span className={clsx('font-medium', 'cursor-pointer')}>like this</span>
+              </span>
+            ) : (
+              <span className='font-medium'>{displayLikeCounts(reactions, 'like')}</span>
+            )}
           </div>
+
           <div className={clsx('text-xs-1 mt-2', 'text-base-gray')}>4 DAYS AGO</div>
         </div>
 

@@ -7,11 +7,22 @@ import {
   CommentSliceState,
   ReactCommentReducer,
 } from '../types/comment';
+
 import { CommentFragment, ReactionType } from '~/types/generated';
 
 const initialState: CommentSliceState = {
   comments: {},
   selectedComment: null,
+};
+
+const initComment = (state: CommentSliceState, postId: string) => {
+  if (state.comments[postId] == null)
+    state.comments[postId] = {
+      data: [],
+      cursor: null,
+      hasMore: true, // Init to true so first request can made when open modal post detail
+      displayedComments: [],
+    };
 };
 
 const commentSlice = createSlice({
@@ -22,18 +33,20 @@ const commentSlice = createSlice({
       state,
       { payload: { postId, comment } }: PayloadAction<AddNewCommentReducer>,
     ) => {
-      if (state.comments[postId] == null)
-        state.comments[postId] = {
-          data: [],
-          cursor: null,
-          hasMore: true, // Init to true so first request can made when open modal post detail
-          commentsPerPost: [],
-        };
+      initComment(state, postId);
 
-      // Avoid duplicate comment when making the first request
+      state.comments[postId].data.unshift(comment);
+    },
+
+    addDisplayedComment: (
+      state,
+      { payload: { postId, comment } }: PayloadAction<AddNewCommentReducer>,
+    ) => {
+      initComment(state, postId);
+
       if (state.comments[postId].data.length > 0) state.comments[postId].data.unshift(comment);
 
-      state.comments[postId].commentsPerPost.unshift(comment);
+      state.comments[postId].displayedComments.unshift(comment);
     },
 
     addFetchedComments: (
@@ -45,7 +58,7 @@ const commentSlice = createSlice({
           data: [],
           cursor: null,
           hasMore: false,
-          commentsPerPost: [],
+          displayedComments: [],
         };
 
       state.comments[postId].data.push(...comments);
@@ -60,7 +73,7 @@ const commentSlice = createSlice({
         comments.filter((comment) => comment._id !== payload._id);
 
       comment.data = filterComments(comment.data);
-      comment.commentsPerPost = filterComments(comment.commentsPerPost);
+      comment.displayedComments = filterComments(comment.displayedComments);
     },
 
     reactComment: (
@@ -82,7 +95,7 @@ const commentSlice = createSlice({
       };
 
       handleReactComment(state.comments[postId].data);
-      handleReactComment(state.comments[postId].commentsPerPost);
+      handleReactComment(state.comments[postId].displayedComments);
     },
 
     // Selected to implement actions

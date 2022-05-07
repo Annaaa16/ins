@@ -3,70 +3,53 @@ import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
-import { FollowType, PostFragment, useFollowUserMutation } from '~/types/generated';
+import { PostFragment } from '~/types/generated';
 import { postActions } from '~/redux/slices/postSlice';
 import { useStoreDispatch } from '~/redux/store';
-import { useAuthSelector } from '~/redux/selectors';
+import { useFollowUser, useUser } from '~/hooks';
 
 import avatar from '~/assets/avatar.png';
 
 import Skeleton from '../Skeleton';
 import SpinnerRing from '../Spinner/SpinnerRing';
-import { authActions } from '~/redux/slices/authSlice';
 
-const PostHeader = (props: PostFragment) => {
-  const { _id: postId, user } = props;
+const PostHeader = (post: PostFragment) => {
+  const { user } = post;
 
   const { showModal } = useModalContext();
-  const { currentUser } = useAuthSelector();
 
-  const [followUser, { loading: followLoading }] = useFollowUserMutation();
-
+  const { visitProfile } = useUser();
+  const { canFollow, followUserLoading, currentUser, followUser } = useFollowUser(user, post._id);
   const dispatch = useStoreDispatch();
 
-  const isFollowed = user.followers.some((followedUser) => followedUser._id === currentUser?._id);
-  const canFollow = !isFollowed && user._id !== currentUser?._id;
+  const hasFollowBtn = canFollow && currentUser._id !== post.user._id;
 
-  const handleFollowUser = async () => {
-    if (isFollowed) return;
-
-    const followType = FollowType.Follow;
-
-    const response = await followUser({
-      variables: {
-        userId: user._id,
-        followType,
-      },
-    });
-
-    if (!response.data?.followUser.success) return;
-
-    dispatch(
-      postActions.followUserByPost({
-        postId,
-        currentUser: currentUser!,
-        followType,
-      }),
-    );
-
-    dispatch(
-      authActions.followUser({
-        user,
-        followType,
-      }),
-    );
-  };
+  const onVisitProfile = () => visitProfile(post.user.username);
 
   return (
     <div className='flex-between py-3 px-4'>
       <div className='flex items-center'>
-        <Skeleton rounded className='w-8 h-8 mr-3' src={user.avatar ?? avatar.src} alt='Avatar' />
-        <span className={clsx('text-sm font-medium mr-3')}>{user.username}</span>
-        {canFollow &&
-          (followLoading ? (
+        <Skeleton
+          onClick={onVisitProfile}
+          rounded
+          className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
+          src={user.avatar ?? avatar.src}
+          alt='Avatar'
+        />
+        <span
+          onClick={onVisitProfile}
+          className={clsx('text-sm font-medium mr-3', 'cursor-pointer')}
+        >
+          {user.username}
+        </span>
+        {hasFollowBtn &&
+          (followUserLoading ? (
             <SpinnerRing className='w-10 h-10' />
           ) : (
-            <button onClick={handleFollowUser} className={clsx('btn text-sm-1', 'text-primary')}>
+            <button
+              onClick={() => followUser('follow')}
+              className={clsx('btn text-sm-1', 'text-primary')}
+            >
               Follow
             </button>
           ))}
@@ -74,7 +57,7 @@ const PostHeader = (props: PostFragment) => {
       <FontAwesomeIcon
         onClick={() => {
           showModal(MODAL_TYPES.POST_ACTIONS);
-          dispatch(postActions.setSelectedPost(props));
+          dispatch(postActions.setSelectedPost(post));
         }}
         className='cursor-pointer'
         icon={faEllipsis}
