@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
 
-import ContentText from './ContentText';
+import MessageContentText from './MessageContentText';
 
 const MessageContent = () => {
   const { messages, selectedConversation } = useConversationSelector();
@@ -25,7 +25,7 @@ const MessageContent = () => {
   return (
     <div ref={containerRef} className='flex flex-col py-4 px-5 overflow-y-auto space-y-2'>
       {selectedMessages.map((message, index) => (
-        <ContentText
+        <MessageContentText
           key={message._id}
           message={message}
           isMessageOwner={currentUser!._id === message.user._id}

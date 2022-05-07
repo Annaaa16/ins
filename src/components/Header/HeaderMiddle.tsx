@@ -9,11 +9,10 @@ import { BaseUserFragment, useSearchUserLazyQuery } from '~/types/generated';
 import { getNameInMail } from '~/helpers/format';
 import { useClickOutside, useDebounce } from '~/hooks';
 
+import { SpinnerLogo, SpinnerRing } from '../Spinner';
 import Skeleton from '../Skeleton';
-import SpinnerRing from '../Spinner/SpinnerRing';
 
 import avatar from '~/assets/avatar.png';
-import SpinnerLogo from '../Spinner/SpinnerLogo';
 
 const HeaderMiddle = () => {
   const [searchedUsers, setSearchedUsers] = useState<BaseUserFragment[]>([]);

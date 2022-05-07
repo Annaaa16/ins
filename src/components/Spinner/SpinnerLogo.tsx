@@ -1,10 +1,9 @@
 import clsx from 'clsx';
 
-interface SpinnerProps {
-  className?: string;
-}
+// types
+import { IconProps } from '~/types/utils';
 
-const SpinnerLogo = ({ className }: SpinnerProps) => {
+const SpinnerLogo = ({ className }: IconProps) => {
   return (
     <svg
       className={clsx('animate-spinner', className)}

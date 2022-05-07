@@ -2,13 +2,13 @@ import clsx from 'clsx';
 
 import { MessageFragment } from '~/types/generated';
 
-interface ContentTextProps {
+interface MessageContentTextProps {
   message: MessageFragment;
   isMessageOwner: boolean;
   isSeen: boolean;
 }
 
-const ContentText = ({ isMessageOwner, isSeen, message }: ContentTextProps) => {
+const MessageContentText = ({ isMessageOwner, isSeen, message }: MessageContentTextProps) => {
   return (
     <>
       <div
@@ -26,4 +26,4 @@ const ContentText = ({ isMessageOwner, isSeen, message }: ContentTextProps) => {
   );
 };
 
-export default ContentText;
+export default MessageContentText;
