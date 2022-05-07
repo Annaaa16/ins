@@ -34,7 +34,7 @@ const getPosts = (Base: ClassType) => {
     @UseMiddleware(verifyAuth)
     getPosts(
       @Arg('limit', (_type) => Int) limit: number,
-      @Arg('cursor', { nullable: true }) cursor: string | null,
+      @Arg('cursor', (_type) => String, { nullable: true }) cursor: string | null,
     ): Promise<PaginatedPostsResponse> {
       return respond(async () => {
         const { filterQuery, sort, getNextCursor } = paginate(Post, ['createdAt', -1], cursor);
