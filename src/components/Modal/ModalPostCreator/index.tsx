@@ -6,7 +6,7 @@ import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import { useCreatePostMutation, useUpdatePostMutation } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
-import { usePostSelector } from '~/redux/selectors';
+import { useAuthSelector, usePostSelector } from '~/redux/selectors';
 
 import ModalWrapper from '../ModalWrapper';
 import CreatorForm from './CreatorForm';
@@ -16,8 +16,8 @@ import Loading from '~/components/Loading';
 
 const ModalPostCreator = () => {
   const { hideModal } = useModalContext();
-
   const { selectedPost, currentAction } = usePostSelector();
+  const { currentUser, selectedUser } = useAuthSelector();
 
   const [caption, setCaption] = useState<string>(selectedPost?.caption ?? '');
   const [preview, setPreview] = useState<string>('');
@@ -46,10 +46,14 @@ const ModalPostCreator = () => {
 
     const data = response.data?.createPost;
 
-    if (data?.success && data.post) {
-      dispatch(postActions.addNewPost(data.post));
-      reset();
-    }
+    if (!data?.success) return;
+
+    reset();
+
+    // At profile page
+    if (selectedUser != null && currentUser!._id !== selectedUser._id) return;
+
+    dispatch(postActions.addNewPost(data.post!));
   };
 
   const handleUpdatePostSubmit = async () => {

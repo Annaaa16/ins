@@ -11,8 +11,10 @@ import ModalPostCreator from '~/components/Modal/ModalPostCreator';
 import ModalPostDetail from '~/components/Modal/ModalPostDetail';
 import ModalCommentActions from '~/components/Modal/ModalCommentActions';
 import ModalNewMessage from '~/components/Modal/ModalNewMessage';
+import ModalUnfollow from '~/components/Modal/ModalUnfollow';
 
 interface ModalInitState {
+  modalTypes: ModalType[];
   showModal: (modalType: ModalType, callback?: Callback) => void;
   hideModal: (modalType: ModalType | ModalType[], callback?: Callback) => void;
 }
@@ -29,6 +31,7 @@ export const MODAL_TYPES = {
   POST_ACTIONS: 'POST_ACTIONS',
   COMMENT_ACTIONS: 'COMMENT_ACTIONS',
   NEW_MESSAGE: 'NEW_MESSAGE',
+  UNFOLLOW: 'UNFOLLOW',
 } as const;
 
 const MODALS = {
@@ -37,9 +40,11 @@ const MODALS = {
   [MODAL_TYPES.POST_ACTIONS]: <ModalPostActions key={MODAL_TYPES.POST_ACTIONS} />,
   [MODAL_TYPES.COMMENT_ACTIONS]: <ModalCommentActions key={MODAL_TYPES.COMMENT_ACTIONS} />,
   [MODAL_TYPES.NEW_MESSAGE]: <ModalNewMessage key={MODAL_TYPES.NEW_MESSAGE} />,
+  [MODAL_TYPES.UNFOLLOW]: <ModalUnfollow key={MODAL_TYPES.UNFOLLOW} />,
 } as const;
 
 const ModalContext = createContext<ModalInitState>({
+  modalTypes: [],
   showModal: () => null,
   hideModal: () => null,
 });
@@ -66,7 +71,7 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
   };
 
   return (
-    <ModalContext.Provider value={{ showModal, hideModal }}>
+    <ModalContext.Provider value={{ modalTypes, showModal, hideModal }}>
       {children}
       {modalTypes.map((type) => MODALS[type])}
     </ModalContext.Provider>
