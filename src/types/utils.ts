@@ -13,6 +13,8 @@ export type AddParameters<
   TParameters extends [...args: any],
 > = (...args: [...Parameters<TFunction>, ...TParameters]) => ReturnType<TFunction>;
 
+export type FollowAction = 'follow' | 'unfollow';
+
 // export type AddParameters2<Fn, NewType> = Fn extends (...arg: infer R) => any
 //   ? (...args: [...R, NewType]) => ReturnType<Fn>
 //   : never;

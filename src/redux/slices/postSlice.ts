@@ -68,15 +68,19 @@ const postSlice = createSlice({
       state,
       { payload: { postId, currentUser, followType } }: PayloadAction<FollowUserReducer>,
     ) => {
-      state.posts.forEach((post) => {
-        if (post._id !== postId) return;
-
+      const handleFollowUserByPost = (post: PostFragment) => {
         if (followType === FollowType.Follow) post.user.followers.push(currentUser);
         else
           post.user.followers = post.user.followers.filter(
-            (followedUser) => followedUser._id !== currentUser._id,
+            (follower) => follower._id !== currentUser._id,
           );
+      };
+
+      state.posts.forEach((post) => {
+        if (post._id === postId) handleFollowUserByPost(post);
       });
+
+      if (state.selectedPost != null) handleFollowUserByPost(state.selectedPost);
     },
 
     // Selected to implement actions
@@ -94,6 +98,15 @@ const postSlice = createSlice({
     ) => {
       state.posts.forEach((post) => {
         if (post._id === postId) post.commentCounts += 1;
+      });
+    },
+
+    decreaseCommentCounts: (
+      state,
+      { payload: { postId } }: PayloadAction<IncreaseCommentCountsReducer>,
+    ) => {
+      state.posts.forEach((post) => {
+        if (post._id === postId) post.commentCounts -= 1;
       });
     },
   },
