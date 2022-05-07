@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { ConversationSliceState, ConversationWithOnlineStatus } from '~/redux/types/conversation';
 
 import { LIMITS } from '~/constants';
-import { useGetMessagesLazyQuery, UserFragment } from '~/types/generated';
+import { useGetMessagesLazyQuery, useReadMessageMutation, UserFragment } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { conversationActions } from '~/redux/slices/conversationSlice';
 import { useSocketContext } from '~/contexts/SocketContext';
@@ -31,6 +31,7 @@ const SidebarConversation = ({
   const { conversationHandler } = useSocketContext();
 
   const [getMessages] = useGetMessagesLazyQuery();
+  const [readMessage] = useReadMessageMutation();
   const dispatch = useStoreDispatch();
 
   if (currentUser == null) return null;
@@ -39,20 +40,19 @@ const SidebarConversation = ({
 
   const receiver = members.filter((member) => member._id !== currentUser._id)[0];
 
-  const handleSelectConversation = async () => {
-    // Prevent click on same conversation
-    if (selectedConversation?._id === conversationId) return;
+  const readLastMessage = async () => {
+    if (lastMessage == null || lastMessage.seen) return;
 
-    conversationHandler.setCurrentRoomId(conversationId);
-    conversationHandler.readMessage(conversationId);
+    const response = await readMessage({
+      variables: {
+        messageId: lastMessage._id,
+      },
+    });
 
-    dispatch(conversationActions.setSelectedConversation(conversation));
+    if (response.data?.readMessage.success) conversationHandler.readMessage(conversationId);
+  };
 
-    const hasMessagesCache =
-      messages[conversationId] != null && messages[conversationId]!.data.length > 0;
-
-    if (hasMessagesCache) return;
-
+  const handleFetchMessages = async () => {
     const response = await getMessages({
       variables: {
         conversationId,
@@ -63,16 +63,31 @@ const SidebarConversation = ({
 
     const data = response.data?.getMessages;
 
-    if (!data?.success) return;
+    if (data?.success)
+      dispatch(
+        conversationActions.addFetchedMessages({
+          conversationId,
+          messages: data.messages!,
+          cursor: data.cursor ?? null,
+          hasMore: !!data.hasMore,
+        }),
+      );
+  };
 
-    dispatch(
-      conversationActions.addFetchedMessages({
-        conversationId,
-        messages: data.messages!,
-        cursor: data.cursor ?? null,
-        hasMore: !!data.hasMore,
-      }),
-    );
+  const handleSelectConversation = async () => {
+    // Prevent click on same conversation
+    if (selectedConversation?._id === conversationId) return;
+
+    await readLastMessage();
+
+    conversationHandler.setCurrentRoomId(conversationId);
+
+    dispatch(conversationActions.setSelectedConversation(conversation));
+
+    const hasMessagesCache =
+      messages[conversationId] != null && messages[conversationId]!.data.length > 0;
+
+    if (!hasMessagesCache) handleFetchMessages();
   };
 
   return (
