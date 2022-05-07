@@ -100,11 +100,19 @@ export type GetConversationByIdResponse = {
   success: Scalars['Boolean'];
 };
 
+export type GetProfileResponse = {
+  __typename?: 'GetProfileResponse';
+  code: Scalars['Float'];
+  message?: Maybe<Scalars['String']>;
+  postCounts?: Maybe<Scalars['Int']>;
+  success: Scalars['Boolean'];
+  user?: Maybe<User>;
+};
+
 export type GetSessionResponse = {
   __typename?: 'GetSessionResponse';
   accessToken?: Maybe<Scalars['String']>;
   code: Scalars['Float'];
-  errors?: Maybe<Array<FieldError>>;
   message?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
   user?: Maybe<User>;
@@ -248,7 +256,6 @@ export type PaginatedCommentsResponse = {
   code: Scalars['Float'];
   comments?: Maybe<Array<Comment>>;
   cursor?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<FieldError>>;
   hasMore?: Maybe<Scalars['Boolean']>;
   message?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
@@ -259,7 +266,6 @@ export type PaginatedConversationsResponse = {
   code: Scalars['Float'];
   conversations?: Maybe<Array<Conversation>>;
   cursor?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<FieldError>>;
   hasMore?: Maybe<Scalars['Boolean']>;
   message?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
@@ -269,7 +275,6 @@ export type PaginatedMessagesResponse = {
   __typename?: 'PaginatedMessagesResponse';
   code: Scalars['Float'];
   cursor?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<FieldError>>;
   hasMore?: Maybe<Scalars['Boolean']>;
   message?: Maybe<Scalars['String']>;
   messages?: Maybe<Array<Message>>;
@@ -280,7 +285,6 @@ export type PaginatedPostsResponse = {
   __typename?: 'PaginatedPostsResponse';
   code: Scalars['Float'];
   cursor?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<FieldError>>;
   hasMore?: Maybe<Scalars['Boolean']>;
   message?: Maybe<Scalars['String']>;
   posts?: Maybe<Array<Post>>;
@@ -315,8 +319,8 @@ export type Query = {
   getConversations: PaginatedConversationsResponse;
   getMessages: PaginatedMessagesResponse;
   getPosts: PaginatedPostsResponse;
+  getProfile: GetProfileResponse;
   getSession: GetSessionResponse;
-  hello: Scalars['String'];
   searchUser: SearchUserResponse;
 };
 
@@ -344,11 +348,21 @@ export type QueryGetMessagesArgs = {
 export type QueryGetPostsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
+  query?: InputMaybe<QueryPostsInput>;
+};
+
+export type QueryGetProfileArgs = {
+  username: Scalars['String'];
 };
 
 export type QuerySearchUserArgs = {
   limit: Scalars['Int'];
   query: Scalars['String'];
+};
+
+export type QueryPostsInput = {
+  field: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export enum ReactionType {
@@ -1437,6 +1451,7 @@ export type GetMessagesQuery = {
 export type GetPostsQueryVariables = Exact<{
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
+  query?: InputMaybe<QueryPostsInput>;
 }>;
 
 export type GetPostsQuery = {
@@ -1489,6 +1504,45 @@ export type GetPostsQuery = {
         }>;
       };
     }> | null;
+  };
+};
+
+export type GetProfileQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+export type GetProfileQuery = {
+  __typename?: 'Query';
+  getProfile: {
+    __typename?: 'GetProfileResponse';
+    code: number;
+    success: boolean;
+    message?: string | null;
+    postCounts?: number | null;
+    user?: {
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+    } | null;
   };
 };
 
@@ -2807,8 +2861,8 @@ export type GetMessagesQueryResult = Apollo.QueryResult<
   GetMessagesQueryVariables
 >;
 export const GetPostsDocument = gql`
-  query GetPosts($cursor: String, $limit: Int!) {
-    getPosts(cursor: $cursor, limit: $limit) {
+  query GetPosts($cursor: String, $limit: Int!, $query: QueryPostsInput) {
+    getPosts(cursor: $cursor, limit: $limit, query: $query) {
       code
       message
       success
@@ -2836,6 +2890,7 @@ export const GetPostsDocument = gql`
  *   variables: {
  *      cursor: // value for 'cursor'
  *      limit: // value for 'limit'
+ *      query: // value for 'query'
  *   },
  * });
  */
@@ -2854,6 +2909,55 @@ export function useGetPostsLazyQuery(
 export type GetPostsQueryHookResult = ReturnType<typeof useGetPostsQuery>;
 export type GetPostsLazyQueryHookResult = ReturnType<typeof useGetPostsLazyQuery>;
 export type GetPostsQueryResult = Apollo.QueryResult<GetPostsQuery, GetPostsQueryVariables>;
+export const GetProfileDocument = gql`
+  query GetProfile($username: String!) {
+    getProfile(username: $username) {
+      code
+      success
+      message
+      user {
+        ...user
+      }
+      postCounts
+    }
+  }
+  ${UserFragmentDoc}
+`;
+
+/**
+ * __useGetProfileQuery__
+ *
+ * To run a query within a React component, call `useGetProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProfileQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useGetProfileQuery(
+  baseOptions: Apollo.QueryHookOptions<GetProfileQuery, GetProfileQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, options);
+}
+export function useGetProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetProfileQuery, GetProfileQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetProfileQuery, GetProfileQueryVariables>(
+    GetProfileDocument,
+    options,
+  );
+}
+export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
+export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
+export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
 export const SearchUserDocument = gql`
   query SearchUser($query: String!, $limit: Int!) {
     searchUser(query: $query, limit: $limit) {

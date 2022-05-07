@@ -11,9 +11,10 @@ import IconShare from './Icon/IconShare';
 interface ActionsProps {
   post: PostFragment;
   className?: string;
+  onComment?: () => void;
 }
 
-const Actions = ({ className, post }: ActionsProps) => {
+const Actions = ({ className, post, onComment }: ActionsProps) => {
   const { isLiked, reactPost } = usePost(post);
 
   return (
@@ -24,7 +25,7 @@ const Actions = ({ className, post }: ActionsProps) => {
           className={clsx('cursor-pointer', !isLiked && 'hover:opacity-60')}
           active={isLiked}
         />
-        <IconComment className={clsx('cursor-pointer', 'hover:opacity-60')} />
+        <IconComment onClick={onComment} className={clsx('cursor-pointer', 'hover:opacity-60')} />
         <IconShare className={clsx('cursor-pointer', 'hover:opacity-60')} />
       </div>
       <IconSave className={clsx('cursor-pointer', 'hover:opacity-60')} />

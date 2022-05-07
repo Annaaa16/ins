@@ -5,11 +5,11 @@ module.exports = {
   base: {
     black: '#262626',
     gray: '#8e8e8e',
-    red: '#db4437',
+    red: '#ed4956',
     green: '#78de45',
   },
   modal: {
-    DEFAULT: 'rgb(0 0 0 / 0.85)',
-    light: 'rgb(0 0 0 / 0.65)',
+    DEFAULT: 'rgb(0 0 0 / 0.65)',
+    light: 'rgb(0 0 0 / 0.55)',
   },
 };

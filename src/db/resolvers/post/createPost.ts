@@ -36,13 +36,18 @@ const createPost = (Base: ClassType) => {
           caption,
           photo,
           user: userId,
-        });
+        }).then((res) =>
+          res.populate([
+            { path: 'user', populate: ['followers', 'following'] },
+            { path: 'reactions' },
+          ]),
+        );
 
         return {
           code: 201,
           success: true,
           message: 'The post has been created successfully',
-          post: (await newPost.populate('user')).toObject(),
+          post: newPost.toObject(),
         };
       });
     }
