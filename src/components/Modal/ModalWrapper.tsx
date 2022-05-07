@@ -11,6 +11,7 @@ interface ModalProps {
   modalType: ModalType;
   lightOverlay?: boolean;
   hideCloseButton?: boolean;
+  canClose?: boolean;
   className?: string;
   closeHandler?: () => void;
 }
@@ -20,6 +21,7 @@ const ModalWrapper = ({
   modalType,
   hideCloseButton = false,
   lightOverlay = false,
+  canClose = true,
   children,
   closeHandler,
 }: ModalProps) => {
@@ -28,7 +30,7 @@ const ModalWrapper = ({
   const closeModal = () => {
     if (closeHandler) closeHandler();
 
-    hideModal(modalType);
+    if (canClose) hideModal(modalType);
   };
 
   return (
