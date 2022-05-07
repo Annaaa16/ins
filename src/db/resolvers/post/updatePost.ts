@@ -63,22 +63,14 @@ const updatePost = (Base: ClassType) => {
         }
 
         const updatedPost = await Post.findByIdAndUpdate(postId, newPost, { new: true })
-          .populate('user')
-          .populate('reactions')
+          .populate([{ path: 'user', populate: ['followers', 'following'] }, { path: 'reactions' }])
           .lean();
-
-        if (!updatedPost)
-          return {
-            code: 404,
-            success: false,
-            message: 'Post not found',
-          };
 
         return {
           code: 200,
           success: true,
           message: 'Post is updated',
-          post: updatedPost,
+          post: updatedPost!,
         };
       });
     }
