@@ -12,6 +12,10 @@
       @apply opacity-70;
     }
 
+    &--primary {
+      @apply text-white bg-primary;
+    }
+
     &--disabled {
       @apply opacity-50 
       cursor-default pointer-events-none;

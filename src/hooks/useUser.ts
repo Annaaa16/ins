@@ -1,14 +1,21 @@
 import { useRouter } from 'next/router';
 
+// types
+import { Callback } from '~/types/utils';
+
+type VisitProfile = (username: string, callback?: Callback) => void;
+
 interface UseUserReturn {
-  visitProfile: (username: string) => void;
+  visitProfile: VisitProfile;
 }
 
 export const useUser = (): UseUserReturn => {
   const router = useRouter();
 
-  const visitProfile = (username: string) => {
-    router.push(username);
+  const visitProfile: VisitProfile = async (username, callback) => {
+    await router.push(username);
+
+    if (callback) callback();
   };
 
   return { visitProfile };

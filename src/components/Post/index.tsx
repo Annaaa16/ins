@@ -17,7 +17,7 @@ const PostFragment = (props: PostFragment) => {
 
   const [caption, setCaption] = useState<string>('');
 
-  const [createComment] = useCreateCommentMutation();
+  const [createComment, { loading: createCommentLoading }] = useCreateCommentMutation();
   const dispatch = useStoreDispatch();
 
   const handleCreateComment = async () => {
@@ -47,7 +47,12 @@ const PostFragment = (props: PostFragment) => {
       <PostHeader {...props} />
       <PostPhoto {...props} />
       <PostBody {...props} />
-      <CommentField onSubmit={handleCreateComment} caption={caption} onSetCaption={setCaption} />
+      <CommentField
+        loading={createCommentLoading}
+        onSubmit={handleCreateComment}
+        caption={caption}
+        onSetCaption={setCaption}
+      />
     </div>
   );
 };

@@ -18,7 +18,6 @@ const ModalPostActions = () => {
   const [deletePost, { loading: deletePostLoading }] = useDeletePostMutation();
   const { isFollowed, followUserLoading, currentUser, followUser } = useFollowUser(
     selectedPost!.user,
-    selectedPost!._id,
   );
   const dispatch = useStoreDispatch();
 
@@ -59,6 +58,8 @@ const ModalPostActions = () => {
   addPostAction('unfollow', () => followUser('unfollow'));
 
   addPostAction('follow', () => followUser('follow'));
+
+  addPostAction('cancel', () => hideModal(MODAL_TYPES.POST_ACTIONS));
 
   addPostAction('edit', () => {
     dispatch(postActions.setCurrentAction('update'));

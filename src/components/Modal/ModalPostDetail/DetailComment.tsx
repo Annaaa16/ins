@@ -2,11 +2,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 
+import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import { CommentFragment } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { displayLikeCounts } from '~/helpers/format';
-import { useComment } from '~/hooks';
+import { useComment, useUser } from '~/hooks';
 
 import IconHeart from '~/components/Icon/IconHeart';
 import Skeleton from '~/components/Skeleton';
@@ -22,7 +23,15 @@ interface DetailCommentProps {
 const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentProps) => {
   const { user, caption } = comment;
 
+  const { hideModal } = useModalContext();
+
+  const { visitProfile } = useUser();
   const dispatch = useStoreDispatch();
+
+  const onVisitProfile = () => {
+    hideModal(MODAL_TYPES.POST_DETAIL);
+    visitProfile(user.username);
+  };
 
   const onSelectOptions = () => {
     dispatch(commentActions.setSelectedComment(comment));
@@ -34,13 +43,17 @@ const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentPro
   return (
     <div className='group flex py-2'>
       <Skeleton
+        onClick={onVisitProfile}
         src={avatar.src}
         rounded
         className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
         objectFit='cover'
       />
       <div className='leading-normal'>
-        <span className={clsx('font-medium mr-1', 'cursor-pointer select-none')}>
+        <span
+          onClick={onVisitProfile}
+          className={clsx('font-medium mr-1', 'cursor-pointer select-none')}
+        >
           {user.username}
         </span>
         <p className='inline'>{caption}</p>
