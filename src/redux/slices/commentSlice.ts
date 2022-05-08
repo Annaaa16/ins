@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // types
 import {
@@ -102,6 +103,12 @@ const commentSlice = createSlice({
     setSelectedComment: (state, action: PayloadAction<CommentFragment | null>) => {
       state.selectedComment = action.payload;
     },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, { payload }) => ({
+      ...state,
+      ...payload.comment,
+    }),
   },
 });
 

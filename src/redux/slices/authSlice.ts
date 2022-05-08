@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // types
 import { AuthSliceState, FollowUserReducer } from '../types/auth';
@@ -56,6 +57,12 @@ const authSlice = createSlice({
     setSelectedUser: (state, action: PayloadAction<UserFragment>) => {
       state.selectedUser = action.payload;
     },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, { payload }) => ({
+      ...state,
+      ...payload.auth,
+    }),
   },
 });
 

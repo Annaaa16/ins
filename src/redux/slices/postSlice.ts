@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // types
 import {
@@ -20,7 +21,7 @@ const initialState: PostSliceState = {
   currentAction: null,
 };
 
-const postSlice = createSlice({
+export const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
@@ -109,6 +110,12 @@ const postSlice = createSlice({
         if (post._id === postId) post.commentCounts -= 1;
       });
     },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, { payload }) => ({
+      ...state,
+      ...payload.post,
+    }),
   },
 });
 
