@@ -1,6 +1,7 @@
 // types
 import { Callback, FollowAction } from '~/types/utils';
 
+import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import { FollowType, useFollowUserMutation, UserFragment } from '~/types/generated';
 import { useAuthSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
@@ -15,9 +16,12 @@ interface UseFollowUserReturn {
   followUserLoading: boolean;
   currentUser: UserFragment;
   followUser: FollowUser;
+  showUnfollowModal: () => void;
+  handleFollowActions: (actionDone?: Callback) => void;
 }
 
 export const useFollowUser = (selectedUser: UserFragment, postId?: string): UseFollowUserReturn => {
+  const { showModal } = useModalContext();
   const currentUser = useAuthSelector().currentUser!;
 
   const [followUserMutate, { loading: followUserLoading }] = useFollowUserMutation();
@@ -49,15 +53,34 @@ export const useFollowUser = (selectedUser: UserFragment, postId?: string): UseF
       }),
     );
 
-    if (postId != null)
-      dispatch(
-        postActions.followUserByPost({
-          postId,
-          currentUser: currentUser,
-          followType,
-        }),
-      );
+    dispatch(
+      postActions.followUserByPost({
+        userId: selectedUser._id,
+        currentUser: currentUser,
+        followType,
+      }),
+    );
   };
 
-  return { isFollowed, canFollow, followUserLoading, currentUser, followUser };
+  const showUnfollowModal = () => {
+    if (!isFollowed) return;
+
+    showModal(MODAL_TYPES.UNFOLLOW);
+    dispatch(authActions.setSelectedUser(selectedUser));
+  };
+
+  const handleFollowActions = (actionDone?: Callback) => {
+    if (isFollowed) showUnfollowModal();
+    else followUser('follow', actionDone);
+  };
+
+  return {
+    isFollowed,
+    canFollow,
+    followUserLoading,
+    currentUser,
+    followUser,
+    showUnfollowModal,
+    handleFollowActions,
+  };
 };
