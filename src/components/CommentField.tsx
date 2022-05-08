@@ -5,15 +5,23 @@ import clsx from 'clsx';
 import { isEmptyInput } from '~/helpers/string';
 
 import IconEmoji from './Icon/IconEmoji';
+import { SpinnerRing } from './Spinner';
 
 interface CommentFieldProps {
   caption: string;
+  loading?: boolean;
   className?: string;
   onSubmit: () => void;
   onSetCaption: Dispatch<SetStateAction<string>>;
 }
 
-const CommentField = ({ className, caption, onSetCaption, onSubmit }: CommentFieldProps) => {
+const CommentField = ({
+  className,
+  caption,
+  loading,
+  onSetCaption,
+  onSubmit,
+}: CommentFieldProps) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -32,15 +40,19 @@ const CommentField = ({ className, caption, onSetCaption, onSubmit }: CommentFie
         className={clsx('text-sm w-full', 'placeholder:text-base-gray')}
         placeholder='Add a comment...'
       />
-      <button
-        className={clsx(
-          'btn ml-auto text-sm',
-          'text-primary',
-          isEmptyInput(caption) && 'btn--disabled',
-        )}
-      >
-        Post
-      </button>
+      {loading ? (
+        <SpinnerRing className='text-base-gray' />
+      ) : (
+        <button
+          className={clsx(
+            'btn ml-auto text-sm',
+            'text-primary',
+            isEmptyInput(caption) && 'btn--disabled',
+          )}
+        >
+          Post
+        </button>
+      )}
     </form>
   );
 };

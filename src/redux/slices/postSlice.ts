@@ -66,7 +66,7 @@ const postSlice = createSlice({
 
     followUserByPost: (
       state,
-      { payload: { postId, currentUser, followType } }: PayloadAction<FollowUserReducer>,
+      { payload: { userId, currentUser, followType } }: PayloadAction<FollowUserReducer>,
     ) => {
       const handleFollowUserByPost = (post: PostFragment) => {
         if (followType === FollowType.Follow) post.user.followers.push(currentUser);
@@ -77,7 +77,7 @@ const postSlice = createSlice({
       };
 
       state.posts.forEach((post) => {
-        if (post._id === postId) handleFollowUserByPost(post);
+        if (post.user._id === userId) handleFollowUserByPost(post);
       });
 
       if (state.selectedPost != null) handleFollowUserByPost(state.selectedPost);

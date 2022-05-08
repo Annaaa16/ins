@@ -30,7 +30,7 @@ export interface IncreaseCommentCountsReducer {
 }
 
 export interface FollowUserReducer {
-  postId: string;
+  userId: string;
   followType: FollowType;
   currentUser: UserFragment;
 }

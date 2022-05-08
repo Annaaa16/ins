@@ -1,0 +1,9 @@
+query GetSuggestions($limit: Int!, $cursor: String) {
+  getSuggestions(limit: $limit, cursor: $cursor) {
+    code
+    success
+    users {
+      ...user
+    }
+  }
+}

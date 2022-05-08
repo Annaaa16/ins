@@ -6,19 +6,18 @@ import clsx from 'clsx';
 
 import { LIMITS } from '~/constants';
 import { BaseUserFragment, useSearchUserLazyQuery } from '~/types/generated';
-import { getNameInMail } from '~/helpers/format';
 import { useClickOutside, useDebounce } from '~/hooks';
 
-import { SpinnerLogo, SpinnerRing } from '../Spinner';
-import Skeleton from '../Skeleton';
+import { SpinnerRing } from '../Spinner';
+import HeaderMiddleLoading from './HeaderMiddleLoading';
 
-import avatar from '~/assets/avatar.png';
+import HeaderMiddleSearch from './HeaderMiddleSearch';
 
 const HeaderMiddle = () => {
   const [searchedUsers, setSearchedUsers] = useState<BaseUserFragment[]>([]);
   const [isOpenSearchList, setIsOpenSearchList] = useState<boolean>(false);
 
-  const searchListRef = useRef<HTMLUListElement>(null);
+  const searchListRef = useRef<HTMLDivElement>(null);
 
   const [searchUser] = useSearchUserLazyQuery();
   const [debouncing, handleDebounce] = useDebounce();
@@ -62,42 +61,18 @@ const HeaderMiddle = () => {
 
       {isOpenSearchList && (
         <div
+          ref={searchListRef}
           className={clsx(
             'abs-center-x top-[calc(100%+10px)]',
-            'w-[140%] h-96 max-h-96 shadow-[0_1px_5px_1px_rgba(0,0,0,0.0975)] rounded-md py-2 overflow-y-auto',
+            'w-[140%] shadow-[0_1px_5px_1px_rgba(0,0,0,0.0975)] rounded-md py-2 overflow-y-auto',
             'bg-white',
+            debouncing || searchedUsers.length === 0 ? 'h-96' : 'max-h-96',
           )}
         >
           {debouncing && searchedUsers.length === 0 ? (
-            <div className='flex-center h-full'>
-              <SpinnerLogo className='w-14 h-14' />
-            </div>
+            <HeaderMiddleLoading />
           ) : (
-            <ul ref={searchListRef} className='w-full h-full'>
-              {searchedUsers.map((user) => (
-                <li
-                  key={user._id}
-                  className={clsx(
-                    'flex items-center w-full px-4 py-2',
-                    'cursor-pointer',
-                    'hover:bg-gray-50',
-                  )}
-                >
-                  <Skeleton
-                    src={user.avatar ?? avatar.src}
-                    className='w-10 h-10 mr-2.5'
-                    objectFit='cover'
-                    rounded
-                  />
-                  <div className='min-w-0 text-sm-1'>
-                    <div className='font-medium truncate'>{getNameInMail(user.email)}</div>
-                    <div className={clsx('mt-0.5 w-full truncate', 'text-base-gray')}>
-                      {user.username}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <HeaderMiddleSearch users={searchedUsers} />
           )}
         </div>
       )}

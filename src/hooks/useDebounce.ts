@@ -22,8 +22,8 @@ export const useDebounce = (timing = 300): UseDebounceReturn => {
   };
 
   const handleDebounce: HandleDebounce = (callback, emptyInputHandler) => {
-    return (e: ChangeEvent<HTMLInputElement>) => {
-      if (isEmptyInput(e.target.value)) {
+    return (event) => {
+      if (isEmptyInput(event.target.value)) {
         if (emptyInputHandler) emptyInputHandler();
 
         clearDebounce();
@@ -37,7 +37,7 @@ export const useDebounce = (timing = 300): UseDebounceReturn => {
 
       debounceRef.current = window.setTimeout(async () => {
         try {
-          await callback(e.target.value);
+          await callback(event.target.value);
         } finally {
           setDebouncing(false);
         }

@@ -9,11 +9,12 @@ import { LIMITS } from '~/constants';
 import { useCreateCommentMutation, useGetCommentsLazyQuery } from '~/types/generated';
 import { useCommentSelector, usePostSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
-import { useIntersectionObserver } from '~/hooks';
+import { useFollowUser, useIntersectionObserver } from '~/hooks';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { postActions } from '~/redux/slices/postSlice';
 import { displayLikeCounts } from '~/helpers/format';
 
+import { SpinnerRing } from '~/components/Spinner';
 import Skeleton from '~/components/Skeleton';
 import Actions from '~/components/Actions';
 import CommentField from '~/components/CommentField';
@@ -32,14 +33,16 @@ const ModalPostDetail = () => {
   const { selectedPost } = usePostSelector();
   const { comments } = useCommentSelector();
 
-  const [getComments, { loading }] = useGetCommentsLazyQuery();
+  const [getComments, { loading: getCommentsLoading }] = useGetCommentsLazyQuery();
   const [createComment, { loading: createCommentLoading }] = useCreateCommentMutation();
   const { observerRef, containerObserverRef, isIntersecting } = useIntersectionObserver({
     rootMargin: '300px',
   });
   const dispatch = useStoreDispatch();
 
-  const { _id: postId, user, photo: postPhoto, reactions } = selectedPost!;
+  const { _id: postId, user, photo: postPhoto, reactions, caption: postCaption } = selectedPost!;
+
+  const { isFollowed, followUserLoading, handleFollowActions } = useFollowUser(user);
 
   const {
     cursor: commentsCursor = null,
@@ -76,7 +79,7 @@ const ModalPostDetail = () => {
     if (
       !isIntersecting ||
       !hasMoreComments ||
-      loading ||
+      getCommentsLoading ||
       calledCursorsRef.current.includes(commentsCursor)
     )
       return;
@@ -105,7 +108,15 @@ const ModalPostDetail = () => {
         );
       }
     })();
-  }, [commentsCursor, hasMoreComments, loading, isIntersecting, postId, dispatch, getComments]);
+  }, [
+    commentsCursor,
+    hasMoreComments,
+    getCommentsLoading,
+    isIntersecting,
+    postId,
+    dispatch,
+    getComments,
+  ]);
 
   return (
     <ModalWrapper
@@ -132,14 +143,38 @@ const ModalPostDetail = () => {
             className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
             objectFit='cover'
           />
+
           <span className={clsx('font-medium mr-3', 'cursor-pointer')}>{user.username}</span>
-          <button className={clsx('btn', 'text-primary', 'cursor-pointer')}>Follow</button>
+
+          {!isFollowed && (
+            <button
+              onClick={() => handleFollowActions()}
+              className={clsx('btn', 'text-primary', 'cursor-pointer')}
+            >
+              {followUserLoading ? <SpinnerRing className='text-base-gray' /> : 'Follow'}
+            </button>
+          )}
+
           <button onClick={() => showModal(MODAL_TYPES.POST_ACTIONS)} className='btn ml-auto'>
             <FontAwesomeIcon className='text-lg' icon={faEllipsis} />
           </button>
         </div>
 
         <div ref={containerObserverRef} className='px-4 overflow-y-auto'>
+          <div className='group flex items-center py-2'>
+            <Skeleton
+              src={user.avatar ?? avatar.src}
+              rounded
+              className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
+              objectFit='cover'
+            />
+            <div className='leading-normal'>
+              <span className={clsx('font-medium mr-1', 'cursor-pointer select-none')}>
+                {user.username}
+              </span>
+              <p className='inline'>{postCaption}</p>
+            </div>
+          </div>
           {commentsData.map((comment) => (
             <DetailComment
               key={comment._id}
@@ -169,6 +204,7 @@ const ModalPostDetail = () => {
         </div>
 
         <CommentField
+          loading={createCommentLoading}
           onSubmit={handleCreateComment}
           className='flex-shrink-0'
           caption={caption}

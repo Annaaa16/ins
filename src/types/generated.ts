@@ -118,6 +118,16 @@ export type GetSessionResponse = {
   user?: Maybe<User>;
 };
 
+export type GetSuggestionsResponse = {
+  __typename?: 'GetSuggestionsResponse';
+  code: Scalars['Float'];
+  cursor?: Maybe<Scalars['String']>;
+  hasMore?: Maybe<Scalars['Boolean']>;
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+  users?: Maybe<Array<User>>;
+};
+
 export type LoginInput = {
   password: Scalars['String'];
   username: Scalars['String'];
@@ -321,6 +331,7 @@ export type Query = {
   getPosts: PaginatedPostsResponse;
   getProfile: GetProfileResponse;
   getSession: GetSessionResponse;
+  getSuggestions: GetSuggestionsResponse;
   searchUser: SearchUserResponse;
 };
 
@@ -353,6 +364,11 @@ export type QueryGetPostsArgs = {
 
 export type QueryGetProfileArgs = {
   username: Scalars['String'];
+};
+
+export type QueryGetSuggestionsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 export type QuerySearchUserArgs = {
@@ -1543,6 +1559,44 @@ export type GetProfileQuery = {
         avatar?: string | null;
       }>;
     } | null;
+  };
+};
+
+export type GetSuggestionsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetSuggestionsQuery = {
+  __typename?: 'Query';
+  getSuggestions: {
+    __typename?: 'GetSuggestionsResponse';
+    code: number;
+    success: boolean;
+    users?: Array<{
+      __typename?: 'User';
+      _id: string;
+      email: string;
+      username: string;
+      account: string;
+      avatar?: string | null;
+      followers: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+      following: Array<{
+        __typename?: 'User';
+        _id: string;
+        email: string;
+        username: string;
+        account: string;
+        avatar?: string | null;
+      }>;
+    }> | null;
   };
 };
 
@@ -2958,6 +3012,60 @@ export function useGetProfileLazyQuery(
 export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
 export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
 export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
+export const GetSuggestionsDocument = gql`
+  query GetSuggestions($limit: Int!, $cursor: String) {
+    getSuggestions(limit: $limit, cursor: $cursor) {
+      code
+      success
+      users {
+        ...user
+      }
+    }
+  }
+  ${UserFragmentDoc}
+`;
+
+/**
+ * __useGetSuggestionsQuery__
+ *
+ * To run a query within a React component, call `useGetSuggestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSuggestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSuggestionsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useGetSuggestionsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetSuggestionsQuery, GetSuggestionsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetSuggestionsQuery, GetSuggestionsQueryVariables>(
+    GetSuggestionsDocument,
+    options,
+  );
+}
+export function useGetSuggestionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetSuggestionsQuery, GetSuggestionsQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetSuggestionsQuery, GetSuggestionsQueryVariables>(
+    GetSuggestionsDocument,
+    options,
+  );
+}
+export type GetSuggestionsQueryHookResult = ReturnType<typeof useGetSuggestionsQuery>;
+export type GetSuggestionsLazyQueryHookResult = ReturnType<typeof useGetSuggestionsLazyQuery>;
+export type GetSuggestionsQueryResult = Apollo.QueryResult<
+  GetSuggestionsQuery,
+  GetSuggestionsQueryVariables
+>;
 export const SearchUserDocument = gql`
   query SearchUser($query: String!, $limit: Int!) {
     searchUser(query: $query, limit: $limit) {

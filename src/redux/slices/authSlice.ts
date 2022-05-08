@@ -7,6 +7,7 @@ import { FollowType, UserFragment } from '~/types/generated';
 const initialState: AuthSliceState = {
   currentUser: null,
   selectedUser: null,
+  suggestedUsers: [],
 };
 
 const authSlice = createSlice({
@@ -28,13 +29,28 @@ const authSlice = createSlice({
           (followingUser) => followingUser._id !== user._id,
         );
 
-      // Handle follow of profile page
-      if (state.selectedUser != null)
-        if (followType === FollowType.Follow) state.selectedUser.followers.push(currentUser);
+      const handleMeWithFollowers = (user: UserFragment) => {
+        if (followType === FollowType.Follow) user.followers.push(currentUser);
         else
-          state.selectedUser.followers = state.selectedUser.followers.filter(
+          user.followers = user.followers.filter(
             (followedUser) => followedUser._id !== currentUser._id,
           );
+      };
+
+      // Handle follow of profile page
+      if (state.selectedUser != null) handleMeWithFollowers(state.selectedUser);
+
+      for (const suggestedUser of state.suggestedUsers) {
+        if (suggestedUser._id === user._id) {
+          handleMeWithFollowers(suggestedUser);
+
+          break;
+        }
+      }
+    },
+
+    addFetchedSuggestedUsers: (state, action: PayloadAction<UserFragment[]>) => {
+      state.suggestedUsers.push(...action.payload);
     },
 
     setSelectedUser: (state, action: PayloadAction<UserFragment>) => {
