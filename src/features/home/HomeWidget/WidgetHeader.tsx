@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 
 import { useAuthSelector } from '~/redux/selectors';
+import { getNameInMail } from '~/helpers/format';
 
 import avatar from '~/assets/avatar.png';
-import { getNameInMail } from '~/helpers/format';
 
 const WidgetHeader = () => {
   const { currentUser } = useAuthSelector();
