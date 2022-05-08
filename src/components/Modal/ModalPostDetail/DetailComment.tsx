@@ -8,6 +8,7 @@ import { useStoreDispatch } from '~/redux/store';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { displayLikeCounts } from '~/helpers/format';
 import { useComment, useUser } from '~/hooks';
+import { postActions } from '~/redux/slices/postSlice';
 
 import IconHeart from '~/components/Icon/IconHeart';
 import Skeleton from '~/components/Skeleton';
@@ -29,8 +30,10 @@ const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentPro
   const dispatch = useStoreDispatch();
 
   const onVisitProfile = () => {
-    hideModal(MODAL_TYPES.POST_DETAIL);
-    visitProfile(user.username);
+    visitProfile(user.username, () => {
+      hideModal(MODAL_TYPES.POST_DETAIL);
+      dispatch(postActions.setSelectedPost(null));
+    });
   };
 
   const onSelectOptions = () => {
