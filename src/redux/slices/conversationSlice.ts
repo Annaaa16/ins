@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // types
 import {
@@ -196,6 +197,12 @@ const conversationSlice = createSlice({
 
       messages[messages.length - 1].seen = true;
     },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, { payload }) => ({
+      ...state,
+      ...payload.conversation,
+    }),
   },
 });
 

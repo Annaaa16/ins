@@ -1,15 +1,23 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
+import { nextReduxCookieMiddleware } from 'next-redux-cookie-wrapper';
 
 // types
 import { Store, StoreDispatch, RootState } from '~/types/store';
 
-import rootReducer, { combinedReducers } from './reducer';
+import { combinedReducers } from './reducer';
+import { postSlice } from './slices/postSlice';
 
 export const makeStore = () =>
   configureStore({
-    reducer: rootReducer as typeof combinedReducers,
+    reducer: combinedReducers,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().prepend(
+        nextReduxCookieMiddleware({
+          subtrees: [`${postSlice.name}.selectedPost`],
+        }),
+      ),
   });
 
 export const wrapper = createWrapper<Store>(makeStore);
