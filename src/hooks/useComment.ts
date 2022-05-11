@@ -9,19 +9,14 @@ interface UseCommentReturn {
 }
 
 export const useComment = (comment: CommentFragment, postId: string): UseCommentReturn => {
-  const { currentUser } = useAuthSelector();
+  const currentUser = useAuthSelector().currentUser!;
 
   const [reactCommentMutate] = useReactCommentMutation();
   const dispatch = useStoreDispatch();
 
-  let isLiked = false;
-  let reactComment = () => {};
+  const isLiked = comment.reactions.some((reactedUser) => reactedUser._id === currentUser._id);
 
-  if (currentUser == null) return { isLiked, reactComment };
-
-  isLiked = comment.reactions.some((reactedUser) => reactedUser._id === currentUser._id);
-
-  reactComment = () => {
+  const reactComment = () => {
     if (typeof isLiked === 'undefined' || currentUser == null) return;
 
     const reactionType = isLiked ? ReactionType.Unlike : ReactionType.Like;
