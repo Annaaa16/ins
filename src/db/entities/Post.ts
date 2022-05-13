@@ -17,7 +17,7 @@ export class Post extends TimeStamps {
 
   @Field((_type) => [User])
   @prop({ type: [mongoose.Types.ObjectId], ref: () => User, default: [] })
-  reactions!: string[];
+  reactions!: Ref<User>[];
 
   @Field({ nullable: true })
   @prop({ type: String, default: null })

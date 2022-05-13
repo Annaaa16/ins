@@ -4,11 +4,7 @@ fragment post on Post {
   photo
   commentCounts
   reactions {
-    _id
-    email
-    username
-    account
-    avatar
+    ...baseUser
   }
   user {
     ...user

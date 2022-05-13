@@ -1705,11 +1705,7 @@ export const PostFragmentDoc = gql`
     photo
     commentCounts
     reactions {
-      _id
-      email
-      username
-      account
-      avatar
+      ...baseUser
     }
     user {
       ...user
@@ -1717,6 +1713,7 @@ export const PostFragmentDoc = gql`
     createdAt
     updatedAt
   }
+  ${BaseUserFragmentDoc}
   ${UserFragmentDoc}
 `;
 export const PostMutationResponseFragmentDoc = gql`
