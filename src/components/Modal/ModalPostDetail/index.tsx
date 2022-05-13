@@ -127,7 +127,11 @@ const ModalPostDetail = () => {
       )}
     >
       {postPhoto != null && (
-        <Skeleton objectFit='cover' className='hidden lg:block w-3/5 min-h-full' src={postPhoto} />
+        <Skeleton
+          objectFit='cover'
+          className={clsx('hidden lg:block w-3/5 min-h-full border-r border-line', 'bg-white')}
+          src={postPhoto}
+        />
       )}
 
       <div
