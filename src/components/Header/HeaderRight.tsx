@@ -1,23 +1,38 @@
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import clsx from 'clsx';
 
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
+import { useAuthSelector } from '~/redux/selectors';
 import { ROUTES } from '~/constants';
+import { useClickOutside } from '~/hooks';
 
 import IconCompass from '../Icon/IconCompass';
 import IconCreate from '../Icon/IconCreate';
 import IconHeart from '../Icon/IconHeart';
 import IconHome from '../Icon/IconHome';
 import IconMessenger from '../Icon/IconMessenger';
+import Skeleton from '../Skeleton';
+
+import avatar from '~/assets/avatar.png';
+import HeaderRightMenu from './HeaderRightMenu';
 
 const HeaderRight = () => {
+  const [isShowMenu, setIsShowMenu] = useState<boolean>(false);
+
+  const menuRef = useRef<HTMLDivElement>(null);
+  const avatarRef = useRef<HTMLDivElement>(null);
+
   const { modalTypes, showModal } = useModalContext();
+  const { currentUser } = useAuthSelector();
 
   const router = useRouter();
 
+  useClickOutside([menuRef, avatarRef], () => setIsShowMenu(false));
+
   return (
-    <div className='flex justify-end gap-x-5'>
+    <div className='flex items-center justify-end gap-x-5'>
       <IconHome
         onClick={() => router.push(ROUTES.HOME)}
         className={clsx('cursor-pointer')}
@@ -35,6 +50,17 @@ const HeaderRight = () => {
       />
       <IconCompass className={clsx('cursor-pointer')} active={false} />
       <IconHeart className={clsx('cursor-pointer')} active={false} />
+
+      <div className={clsx('relative', 'cursor-pointer')}>
+        <Skeleton
+          ref={avatarRef}
+          onClick={() => setIsShowMenu(!isShowMenu)}
+          rounded
+          className='w-7 h-7'
+          src={currentUser!.avatar ?? avatar.src}
+        />
+        {isShowMenu && <HeaderRightMenu ref={menuRef} />}
+      </div>
     </div>
   );
 };
