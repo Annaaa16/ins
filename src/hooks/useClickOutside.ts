@@ -8,10 +8,10 @@ export const useClickOutside = <T extends HTMLElement = HTMLDivElement>(
 ): void => {
   const listener = (e: MouseEvent) => {
     const checkClickOutside = (el: RefObject<T>) =>
-      !!el.current && !el.current.contains(e.target as Node);
+      el.current != null && !el.current.contains(e.target as Node);
 
     const isClickOutside = Array.isArray(element)
-      ? element.some(checkClickOutside)
+      ? element.every(checkClickOutside)
       : checkClickOutside(element);
 
     if (isClickOutside) handler(e);
