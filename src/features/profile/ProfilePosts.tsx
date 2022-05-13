@@ -13,6 +13,7 @@ import { useStoreDispatch } from '~/redux/store';
 import { useGetPostsLazyQuery } from '~/types/generated';
 
 import IconHeart from '~/components/Icon/IconHeart';
+import IconPhotoVideo from '~/components/Icon/IconPhotoVideo';
 import Skeleton from '~/components/Skeleton';
 
 import photo from '~/assets/photo.png';
@@ -58,6 +59,14 @@ const ProfilePosts = ({ userId }: ProfilePostsProps) => {
 
     if (isIntersecting && cursor != null) fetchNewPosts();
   }, [userId, cursor, isIntersecting, dispatch, getPosts]);
+
+  if (posts.length === 0)
+    return (
+      <div className={clsx('text-center mt-24')}>
+        <IconPhotoVideo className={clsx('mx-auto', 'text-base-gray')} />
+        <p className={clsx('text-2xl mt-3', 'text-base-gray')}>No Posts Yet</p>
+      </div>
+    );
 
   return (
     <div className='grid grid-cols-3 gap-7 mt-10'>
