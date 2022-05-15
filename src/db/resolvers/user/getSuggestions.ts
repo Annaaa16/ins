@@ -13,7 +13,6 @@ import { User as UserEntity } from '~/db/entities';
 
 import { verifyAuth } from '~/db/middlewares';
 import respond from '~/helpers/respond';
-import paginate from '~/helpers/paginate';
 
 const getSuggestions = (Base: ClassType) => {
   @Resolver()
@@ -21,30 +20,33 @@ const getSuggestions = (Base: ClassType) => {
     @Query((_returns) => GetSuggestionsResponse)
     @UseMiddleware(verifyAuth)
     getSuggestions(
+      @Arg('page', (_type) => Int) page: number,
       @Arg('limit', (_type) => Int) limit: number,
-      @Arg('cursor', (_type) => String, { nullable: true }) cursor: string | null,
       @Ctx() { req: { userId } }: Context,
     ): Promise<GetSuggestionsResponse> {
       return respond(async () => {
-        const { filterQuery, sort, getNextCursor } = paginate(User, ['followers', -1], cursor, {
+        const query = {
           _id: { $not: { $eq: userId } },
           followers: { $nin: userId },
-        } as FilterQuery<UserEntity>);
+        } as FilterQuery<UserEntity>;
 
-        const users = await User.find(filterQuery)
-          .sort([sort])
+        const total = await User.countDocuments(query);
+
+        const startIndex = (page - 1) * limit;
+        const nextPage = page * limit < total ? page + 1 : null;
+
+        const users = await User.find(query)
+          .sort({ followers: -1, _id: 1 })
+          .skip(startIndex)
           .limit(limit)
           .populate(['followers', 'following'])
           .lean();
-
-        const { cursor: nextCursor, hasMore } = await getNextCursor(users);
 
         return {
           code: 200,
           success: true,
           users,
-          cursor: nextCursor,
-          hasMore,
+          nextPage,
         };
       });
     }

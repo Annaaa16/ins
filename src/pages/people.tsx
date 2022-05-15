@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { GetServerSideProps } from 'next';
 
 import clsx from 'clsx';
@@ -6,20 +7,64 @@ import {
   GetSuggestionsDocument,
   GetSuggestionsQuery,
   GetSuggestionsQueryVariables,
+  useGetSuggestionsLazyQuery,
 } from '~/types/generated';
 import { LIMITS } from '~/constants';
 import { withRoute } from '~/hocs';
 import { initializeApollo } from '~/lib/apolloClient';
+import { useIntersectionObserver } from '~/hooks';
 import { authActions } from '~/redux/slices/authSlice';
 import { useAuthSelector } from '~/redux/selectors';
+import { useStoreDispatch } from '~/redux/store';
 
+import { SpinnerRing } from '~/components/Spinner';
 import Header from '~/components/Header';
 import Meta from '~/layouts/Meta';
 import PeopleItem from '~/features/people/PeopleItem';
 import PeopleEmpty from '~/features/people/PeopleEmpty';
 
-const People = () => {
+interface PeopleProps {
+  nextPage: number | null;
+}
+
+const People = ({ nextPage }: PeopleProps) => {
+  const [page, setPage] = useState<number | null>(nextPage);
+
+  const calledPagesRef = useRef<Array<number | null>>([]);
+
   const { suggestedUsers } = useAuthSelector();
+
+  const [getSuggestions, { loading: getSuggestionsLoading }] = useGetSuggestionsLazyQuery();
+  const { isIntersecting, containerObserverRef, observerRef } = useIntersectionObserver();
+  const dispatch = useStoreDispatch();
+
+  useEffect(() => {
+    if (
+      !isIntersecting ||
+      page == null ||
+      getSuggestionsLoading ||
+      calledPagesRef.current.includes(page)
+    )
+      return;
+
+    calledPagesRef.current.push(page);
+
+    (async () => {
+      const response = await getSuggestions({
+        variables: {
+          limit: LIMITS.SUGGESTED_PEOPLE,
+          page: page,
+        },
+      });
+
+      const data = response.data?.getSuggestions;
+
+      if (!data?.success) return;
+
+      dispatch(authActions.addFetchedSuggestedUsers(data.users!));
+      setPage(data.nextPage ?? null);
+    })();
+  }, [isIntersecting, page, getSuggestionsLoading, getSuggestions, dispatch]);
 
   let body = null;
 
@@ -39,7 +84,11 @@ const People = () => {
   return (
     <Meta title='Instagram'>
       <Header />
-      <main className='w-container-w mx-auto px-32 mt-header-h pt-10'>{body}</main>
+      <main ref={containerObserverRef} className='w-container-w mx-auto px-32 mt-header-h pt-10'>
+        {body}
+        <div ref={observerRef} />
+        {getSuggestionsLoading && <SpinnerRing className='mx-auto mt-5' />}
+      </main>
     </Meta>
   );
 };
@@ -54,7 +103,7 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
       query: GetSuggestionsDocument,
       variables: {
         limit: LIMITS.SUGGESTED_PEOPLE,
-        cursor: null,
+        page: 1,
       },
     });
 
@@ -68,7 +117,9 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
     dispatch(authActions.addFetchedSuggestedUsers(data.users!));
 
     return {
-      props: {},
+      props: {
+        nextPage: data.nextPage,
+      },
     };
   },
 );

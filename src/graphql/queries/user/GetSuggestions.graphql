@@ -1,7 +1,8 @@
-query GetSuggestions($limit: Int!, $cursor: String) {
-  getSuggestions(limit: $limit, cursor: $cursor) {
+query GetSuggestions($limit: Int!, $page: Int!) {
+  getSuggestions(limit: $limit, page: $page) {
     code
     success
+    nextPage
     users {
       ...user
     }

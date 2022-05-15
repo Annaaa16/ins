@@ -1,13 +1,16 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 
 // types
-import { PaginatedResponse } from '~/db/types/shared';
+import { BaseResponse } from '~/db/types/shared';
 
 // entities
 import { User } from '~/db/entities';
 
 @ObjectType()
-export class GetSuggestionsResponse extends PaginatedResponse {
+export class GetSuggestionsResponse extends BaseResponse {
   @Field((_type) => [User], { nullable: true })
   users?: User[];
+
+  @Field((_type) => Int, { nullable: true })
+  nextPage?: number | null;
 }
