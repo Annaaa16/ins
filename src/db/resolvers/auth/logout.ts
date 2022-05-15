@@ -2,17 +2,21 @@ import { ClassType, Ctx, Mutation, Resolver } from 'type-graphql';
 
 // types
 import type { Context } from '~/db/types/context';
+import { BaseResponse } from '~/db/types/shared';
 
 import { clearAllCookies } from '~/helpers/cookie';
 
 const logout = (Base: ClassType) => {
   @Resolver()
   class Logout extends Base {
-    @Mutation((_returns) => Boolean)
-    logout(@Ctx() { res }: Context): Promise<boolean> {
+    @Mutation((_returns) => BaseResponse)
+    logout(@Ctx() { res }: Context): Promise<BaseResponse> {
       clearAllCookies(res);
 
-      return Promise.resolve(true);
+      return Promise.resolve({
+        code: 200,
+        success: true,
+      });
     }
   }
 

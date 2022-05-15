@@ -1,14 +1,15 @@
 import { forwardRef } from 'react';
 
 import { faBookmark, faUser } from '@fortawesome/free-regular-svg-icons';
-import clsx from 'clsx';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRepeat, faSliders } from '@fortawesome/free-solid-svg-icons';
+import clsx from 'clsx';
 
-interface HeaderRightMenuProps {}
+import { useUser } from '~/hooks';
 
-const HeaderRightMenu = forwardRef<any, HeaderRightMenuProps>((_, forwardRef) => {
+const HeaderRightMenu = forwardRef<any, any>((_props, forwardRef) => {
+  const { currentUser, visitProfile, logout } = useUser();
+
   return (
     <ul
       ref={forwardRef}
@@ -18,7 +19,10 @@ const HeaderRightMenu = forwardRef<any, HeaderRightMenuProps>((_, forwardRef) =>
         'bg-white',
       )}
     >
-      <li className={clsx('flex items-center py-3 pl-4', 'select-none', 'hover:bg-gray-50')}>
+      <li
+        onClick={() => visitProfile(currentUser.username)}
+        className={clsx('flex items-center py-3 pl-4', 'select-none', 'hover:bg-gray-50')}
+      >
         <FontAwesomeIcon className='mr-3' icon={faUser} />
         <span>Profile</span>
       </li>
@@ -35,6 +39,7 @@ const HeaderRightMenu = forwardRef<any, HeaderRightMenuProps>((_, forwardRef) =>
         <span>Switch Accounts</span>
       </li>
       <li
+        onClick={logout}
         className={clsx(
           'flex items-center py-3 pl-4 border-t border-line',
           'select-none',
