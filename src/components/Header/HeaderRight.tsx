@@ -57,7 +57,7 @@ const HeaderRight = () => {
           onClick={() => setIsShowMenu(!isShowMenu)}
           rounded
           className='w-7 h-7'
-          src={currentUser!.avatar ?? avatar.src}
+          src={currentUser?.avatar ?? avatar.src}
         />
         {isShowMenu && <HeaderRightMenu ref={menuRef} />}
       </div>

@@ -78,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
 
     if (!getProfile.success)
       return {
-        props: {},
+        notFound: true,
       };
 
     const {
@@ -97,7 +97,7 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
 
     if (!getPosts.success)
       return {
-        props: {},
+        notFound: true,
       };
 
     dispatch(
