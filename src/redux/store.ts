@@ -8,6 +8,7 @@ import { Store, StoreDispatch, RootState } from '~/types/store';
 
 import { combinedReducers } from './reducer';
 import { postSlice } from './slices/postSlice';
+import { authSlice } from './slices/authSlice';
 
 export const makeStore = () =>
   configureStore({
@@ -15,7 +16,7 @@ export const makeStore = () =>
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().prepend(
         nextReduxCookieMiddleware({
-          subtrees: [`${postSlice.name}.selectedPost`],
+          subtrees: [`${postSlice.name}.selectedPost`, `${authSlice.name}.currentUser`],
         }),
       ),
   });
