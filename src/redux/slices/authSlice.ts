@@ -11,7 +11,7 @@ const initialState: AuthSliceState = {
   suggestedUsers: [],
 };
 
-export const authSlice = createSlice({
+const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {

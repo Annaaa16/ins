@@ -12,7 +12,6 @@ type FollowUser = (action: FollowAction, actionDone?: Callback) => Promise<void>
 
 interface UseFollowUserReturn {
   isFollowed: boolean;
-  canFollow: boolean;
   followUserLoading: boolean;
   currentUser: UserFragment;
   followUser: FollowUser;
@@ -28,7 +27,6 @@ export const useFollowUser = (selectedUser: UserFragment, postId?: string): UseF
   const dispatch = useStoreDispatch();
 
   const isFollowed = selectedUser.followers.some((follower) => follower._id === currentUser._id);
-  const canFollow = !isFollowed && postId !== currentUser._id;
 
   const followUser: FollowUser = async (action, actionDone) => {
     if (followUserLoading) return;
@@ -76,7 +74,6 @@ export const useFollowUser = (selectedUser: UserFragment, postId?: string): UseF
 
   return {
     isFollowed,
-    canFollow,
     followUserLoading,
     currentUser,
     followUser,

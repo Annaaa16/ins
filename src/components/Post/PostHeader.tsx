@@ -19,10 +19,10 @@ const PostHeader = (post: PostFragment) => {
   const { showModal } = useModalContext();
 
   const { visitProfile } = useUser();
-  const { canFollow, followUserLoading, currentUser, followUser } = useFollowUser(user);
+  const { isFollowed, followUserLoading, currentUser, followUser } = useFollowUser(user);
   const dispatch = useStoreDispatch();
 
-  const hasFollowBtn = canFollow && currentUser._id !== post.user._id;
+  const hasFollowBtn = !isFollowed && currentUser._id !== post.user._id;
 
   const onVisitProfile = () => visitProfile(post.user.username);
 

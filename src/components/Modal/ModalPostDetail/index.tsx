@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import { LIMITS } from '~/constants';
 import { useCreateCommentMutation, useGetCommentsLazyQuery } from '~/types/generated';
-import { useCommentSelector, usePostSelector } from '~/redux/selectors';
+import { useAuthSelector, useCommentSelector, usePostSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
 import { useFollowUser, useIntersectionObserver } from '~/hooks';
 import { commentActions } from '~/redux/slices/commentSlice';
@@ -32,6 +32,7 @@ const ModalPostDetail = () => {
   const { showModal } = useModalContext();
   const { selectedPost } = usePostSelector();
   const { comments } = useCommentSelector();
+  const currentUser = useAuthSelector().currentUser!;
 
   const [getComments, { loading: getCommentsLoading }] = useGetCommentsLazyQuery();
   const [createComment, { loading: createCommentLoading }] = useCreateCommentMutation();
@@ -43,6 +44,7 @@ const ModalPostDetail = () => {
   const { _id: postId, user, photo: postPhoto, reactions, caption: postCaption } = selectedPost!;
 
   const { isFollowed, followUserLoading, handleFollowActions } = useFollowUser(user);
+  const hasFollowBtn = !isFollowed && currentUser._id !== user._id;
 
   const {
     cursor: commentsCursor = null,
@@ -150,7 +152,7 @@ const ModalPostDetail = () => {
 
           <span className={clsx('font-medium mr-3', 'cursor-pointer')}>{user.username}</span>
 
-          {!isFollowed && (
+          {hasFollowBtn && (
             <button
               onClick={() => handleFollowActions()}
               className={clsx('btn', 'text-primary', 'cursor-pointer')}
