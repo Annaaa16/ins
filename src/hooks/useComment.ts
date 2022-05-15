@@ -17,8 +17,6 @@ export const useComment = (comment: CommentFragment, postId: string): UseComment
   const isLiked = comment.reactions.some((reactedUser) => reactedUser._id === currentUser._id);
 
   const reactComment = () => {
-    if (typeof isLiked === 'undefined' || currentUser == null) return;
-
     const reactionType = isLiked ? ReactionType.Unlike : ReactionType.Like;
 
     dispatch(

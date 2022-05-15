@@ -121,9 +121,8 @@ export type GetSessionResponse = {
 export type GetSuggestionsResponse = {
   __typename?: 'GetSuggestionsResponse';
   code: Scalars['Float'];
-  cursor?: Maybe<Scalars['String']>;
-  hasMore?: Maybe<Scalars['Boolean']>;
   message?: Maybe<Scalars['String']>;
+  nextPage?: Maybe<Scalars['Int']>;
   success: Scalars['Boolean'];
   users?: Maybe<Array<User>>;
 };
@@ -168,7 +167,7 @@ export type Mutation = {
   login: UserMutationResponse;
   loginFacebook: UserMutationResponse;
   loginGoogle: UserMutationResponse;
-  logout: Scalars['Boolean'];
+  logout: BaseResponse;
   reactComment: BaseResponse;
   reactPost: BaseResponse;
   readMessage: BaseResponse;
@@ -367,8 +366,8 @@ export type QueryGetProfileArgs = {
 };
 
 export type QueryGetSuggestionsArgs = {
-  cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
+  page: Scalars['Int'];
 };
 
 export type QuerySearchUserArgs = {
@@ -840,6 +839,13 @@ export type LoginGoogleMutation = {
     } | null;
     errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
   };
+};
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
+
+export type LogoutMutation = {
+  __typename?: 'Mutation';
+  logout: { __typename?: 'BaseResponse'; code: number; success: boolean };
 };
 
 export type RegisterMutationVariables = Exact<{
@@ -1564,7 +1570,7 @@ export type GetProfileQuery = {
 
 export type GetSuggestionsQueryVariables = Exact<{
   limit: Scalars['Int'];
-  cursor?: InputMaybe<Scalars['String']>;
+  page: Scalars['Int'];
 }>;
 
 export type GetSuggestionsQuery = {
@@ -1573,6 +1579,7 @@ export type GetSuggestionsQuery = {
     __typename?: 'GetSuggestionsResponse';
     code: number;
     success: boolean;
+    nextPage?: number | null;
     users?: Array<{
       __typename?: 'User';
       _id: string;
@@ -1976,6 +1983,44 @@ export type LoginGoogleMutationResult = Apollo.MutationResult<LoginGoogleMutatio
 export type LoginGoogleMutationOptions = Apollo.BaseMutationOptions<
   LoginGoogleMutation,
   LoginGoogleMutationVariables
+>;
+export const LogoutDocument = gql`
+  mutation Logout {
+    logout {
+      code
+      success
+    }
+  }
+`;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(
+  baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+}
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<
+  LogoutMutation,
+  LogoutMutationVariables
 >;
 export const RegisterDocument = gql`
   mutation Register($registerInput: RegisterInput!) {
@@ -3010,10 +3055,11 @@ export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
 export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
 export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
 export const GetSuggestionsDocument = gql`
-  query GetSuggestions($limit: Int!, $cursor: String) {
-    getSuggestions(limit: $limit, cursor: $cursor) {
+  query GetSuggestions($limit: Int!, $page: Int!) {
+    getSuggestions(limit: $limit, page: $page) {
       code
       success
+      nextPage
       users {
         ...user
       }
@@ -3035,7 +3081,7 @@ export const GetSuggestionsDocument = gql`
  * const { data, loading, error } = useGetSuggestionsQuery({
  *   variables: {
  *      limit: // value for 'limit'
- *      cursor: // value for 'cursor'
+ *      page: // value for 'page'
  *   },
  * });
  */

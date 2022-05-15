@@ -22,7 +22,7 @@ export class User {
   username!: string;
 
   @Field({ nullable: true })
-  @prop({ type: String, default: null })
+  @prop({ type: String })
   password!: string;
 
   @Field()

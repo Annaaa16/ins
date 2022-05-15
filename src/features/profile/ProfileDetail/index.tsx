@@ -16,7 +16,7 @@ const ProfileDetail = ({ user, postCounts }: ProfileDetailProps) => {
       <div className='col-span-1'>
         <Skeleton
           rounded
-          className='w-36 h-36 pt-4 ml-7'
+          className='w-36 h-36 mt-4 ml-7'
           src={user.avatar ?? avatar.src}
           alt='Avatar'
         />
