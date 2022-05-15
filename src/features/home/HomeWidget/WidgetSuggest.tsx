@@ -1,19 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import clsx from 'clsx';
 
 import { ROUTES } from '~/constants';
-import { useGetSuggestionsLazyQuery } from '~/types/generated';
-import { useAuthSelector } from '~/redux/selectors';
+import { useGetSuggestionsLazyQuery, UserFragment } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
-import { authActions } from '~/redux/slices/authSlice';
 
 import WidgetSuggestItem from './WidgetSuggestItem';
 import IconNotFound from '~/components/Icon/IconNotFound';
 
 const WidgetSuggest = () => {
-  const { suggestedUsers } = useAuthSelector();
+  const [suggestedUsers, setSuggestedUsers] = useState<UserFragment[]>([]);
 
   const [getSuggestions, { loading: getSuggestionsLoading }] = useGetSuggestionsLazyQuery();
   const dispatch = useStoreDispatch();
@@ -24,13 +22,15 @@ const WidgetSuggest = () => {
       const response = await getSuggestions({
         variables: {
           limit: 5,
-          cursor: null,
+          page: 1,
         },
       });
 
       const data = response.data?.getSuggestions;
 
-      if (data?.success) dispatch(authActions.addFetchedSuggestedUsers(data.users!));
+      if (!data?.success) return;
+
+      setSuggestedUsers(data.users!);
     })();
   }, [getSuggestions, dispatch]);
 
