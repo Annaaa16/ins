@@ -12,6 +12,7 @@ import { LoginInput, useLoginMutation } from '~/types/generated';
 import { withRoute } from '~/hocs';
 import toErrorMap from '~/helpers/toErrorMap';
 
+import { SpinnerRing } from '~/components/Spinner';
 import Meta from '~/layouts/Meta';
 import FormField from '~/components/FormField';
 import ButtonFacebook from '~/components/Button/ButtonFacebook';
@@ -23,7 +24,7 @@ import LoginScreenshot from '~/features/login/LoginScreenshot';
 import { logo } from '~/assets/images';
 
 const Login = () => {
-  const [loginUser] = useLoginMutation();
+  const [loginUser, { loading: loginUserLoading }] = useLoginMutation();
 
   const {
     register,
@@ -91,9 +92,13 @@ const Login = () => {
 
               <button
                 type='submit'
-                className={clsx('btn text-sm w-full gap-x-2 py-2 mt-2', 'text-white bg-primary')}
+                className={clsx(
+                  'btn text-sm w-full gap-x-2 h-auth-btn-h mt-2',
+                  'text-white bg-primary',
+                  loginUserLoading && ['cursor-default pointer-events-none'],
+                )}
               >
-                Log in
+                {loginUserLoading ? <SpinnerRing className='text-white' /> : 'Log in'}
               </button>
             </form>
 

@@ -40,7 +40,11 @@ const ButtonFacebook = ({ className }: ButtonFacebookProps) => {
       render={(renderProps: any) => (
         <button
           onClick={renderProps.onClick}
-          className={clsx('btn text-sm w-full gap-x-2 py-2', 'text-white bg-primary', className)}
+          className={clsx(
+            'btn text-sm w-full gap-x-2 h-auth-btn-h',
+            'text-white bg-primary',
+            className,
+          )}
         >
           <FontAwesomeIcon icon={faFacebookSquare} className='text-white' size='lg' />
           <span>Log in with Facebook</span>

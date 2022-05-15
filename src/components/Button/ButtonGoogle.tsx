@@ -45,7 +45,11 @@ const ButtonGoogle = ({ className }: ButtonGoogleProps) => {
       render={(renderProps) => (
         <button
           onClick={renderProps.onClick}
-          className={clsx('btn text-sm w-full gap-x-2 py-2', 'text-white bg-base-red', className)}
+          className={clsx(
+            'btn text-sm w-full gap-x-2 h-auth-btn-h',
+            'text-white bg-base-red',
+            className,
+          )}
         >
           <FontAwesomeIcon icon={faGoogle} className='text-white' size='1x' />
           <span>Log in with Google</span>

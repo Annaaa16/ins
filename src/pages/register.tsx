@@ -12,6 +12,7 @@ import { useRegisterMutation, RegisterInput } from '~/types/generated';
 import { withRoute } from '~/hocs';
 import toErrorMap from '~/helpers/toErrorMap';
 
+import { SpinnerRing } from '~/components/Spinner';
 import Meta from '~/layouts/Meta';
 import FormDivider from '~/components/FormDivider';
 import FormField from '~/components/FormField';
@@ -22,7 +23,7 @@ import ButtonGoogle from '~/components/Button/ButtonGoogle';
 import { logo } from '~/assets/images';
 
 const Register = () => {
-  const [registerUser] = useRegisterMutation();
+  const [registerUser, { loading: registerUserLoading }] = useRegisterMutation();
 
   const {
     register,
@@ -37,6 +38,8 @@ const Register = () => {
   const router = useRouter();
 
   const handleRegisterSubmit = async ({ email, password, username }: RegisterInput) => {
+    if (registerUserLoading) return;
+
     const response = await registerUser({
       variables: {
         registerInput: {
@@ -82,9 +85,13 @@ const Register = () => {
             <FormField register={register('password')} placeholder='Password' errors={errors} />
 
             <button
-              className={clsx('btn text-sm w-full gap-x-2 py-2 mt-2', 'text-white bg-primary')}
+              className={clsx(
+                'btn text-sm h-auth-btn-h w-full gap-x-2 mt-2',
+                'text-white bg-primary',
+                registerUserLoading && ['cursor-default pointer-events-none'],
+              )}
             >
-              Sign up
+              {registerUserLoading ? <SpinnerRing className='text-white' /> : 'Sign up'}
             </button>
 
             <p className={clsx('text-xs text-center mt-2', 'text-base-gray')}>
