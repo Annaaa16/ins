@@ -15,7 +15,7 @@ import CreatorPhoto from './CreatorPhoto';
 import Loading from '~/components/Loading';
 
 const ModalPostCreator = () => {
-  const { hideModal } = useModalContext();
+  const { modalTypes, hideModal } = useModalContext();
   const { selectedPost, currentAction } = usePostSelector();
   const { currentUser, selectedUser } = useAuthSelector();
 
@@ -31,7 +31,8 @@ const ModalPostCreator = () => {
     setCaption('');
     setPreview('');
     hideModal([MODAL_TYPES.POST_CREATOR, MODAL_TYPES.POST_ACTIONS]);
-    dispatch(postActions.setSelectedPost(null));
+
+    if (!modalTypes.includes(MODAL_TYPES.POST_DETAIL)) dispatch(postActions.setSelectedPost(null));
   };
 
   const handleCreatePostSubmit = async () => {
@@ -74,8 +75,8 @@ const ModalPostCreator = () => {
 
     const data = response.data?.updatePost;
 
-    if (data?.success && data.post) {
-      dispatch(postActions.updatePost(data.post));
+    if (data?.success) {
+      dispatch(postActions.updatePost(data.post!));
       reset();
     }
   };
@@ -86,7 +87,7 @@ const ModalPostCreator = () => {
       className='w-[913px] max-w-full mx-auto my-12 lg:my-auto'
     >
       {loadingCreatePost || loadingUpdatePost ? (
-        <Loading title='Sharing' />
+        <Loading title={currentAction === 'update' ? 'Updating' : 'Sharing'} />
       ) : (
         <div className={clsx('rounded-xl overflow-y-auto', 'bg-white', 'scrollbar-none')}>
           <CreatorHeader

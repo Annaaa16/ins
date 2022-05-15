@@ -39,6 +39,8 @@ export const postSlice = createSlice({
 
     updatePost: (state, { payload: updatedPost }: PayloadAction<PostFragment>) => {
       state.posts = state.posts.map((post) => (post._id === updatedPost._id ? updatedPost : post));
+
+      if (state.selectedPost != null) state.selectedPost = updatedPost;
     },
 
     reactPost: (state, { payload }: PayloadAction<ReactPostReducer>) => {
