@@ -11,6 +11,7 @@ import { useIntersectionObserver } from '~/hooks';
 
 import IconNewMessage from '~/components/Icon/IconNewMessage';
 import SidebarConversation from './SidebarConversation';
+import SidebarLoading from './SidebarLoading';
 
 const InboxSidebar = () => {
   const { isIntersecting, containerObserverRef, observerRef } = useIntersectionObserver({
@@ -21,7 +22,7 @@ const InboxSidebar = () => {
   const { currentUser } = useAuthSelector();
   const conversationSelector = useConversationSelector();
 
-  const [getConversations] = useGetConversationsLazyQuery();
+  const [getConversations, { loading: getConversationsLoading }] = useGetConversationsLazyQuery();
   const dispatch = useStoreDispatch();
 
   const { conversations, hasMore } = conversationSelector;
@@ -63,18 +64,26 @@ const InboxSidebar = () => {
         />
       </div>
 
-      <div ref={containerObserverRef} className='overflow-y-auto'>
-        {conversations.map((conversation) => (
-          <SidebarConversation
-            conversationSelector={conversationSelector}
-            key={conversation._id}
-            currentUser={currentUser}
-            conversation={conversation}
-          />
-        ))}
+      {getConversationsLoading ? (
+        <>
+          <SidebarLoading />
+          <SidebarLoading />
+          <SidebarLoading />
+        </>
+      ) : (
+        <div ref={containerObserverRef} className='overflow-y-auto'>
+          {conversations.map((conversation) => (
+            <SidebarConversation
+              conversationSelector={conversationSelector}
+              key={conversation._id}
+              currentUser={currentUser}
+              conversation={conversation}
+            />
+          ))}
 
-        <div ref={observerRef} />
-      </div>
+          <div ref={observerRef} />
+        </div>
+      )}
     </>
   );
 };
