@@ -27,18 +27,23 @@ const loginFacebook = (Base: ClassType) => {
           .then((res) => res.json())
           .then((data: FacebookLoginResponse) => data);
 
-        let existingUser = await User.findOne({ email: data.email, account: 'facebook' }).lean();
+        let existingUser = await User.findOne({ email: data.email, account: 'facebook' })
+          .populate(['followers', 'following'])
+          .lean();
 
-        if (existingUser == null)
-          existingUser = (
-            await User.create({
-              email: data.email,
-              username: data.name,
-              avatar: data.picture.data.url,
-              password: null,
-              account: 'facebook',
-            })
-          ).toObject();
+        if (existingUser == null) {
+          const newUser = await User.create({
+            email: data.email,
+            username: data.name,
+            avatar: data.picture.data.url,
+            password: null,
+            account: 'facebook',
+          })
+            .then((res) => res.populate(['followers', 'following']))
+            .then((res) => res.toObject());
+
+          existingUser = newUser!;
+        }
 
         sendTokens(res, existingUser._id);
 
