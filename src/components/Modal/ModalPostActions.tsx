@@ -6,6 +6,7 @@ import { useDeletePostMutation } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
 import { useFollowUser } from '~/hooks';
+import { authActions } from '~/redux/slices/authSlice';
 
 import PostActions from '~/helpers/modalActions/post';
 import ModalWrapper from './ModalWrapper';
@@ -38,15 +39,16 @@ const ModalPostActions = () => {
 
     hideModal([MODAL_TYPES.POST_ACTIONS, MODAL_TYPES.POST_DETAIL]);
 
-    if (response.data?.deletePost.success) {
-      dispatch(
-        postActions.deletePost({
-          postId,
-        }),
-      );
+    if (!response.data?.deletePost.success) return;
 
-      dispatch(postActions.setSelectedPost(null));
-    }
+    dispatch(
+      postActions.deletePost({
+        postId,
+      }),
+    );
+
+    dispatch(postActions.setSelectedPost(null));
+    dispatch(authActions.decreasePostCount());
   };
 
   const { meActions, publicActions, addPostAction } = new PostActions();

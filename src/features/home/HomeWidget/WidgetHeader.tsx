@@ -18,6 +18,7 @@ const WidgetHeader = () => {
   return (
     <div className='flex items-center text-sm-1'>
       <Skeleton
+        objectFit='cover'
         onClick={onVisitProfile}
         rounded
         className={clsx('w-14 h-14 rounded-full mr-3', 'cursor-pointer')}

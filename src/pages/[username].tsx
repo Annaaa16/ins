@@ -24,11 +24,7 @@ import Meta from '~/layouts/Meta';
 import ProfilePosts from '~/features/profile/ProfilePosts';
 import ProfileDetail from '~/features/profile/ProfileDetail';
 
-interface ProfileProps {
-  postCounts: number;
-}
-
-const Profile = ({ postCounts }: ProfileProps) => {
+const Profile = () => {
   const selectedUser = useAuthSelector().selectedUser!;
 
   return (
@@ -36,7 +32,7 @@ const Profile = ({ postCounts }: ProfileProps) => {
       <Header />
       <main className={clsx('w-container-w mt-header-h pt-9 mx-auto pb-20')}>
         <section className='grid grid-cols-3'>
-          <ProfileDetail user={selectedUser} postCounts={postCounts} />
+          <ProfileDetail user={selectedUser} />
         </section>
 
         <section className='mt-14 border-t border-line'>
@@ -107,12 +103,12 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
       }),
     );
 
-    dispatch(authActions.setSelectedUser(getProfile.user!));
+    dispatch(
+      authActions.setSelectedUser({ ...getProfile.user!, postCounts: getProfile.postCounts! }),
+    );
 
     return {
-      props: {
-        postCounts: getProfile.postCounts,
-      },
+      props: {},
     };
   },
 );

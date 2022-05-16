@@ -7,6 +7,7 @@ import { useCreatePostMutation, useUpdatePostMutation } from '~/types/generated'
 import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
 import { useAuthSelector, usePostSelector } from '~/redux/selectors';
+import { authActions } from '~/redux/slices/authSlice';
 
 import ModalWrapper from '../ModalWrapper';
 import CreatorForm from './CreatorForm';
@@ -56,6 +57,7 @@ const ModalPostCreator = () => {
     if (selectedUser != null && currentUser!._id !== selectedUser._id) return;
 
     dispatch(postActions.addNewPost(data.post!));
+    dispatch(authActions.increasePostCount());
   };
 
   const handleUpdatePostSubmit = async () => {

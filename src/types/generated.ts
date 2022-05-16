@@ -17,6 +17,14 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AvatarMutationResponse = {
+  __typename?: 'AvatarMutationResponse';
+  avatar?: Maybe<Scalars['String']>;
+  code: Scalars['Float'];
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
+};
+
 export type BaseResponse = {
   __typename?: 'BaseResponse';
   code: Scalars['Float'];
@@ -153,6 +161,7 @@ export type MessageMutationResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addAvatar: AvatarMutationResponse;
   changePassword: UserMutationResponse;
   createComment: CommentMutationResponse;
   createConversation: ConversationMutationResponse;
@@ -172,7 +181,12 @@ export type Mutation = {
   reactPost: BaseResponse;
   readMessage: BaseResponse;
   register: UserMutationResponse;
+  updateAvatar: AvatarMutationResponse;
   updatePost: PostMutationResponse;
+};
+
+export type MutationAddAvatarArgs = {
+  base64Photo: Scalars['String'];
 };
 
 export type MutationChangePasswordArgs = {
@@ -254,6 +268,11 @@ export type MutationReadMessageArgs = {
 
 export type MutationRegisterArgs = {
   registerInput: RegisterInput;
+};
+
+export type MutationUpdateAvatarArgs = {
+  base64Photo: Scalars['String'];
+  oldPhotoUrl: Scalars['String'];
 };
 
 export type MutationUpdatePostArgs = {
@@ -1217,6 +1236,20 @@ export type UpdatePostMutation = {
   };
 };
 
+export type AddAvatarMutationVariables = Exact<{
+  base64Photo: Scalars['String'];
+}>;
+
+export type AddAvatarMutation = {
+  __typename?: 'Mutation';
+  addAvatar: {
+    __typename?: 'AvatarMutationResponse';
+    code: number;
+    success: boolean;
+    avatar?: string | null;
+  };
+};
+
 export type FollowUserMutationVariables = Exact<{
   followType: FollowType;
   userId: Scalars['String'];
@@ -1253,6 +1286,21 @@ export type FollowUserMutation = {
         avatar?: string | null;
       }>;
     } | null;
+  };
+};
+
+export type UpdateAvatarMutationVariables = Exact<{
+  oldPhotoUrl: Scalars['String'];
+  base64Photo: Scalars['String'];
+}>;
+
+export type UpdateAvatarMutation = {
+  __typename?: 'Mutation';
+  updateAvatar: {
+    __typename?: 'AvatarMutationResponse';
+    code: number;
+    success: boolean;
+    avatar?: string | null;
   };
 };
 
@@ -2633,6 +2681,52 @@ export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   UpdatePostMutation,
   UpdatePostMutationVariables
 >;
+export const AddAvatarDocument = gql`
+  mutation AddAvatar($base64Photo: String!) {
+    addAvatar(base64Photo: $base64Photo) {
+      code
+      success
+      avatar
+    }
+  }
+`;
+export type AddAvatarMutationFn = Apollo.MutationFunction<
+  AddAvatarMutation,
+  AddAvatarMutationVariables
+>;
+
+/**
+ * __useAddAvatarMutation__
+ *
+ * To run a mutation, you first call `useAddAvatarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddAvatarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addAvatarMutation, { data, loading, error }] = useAddAvatarMutation({
+ *   variables: {
+ *      base64Photo: // value for 'base64Photo'
+ *   },
+ * });
+ */
+export function useAddAvatarMutation(
+  baseOptions?: Apollo.MutationHookOptions<AddAvatarMutation, AddAvatarMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<AddAvatarMutation, AddAvatarMutationVariables>(
+    AddAvatarDocument,
+    options,
+  );
+}
+export type AddAvatarMutationHookResult = ReturnType<typeof useAddAvatarMutation>;
+export type AddAvatarMutationResult = Apollo.MutationResult<AddAvatarMutation>;
+export type AddAvatarMutationOptions = Apollo.BaseMutationOptions<
+  AddAvatarMutation,
+  AddAvatarMutationVariables
+>;
 export const FollowUserDocument = gql`
   mutation FollowUser($followType: FollowType!, $userId: String!) {
     followUser(followType: $followType, userId: $userId) {
@@ -2683,6 +2777,53 @@ export type FollowUserMutationResult = Apollo.MutationResult<FollowUserMutation>
 export type FollowUserMutationOptions = Apollo.BaseMutationOptions<
   FollowUserMutation,
   FollowUserMutationVariables
+>;
+export const UpdateAvatarDocument = gql`
+  mutation UpdateAvatar($oldPhotoUrl: String!, $base64Photo: String!) {
+    updateAvatar(oldPhotoUrl: $oldPhotoUrl, base64Photo: $base64Photo) {
+      code
+      success
+      avatar
+    }
+  }
+`;
+export type UpdateAvatarMutationFn = Apollo.MutationFunction<
+  UpdateAvatarMutation,
+  UpdateAvatarMutationVariables
+>;
+
+/**
+ * __useUpdateAvatarMutation__
+ *
+ * To run a mutation, you first call `useUpdateAvatarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAvatarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAvatarMutation, { data, loading, error }] = useUpdateAvatarMutation({
+ *   variables: {
+ *      oldPhotoUrl: // value for 'oldPhotoUrl'
+ *      base64Photo: // value for 'base64Photo'
+ *   },
+ * });
+ */
+export function useUpdateAvatarMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateAvatarMutation, UpdateAvatarMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateAvatarMutation, UpdateAvatarMutationVariables>(
+    UpdateAvatarDocument,
+    options,
+  );
+}
+export type UpdateAvatarMutationHookResult = ReturnType<typeof useUpdateAvatarMutation>;
+export type UpdateAvatarMutationResult = Apollo.MutationResult<UpdateAvatarMutation>;
+export type UpdateAvatarMutationOptions = Apollo.BaseMutationOptions<
+  UpdateAvatarMutation,
+  UpdateAvatarMutationVariables
 >;
 export const GetSessionDocument = gql`
   query GetSession {
