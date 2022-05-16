@@ -7,7 +7,7 @@ import { nextReduxCookieMiddleware } from 'next-redux-cookie-wrapper';
 import { Store, StoreDispatch, RootState } from '~/types/store';
 
 import { combinedReducers } from './reducer';
-import { postSlice } from './slices/postSlice';
+import { subTrees } from '~/helpers/redux';
 
 export const makeStore = () =>
   configureStore({
@@ -15,7 +15,7 @@ export const makeStore = () =>
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().prepend(
         nextReduxCookieMiddleware({
-          subtrees: [`${postSlice.name}.selectedPost`],
+          subtrees: [subTrees.selectedPost],
         }),
       ),
   });

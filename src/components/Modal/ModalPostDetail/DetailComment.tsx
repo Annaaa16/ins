@@ -9,6 +9,7 @@ import { commentActions } from '~/redux/slices/commentSlice';
 import { displayLikeCounts } from '~/helpers/format';
 import { useComment, useUser } from '~/hooks';
 import { postActions } from '~/redux/slices/postSlice';
+import { removeSubTree, subTrees } from '~/helpers/redux';
 
 import IconHeart from '~/components/Icon/IconHeart';
 import Skeleton from '~/components/Skeleton';
@@ -33,6 +34,7 @@ const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentPro
     visitProfile(user.username, () => {
       hideModal(MODAL_TYPES.POST_DETAIL);
       dispatch(postActions.setSelectedPost(null));
+      removeSubTree(subTrees.selectedPost);
     });
   };
 
@@ -47,7 +49,7 @@ const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentPro
     <div className='group flex py-2'>
       <Skeleton
         onClick={onVisitProfile}
-        src={avatar.src}
+        src={user.avatar ?? avatar.src}
         rounded
         className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
         objectFit='cover'
