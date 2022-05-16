@@ -10,10 +10,9 @@ interface CreatorPhotoProps {
   preview: string;
   oldPhoto: string;
   onSetPreview: (preview: string) => void;
-  onSetOldPhoto: (photo: string) => void;
 }
 
-const CreatorPhoto = ({ preview, oldPhoto, onSetOldPhoto, onSetPreview }: CreatorPhotoProps) => {
+const CreatorPhoto = ({ preview, oldPhoto, onSetPreview }: CreatorPhotoProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSetFile = (file?: File) => {
@@ -22,10 +21,7 @@ const CreatorPhoto = ({ preview, oldPhoto, onSetOldPhoto, onSetPreview }: Creato
     const reader = new FileReader();
 
     reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      onSetPreview(reader.result as string);
-      onSetOldPhoto('');
-    };
+    reader.onloadend = () => onSetPreview(reader.result as string);
   };
 
   useEffect(() => () => URL.revokeObjectURL(preview), [preview]);
@@ -35,7 +31,7 @@ const CreatorPhoto = ({ preview, oldPhoto, onSetOldPhoto, onSetPreview }: Creato
       <DropZone onDrop={handleSetFile}>
         {preview || oldPhoto ? (
           <div className='w-full h-full'>
-            <Skeleton objectFit='cover' src={oldPhoto || preview} alt='Upload' />
+            <Skeleton objectFit='cover' src={preview || oldPhoto} alt='Upload' />
           </div>
         ) : (
           <>

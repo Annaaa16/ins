@@ -21,11 +21,12 @@ const ModalPostCreator = () => {
 
   const [caption, setCaption] = useState<string>(selectedPost?.caption ?? '');
   const [preview, setPreview] = useState<string>('');
-  const [oldPhoto, setOldPhoto] = useState<string>(selectedPost?.photo ?? '');
 
   const [createPost, { loading: loadingCreatePost }] = useCreatePostMutation();
   const [updatePost, { loading: loadingUpdatePost }] = useUpdatePostMutation();
   const dispatch = useStoreDispatch();
+
+  const oldPhoto = selectedPost?.photo ?? '';
 
   const reset = () => {
     setCaption('');
@@ -100,7 +101,6 @@ const ModalPostCreator = () => {
               preview={preview || oldPhoto}
               oldPhoto={oldPhoto}
               onSetPreview={setPreview}
-              onSetOldPhoto={setOldPhoto}
             />
             <CreatorForm caption={caption} onChangeCaption={setCaption} />
           </div>
