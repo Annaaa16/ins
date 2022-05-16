@@ -7,6 +7,8 @@ import followUser from './followUser';
 import getProfile from './getProfile';
 import getSuggestions from './getSuggestions';
 import searchUser from './searchUser';
+import addAvatar from './addAvatar';
+import updateAvatar from './updateAvatar';
 
 @Resolver()
 export default class UserResolver extends extender(
@@ -14,4 +16,6 @@ export default class UserResolver extends extender(
   followUser,
   getProfile,
   getSuggestions,
+  addAvatar,
+  updateAvatar,
 ) {}

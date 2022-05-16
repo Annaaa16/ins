@@ -7,6 +7,7 @@ import {
   AddNewCommentReducer,
   CommentSliceState,
   ReactCommentReducer,
+  UpdateAvatarReducer,
 } from '../types/comment';
 
 import { CommentFragment, ReactionType } from '~/types/generated';
@@ -102,6 +103,18 @@ const commentSlice = createSlice({
     // Selected to implement actions
     setSelectedComment: (state, action: PayloadAction<CommentFragment | null>) => {
       state.selectedComment = action.payload;
+    },
+
+    // In profile page
+    updateAvatar: (
+      { comments },
+      { payload: { currentUserId, avatar } }: PayloadAction<UpdateAvatarReducer>,
+    ) => {
+      Object.keys(comments).forEach((postId) => {
+        comments[postId].data.forEach((comment) => {
+          if (comment.user._id === currentUserId) comment.user.avatar = avatar;
+        });
+      });
     },
   },
   extraReducers: {

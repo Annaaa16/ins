@@ -34,3 +34,8 @@ export interface FollowUserReducer {
   followType: FollowType;
   currentUser: UserFragment;
 }
+
+export interface UpdateAvatarReducer {
+  currentUserId: string;
+  avatar: string;
+}

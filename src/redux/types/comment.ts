@@ -32,3 +32,8 @@ export interface ReactCommentReducer {
   commentId: string;
   reaction: ReactionType;
 }
+
+export interface UpdateAvatarReducer {
+  currentUserId: string;
+  avatar: string;
+}

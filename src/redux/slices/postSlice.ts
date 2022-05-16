@@ -10,6 +10,7 @@ import {
   IncreaseCommentCountsReducer,
   PostSliceState,
   ReactPostReducer,
+  UpdateAvatarReducer,
 } from '../types/post';
 
 import { FollowType, PostFragment, ReactionType } from '~/types/generated';
@@ -111,6 +112,20 @@ export const postSlice = createSlice({
       state.posts.forEach((post) => {
         if (post._id === postId) post.commentCounts -= 1;
       });
+    },
+
+    updateAvatar: (
+      state,
+      { payload: { currentUserId, avatar } }: PayloadAction<UpdateAvatarReducer>,
+    ) => {
+      state.posts.forEach((post) => {
+        if (post.user._id === currentUserId) post.user.avatar = avatar;
+      });
+
+      const selectedPost = state.selectedPost;
+
+      if (selectedPost != null && selectedPost.user._id === currentUserId)
+        selectedPost.user.avatar = avatar;
     },
   },
   extraReducers: {

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 
 // types
-import { AuthSliceState, FollowUserReducer } from '../types/auth';
+import { AuthSliceState, FollowUserReducer, UserWithPostCount } from '../types/auth';
 import { FollowType, UserFragment } from '~/types/generated';
 
 const initialState: AuthSliceState = {
@@ -54,8 +54,27 @@ const authSlice = createSlice({
       state.suggestedUsers.push(...action.payload);
     },
 
-    setSelectedUser: (state, action: PayloadAction<UserFragment>) => {
+    setSelectedUser: (state, action: PayloadAction<UserWithPostCount>) => {
       state.selectedUser = action.payload;
+    },
+
+    setAvatar: (state, { payload }: PayloadAction<{ avatar: string }>) => {
+      const { currentUser, selectedUser } = state;
+
+      if (currentUser == null) return;
+
+      currentUser.avatar = payload.avatar;
+
+      if (selectedUser != null && selectedUser._id === currentUser._id)
+        selectedUser.avatar = payload.avatar;
+    },
+
+    increasePostCount: ({ selectedUser }) => {
+      if (selectedUser != null && selectedUser.postCounts != null) selectedUser.postCounts += 1;
+    },
+
+    decreasePostCount: ({ selectedUser }) => {
+      if (selectedUser != null && selectedUser.postCounts != null) selectedUser.postCounts -= 1;
     },
   },
   extraReducers: {
