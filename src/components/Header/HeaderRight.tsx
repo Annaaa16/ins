@@ -54,6 +54,7 @@ const HeaderRight = () => {
       <div className={clsx('relative', 'cursor-pointer')}>
         <Skeleton
           ref={avatarRef}
+          objectFit='cover'
           onClick={() => setIsShowMenu(!isShowMenu)}
           rounded
           className='w-7 h-7'

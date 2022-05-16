@@ -32,6 +32,7 @@ const PostHeader = (post: PostFragment) => {
         <Skeleton
           onClick={onVisitProfile}
           rounded
+          objectFit='cover'
           className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
           src={user.avatar ?? avatar.src}
           alt='Avatar'

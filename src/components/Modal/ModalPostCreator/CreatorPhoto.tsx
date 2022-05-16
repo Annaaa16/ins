@@ -26,33 +26,41 @@ const CreatorPhoto = ({ preview, oldPhoto, onSetPreview }: CreatorPhotoProps) =>
 
   useEffect(() => () => URL.revokeObjectURL(preview), [preview]);
 
+  const setPhoto = () => fileInputRef.current?.click();
+
   return (
     <div className='lg:w-3/5 h-[580px]'>
       <DropZone onDrop={handleSetFile}>
         {preview || oldPhoto ? (
           <div className='w-full h-full'>
-            <Skeleton objectFit='cover' src={preview || oldPhoto} alt='Upload' />
+            <Skeleton
+              onClick={setPhoto}
+              objectFit='cover'
+              src={preview || oldPhoto}
+              alt='Upload'
+              className='cursor-pointer'
+            />
           </div>
         ) : (
           <>
             <IconPhotoVideo />
             <h2 className={clsx('mt-3 text-xl', 'select-none')}>Drag photos and videos here</h2>
             <button
-              onClick={() => fileInputRef.current?.click()}
+              onClick={setPhoto}
               className={clsx('btn mt-4 text-sm px-3 py-2', 'text-white bg-primary')}
             >
-              <input
-                ref={fileInputRef}
-                accept='image/png, image/jpeg, image/gif'
-                onChange={(e) => handleSetFile(e.target.files?.[0])}
-                className='hidden'
-                type='file'
-              />
               Select from computer
             </button>
           </>
         )}
       </DropZone>
+      <input
+        ref={fileInputRef}
+        accept='image/png, image/jpeg, image/gif'
+        onChange={(e) => handleSetFile(e.target.files?.[0])}
+        className='hidden'
+        type='file'
+      />
     </div>
   );
 };

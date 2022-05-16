@@ -4,6 +4,7 @@ import { useAutoFocus } from '~/hooks';
 import { useAuthSelector } from '~/redux/selectors';
 import { getNameInMail } from '~/helpers/format';
 
+import Skeleton from '~/components/Skeleton';
 import IconEmoji from '~/components/Icon/IconEmoji';
 import CreatorFormLocation from './CreatorFormLocation';
 import CreatorFormSetting from './CreatorFormSetting';
@@ -24,8 +25,14 @@ const CreatorForm = ({ caption, onChangeCaption }: CreatorFormProps) => {
     <div className='lg:w-2/5 border-l border-line'>
       <div className='px-3 py-4'>
         <div className='flex items-center'>
-          <img className='w-7 h-7 rounded-full mr-2' src={avatar.src} alt='Avatar' />
-          <span className='font-bold text-base'>{getNameInMail(currentUser?.email)}</span>
+          <Skeleton
+            objectFit='cover'
+            rounded
+            className='w-7 h-7 mr-2'
+            src={currentUser!.avatar ?? avatar.src}
+            alt='Avatar'
+          />
+          <span className='font-bold text-base'>{getNameInMail(currentUser!.email)}</span>
         </div>
         <textarea
           ref={focusRef}
