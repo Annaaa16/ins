@@ -45,7 +45,7 @@ const DropZone = ({ children, className, onDrop }: DropZoneProps) => {
     >
       <div
         className={clsx(
-          'absolute inset-0',
+          'absolute inset-0 z-10',
           isDragging && [
             'border-dashed border-3 border-primary lg:rounded-bl-xl',
             'bg-primary bg-opacity-10',
