@@ -9,8 +9,8 @@ import { CreatePostInput } from '~/db/types/inputs';
 import { Post } from '~/db/models';
 
 import { verifyAuth } from '~/db/middlewares';
-import { uploadPhoto } from '~/helpers/cloudinary';
 import { isEmptyInput } from '~/helpers/string';
+import cloudinaryHandler from '~/helpers/cloudinaryHandler';
 import respond from '~/helpers/respond';
 
 const createPost = (Base: ClassType) => {
@@ -29,8 +29,12 @@ const createPost = (Base: ClassType) => {
           message: 'Field is missing',
         });
 
+      const { uploadPhoto } = cloudinaryHandler({
+        folder: 'posts',
+      });
+
       return respond(async () => {
-        const { photo } = await uploadPhoto(base64Photo);
+        const photo = await uploadPhoto(base64Photo);
 
         const newPost = await Post.create({
           caption,

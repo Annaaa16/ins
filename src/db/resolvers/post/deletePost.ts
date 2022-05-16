@@ -8,7 +8,7 @@ import { BaseResponse } from '~/db/types/shared';
 import { Post, Comment } from '~/db/models';
 
 import { verifyAuth } from '~/db/middlewares';
-import { deletePhoto } from '~/helpers/cloudinary';
+import cloudinaryHandler from '~/helpers/cloudinaryHandler';
 import respond from '~/helpers/respond';
 
 const deletePost = (Base: ClassType) => {
@@ -23,12 +23,14 @@ const deletePost = (Base: ClassType) => {
       return respond(async () => {
         const deletedPost = await Post.findOneAndDelete({ _id: postId, user: userId });
 
-        if (!deletedPost)
+        if (deletedPost == null)
           return {
             code: 404,
             success: false,
             message: 'Post not found',
           };
+
+        const { deletePhoto } = cloudinaryHandler();
 
         await deletePhoto(deletedPost.photo);
         await Comment.deleteMany({ postId });

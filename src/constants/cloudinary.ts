@@ -8,4 +8,5 @@ export const CLOUDINARY = {
 
 export const CLOUDINARY_FOLDERS = {
   POSTS: CLOUDINARY_BASE_FOLDER + '/posts',
+  AVATARS: CLOUDINARY_BASE_FOLDER + '/avatars',
 };

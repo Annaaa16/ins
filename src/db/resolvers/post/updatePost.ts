@@ -12,8 +12,8 @@ import { Post } from '~/db/models';
 import { Post as PostEntity } from '~/db/entities';
 
 import { verifyAuth } from '~/db/middlewares';
-import { updatePhoto } from '~/helpers/cloudinary';
 import { isEmptyInput } from '~/helpers/string';
+import cloudinaryHandler from '~/helpers/cloudinaryHandler';
 import respond from '~/helpers/respond';
 
 const updatePost = (Base: ClassType) => {
@@ -33,9 +33,9 @@ const updatePost = (Base: ClassType) => {
         });
 
       return respond(async () => {
-        const selectedPost = await Post.findOne({ _id: postId, user: userId });
+        const post = await Post.findOne({ _id: postId, user: userId });
 
-        if (!selectedPost)
+        if (post == null)
           return {
             code: 401,
             success: false,
@@ -44,22 +44,20 @@ const updatePost = (Base: ClassType) => {
 
         const newPost: Partial<PostEntity> = {};
 
-        if (caption) {
-          newPost.caption = caption;
-        }
+        if (!isEmptyInput(caption)) newPost.caption = caption;
 
-        // Update photo
-        if (newBase64Photo && oldPhotoUrl) {
-          const { photoUrl } = await updatePhoto(newBase64Photo, oldPhotoUrl);
+        // Add photo for post
+        if (newBase64Photo != null) {
+          const { uploadPhoto, updatePhoto } = cloudinaryHandler({
+            folder: 'posts',
+          });
 
-          newPost.photo = photoUrl;
-        }
+          // Add new photo
+          if (newBase64Photo && !oldPhotoUrl) newPost.photo = await uploadPhoto(newBase64Photo);
 
-        // Add new photo
-        if (newBase64Photo && !oldPhotoUrl) {
-          const { photoUrl } = await updatePhoto(newBase64Photo);
-
-          newPost.photo = photoUrl;
+          // Update photo
+          if (newBase64Photo && oldPhotoUrl)
+            newPost.photo = await updatePhoto(newBase64Photo, oldPhotoUrl);
         }
 
         const updatedPost = await Post.findByIdAndUpdate(postId, newPost, { new: true })
