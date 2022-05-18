@@ -9,7 +9,7 @@ import {
 } from 'type-graphql';
 
 // types
-import type { Context } from '~/db/types/context';
+import { Context } from '~/db/types/context';
 import { UserMutationResponse } from '~/db/types/responses/user';
 
 // models

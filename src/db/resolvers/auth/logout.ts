@@ -1,7 +1,7 @@
 import { ClassType, Ctx, Mutation, Resolver } from 'type-graphql';
 
 // types
-import type { Context } from '~/db/types/context';
+import { Context } from '~/db/types/context';
 import { BaseResponse } from '~/db/types/shared';
 
 import { clearAllCookies } from '~/helpers/cookie';

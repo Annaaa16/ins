@@ -1,7 +1,7 @@
 import { Arg, ClassType, Ctx, ID, Int, Query, Resolver, UseMiddleware } from 'type-graphql';
 
 // types
-import type { Context } from '~/db/types/context';
+import { Context } from '~/db/types/context';
 import { PaginatedMessagesResponse } from '~/db/types/responses/message';
 import { FilterQuery } from '~/db/types/utils';
 
