@@ -70,7 +70,7 @@ const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentPro
           <button className={clsx('font-medium', 'cursor-pointer')}>Reply</button>
           <FontAwesomeIcon
             onClick={onSelectOptions}
-            className={clsx('hidden group-hover:block', 'cursor-pointer')}
+            className={clsx('lg:hidden group-hover:block', 'cursor-pointer')}
             icon={faEllipsis}
           />
         </div>

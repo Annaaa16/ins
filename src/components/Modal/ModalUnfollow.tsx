@@ -22,7 +22,7 @@ const ModalUnfollow = () => {
       canClose={!followUserLoading}
       modalType={MODAL_TYPES.UNFOLLOW}
       className={clsx(
-        'w-100 max-w-full max-h-[calc(100vh-20px)] text-center text-sm rounded-lg shadow-lg pt-8 overflow-y-auto scrollbar-none',
+        'md:w-100 text-center text-sm shadow-lg pt-8 overflow-y-auto scrollbar-none',
         'bg-white',
       )}
     >

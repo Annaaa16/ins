@@ -124,9 +124,7 @@ const ModalPostDetail = () => {
     <ModalWrapper
       modalType={MODAL_TYPES.POST_DETAIL}
       closeHandler={() => dispatch(postActions.setSelectedPost(null))}
-      className={clsx(
-        'flex lg:w-[1408px] max-w-[calc(100vw-30px)] lg:max-w-[calc(90vw-110px)] h-modal-post-detail-h-mobile lg:h-modal-post-detail-h',
-      )}
+      className={clsx('flex lg:w-[1150px] h-screen')}
     >
       {postPhoto != null && (
         <Skeleton
@@ -136,12 +134,7 @@ const ModalPostDetail = () => {
         />
       )}
 
-      <div
-        className={clsx(
-          'flex flex-col w-[calc(100vw-50px)] lg:w-2/5 text-sm-1 max-h-modal-post-detail-h-mobile lg:max-h-modal-post-detail-h',
-          'bg-white',
-        )}
-      >
+      <div className={clsx('flex flex-col w-full lg:w-2/5 text-sm-1 h-full', 'bg-white')}>
         <div className='flex items-center px-4 py-3 border-b border-line flex-shrink-0'>
           <Skeleton
             src={user.avatar ?? avatar.src}
@@ -190,6 +183,12 @@ const ModalPostDetail = () => {
             />
           ))}
           <div ref={observerRef} />
+
+          {getCommentsLoading && (
+            <div className='mt-3 mb-6 overflow-hidden'>
+              <SpinnerRing className='mx-auto' />
+            </div>
+          )}
         </div>
 
         <div className='flex-shrink-0 mt-auto px-4 border-t border-line py-3'>

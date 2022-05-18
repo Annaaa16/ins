@@ -85,14 +85,13 @@ const ModalPostCreator = () => {
   };
 
   return (
-    <ModalWrapper
-      modalType={MODAL_TYPES.POST_CREATOR}
-      className='w-[913px] max-w-full mx-auto my-12 lg:my-auto'
-    >
+    <ModalWrapper modalType={MODAL_TYPES.POST_CREATOR}>
       {loadingCreatePost || loadingUpdatePost ? (
         <Loading title={currentAction === 'update' ? 'Updating' : 'Sharing'} />
       ) : (
-        <div className={clsx('rounded-xl overflow-y-auto', 'bg-white', 'scrollbar-none')}>
+        <div
+          className={clsx('w-[913px] max-w-full mx-auto rounded-xl overflow-hidden', 'bg-white')}
+        >
           <CreatorHeader
             onCreateOrUpdateSubmit={
               currentAction === 'update' ? handleUpdatePostSubmit : handleCreatePostSubmit

@@ -112,10 +112,7 @@ const ModalNewMessage = () => {
   return (
     <ModalWrapper
       modalType={MODAL_TYPES.NEW_MESSAGE}
-      className={clsx(
-        'flex flex-col w-100 max-w-[calc(100vw-10px)] h-full max-h-[calc(100vh-270px)] text-sm rounded-lg',
-        'bg-white',
-      )}
+      className={clsx('flex flex-col w-100 h-[500px] text-sm', 'bg-white')}
     >
       <div className='flex-between flex-shrink-0 px-2 py-2.5'>
         <IconClose className={clsx('p-1', 'text-base-black', 'cursor-pointer')} />
