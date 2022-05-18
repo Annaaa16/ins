@@ -78,12 +78,14 @@ const DetailActions = ({ user }: DetailActionsProps) => {
     );
 
   return (
-    <>
+    <div
+      className={clsx('flex items-center mt-5 md:mt-0 justify-center', isFollowed && 'md:ml-auto')}
+    >
       {buttons}
       <button className='btn py-1.5 px-5'>
         <FontAwesomeIcon icon={faEllipsis} />
       </button>
-    </>
+    </div>
   );
 };
 

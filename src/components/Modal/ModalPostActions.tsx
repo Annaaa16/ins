@@ -84,7 +84,7 @@ const ModalPostActions = () => {
       ) : (
         <ul
           className={clsx(
-            'text-center rounded-lg w-100 max-w-full text-sm divide-y-2 border-line',
+            'text-center mx-auto w-full md:w-100 text-sm divide-y-2 border-line',
             'bg-white',
           )}
         >

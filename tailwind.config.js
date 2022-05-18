@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       fontFamily: require('./src/lib/tailwind/fontFamily'),
       lineHeight: require('./src/lib/tailwind/lineHeight'),
+      maxWidth: require('./src/lib/tailwind/maxWidth'),
       borderWidth: require('./src/lib/tailwind/borderWidth'),
       backgroundImage: require('./src/lib/tailwind/backgroundImage'),
       colors: require('./src/lib/tailwind/colors'),

@@ -60,7 +60,7 @@ const WidgetSuggest = () => {
       <div className='flex-between'>
         <span className={clsx('font-medium', 'text-base-gray')}>Suggestions For You</span>
         {suggestedUsers.length > 0 && (
-          <button onClick={() => router.push(ROUTES.PEOPLE)} className='font-bold'>
+          <button onClick={() => router.push(ROUTES.PEOPLE)} className='btn'>
             See All
           </button>
         )}

@@ -1,4 +1,4 @@
-import type { Ref } from '@typegoose/typegoose';
+import { Ref } from '@typegoose/typegoose';
 import { prop } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Field, ID, ObjectType } from 'type-graphql';

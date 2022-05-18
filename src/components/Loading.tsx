@@ -10,7 +10,7 @@ const Loading = ({ title }: LoadingProps) => {
   return (
     <div
       className={clsx(
-        'flex flex-col m-auto rounded-lg w-[515px] max-w-full h-[613px] max-h-full overflow-hidden',
+        'flex flex-col m-auto rounded-lg md:w-[515px] h-[80vh] max-w-full overflow-hidden',
         'bg-white',
       )}
     >

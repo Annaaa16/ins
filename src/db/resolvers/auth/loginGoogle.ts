@@ -2,7 +2,7 @@ import { Mutation, Arg, Ctx, Resolver, ClassType } from 'type-graphql';
 import { OAuth2Client } from 'google-auth-library';
 
 // types
-import type { Context } from '~/db/types/context';
+import { Context } from '~/db/types/context';
 import { UserMutationResponse } from '~/db/types/responses/user';
 
 // models

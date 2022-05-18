@@ -23,6 +23,7 @@ import Header from '~/components/Header';
 import Meta from '~/layouts/Meta';
 import ProfilePosts from '~/features/profile/ProfilePosts';
 import ProfileDetail from '~/features/profile/ProfileDetail';
+import Container from '~/components/Container';
 
 const Profile = () => {
   const selectedUser = useAuthSelector().selectedUser!;
@@ -30,7 +31,7 @@ const Profile = () => {
   return (
     <Meta title={selectedUser!.username}>
       <Header />
-      <main className={clsx('w-container-w mt-header-h pt-9 mx-auto pb-20')}>
+      <Container className={clsx('mt-header-h pt-9 pb-20')}>
         <section className='grid grid-cols-3'>
           <ProfileDetail user={selectedUser} />
         </section>
@@ -49,7 +50,7 @@ const Profile = () => {
           </div>
           <ProfilePosts userId={selectedUser!._id} />
         </section>
-      </main>
+      </Container>
     </Meta>
   );
 };
@@ -77,6 +78,8 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
         notFound: true,
       };
 
+    const user = getProfile.user!;
+
     const {
       data: { getPosts },
     } = await client.query<GetPostsQuery, GetPostsQueryVariables>({
@@ -86,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
         cursor: null,
         query: {
           field: 'user',
-          value: getProfile.user!._id,
+          value: user._id,
         },
       },
     });
@@ -103,9 +106,7 @@ export const getServerSideProps: GetServerSideProps = withRoute({ isProtected: t
       }),
     );
 
-    dispatch(
-      authActions.setSelectedUser({ ...getProfile.user!, postCounts: getProfile.postCounts! }),
-    );
+    dispatch(authActions.setSelectedUser({ ...user, postCounts: getProfile.postCounts! }));
 
     return {
       props: {},

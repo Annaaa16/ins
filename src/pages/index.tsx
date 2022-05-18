@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 
 import { LIMITS } from '~/constants';
 import { GetPostsDocument, GetPostsQuery, GetPostsQueryVariables } from '~/types/generated';
@@ -9,19 +9,20 @@ import { withRoute } from '~/hocs';
 import Header from '~/components/Header';
 import HomeFeed from '~/features/home/HomeFeed';
 import HomeWidget from '~/features/home/HomeWidget';
+import Container from '~/components/Container';
 
 const Home: NextPage = () => {
   return (
     <>
       <Header />
-      <main className='grid grid-cols-3 w-container-w mx-auto mt-header-h pt-7'>
-        <section className='col-span-2 pb-10 space-y-10'>
+      <Container className='grid grid-cols-3 mt-header-h pt-7'>
+        <section className='col-span-3 lg:col-span-2 pb-10 space-y-10'>
           <HomeFeed />
         </section>
-        <section className='pl-5 pt-4'>
+        <section className='hidden lg:block pl-5 pt-4'>
           <HomeWidget />
         </section>
-      </main>
+      </Container>
     </>
   );
 };

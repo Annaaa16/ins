@@ -1,7 +1,7 @@
 import { Mutation, Arg, Ctx, Resolver, ClassType } from 'type-graphql';
 
 // types
-import type { Context } from '~/db/types/context';
+import { Context } from '~/db/types/context';
 import { FacebookLoginResponse } from '~/types/auth';
 import { UserMutationResponse } from '~/db/types/responses/user';
 

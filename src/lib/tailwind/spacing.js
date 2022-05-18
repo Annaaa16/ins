@@ -6,8 +6,8 @@ const custom = {
   'header-h': '60px',
   'auth-btn-h': '33.5px',
 
-  'modal-post-detail-h': 'calc(100vh - 60px)',
-  'modal-post-detail-h-mobile': 'calc(100vh - 90px)',
+  'modal-w': 'calc(100vw - 20px)',
+  'modal-h': 'calc(100vh - 90px)',
 };
 
 module.exports = {

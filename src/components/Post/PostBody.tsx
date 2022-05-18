@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 
+import TimeAgo from 'react-timeago';
 import clsx from 'clsx';
 
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
@@ -58,11 +59,11 @@ const PostBody = (post: PostFragment) => {
           ))}
         </div>
 
-        {/* <TimeAgo
-        live={false}
-        className={clsx('uppercase text-xs-1', 'text-base-gray', 'cursor-pointer select-none')}
-        date={updatedAt}
-      /> */}
+        <TimeAgo
+          live={false}
+          className={clsx('uppercase text-xs-1', 'text-base-gray', 'cursor-pointer select-none')}
+          date={post.updatedAt}
+        />
       </div>
     </div>
   );

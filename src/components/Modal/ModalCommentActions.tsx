@@ -13,7 +13,7 @@ import CommentActions from '~/helpers/modalActions/comment';
 const ModalCommentActions = () => {
   const { hideModal } = useModalContext();
   const { currentUser } = useAuthSelector();
-  const { selectedComment } = useCommentSelector();
+  const selectedComment = useCommentSelector().selectedComment!;
 
   const [deleteComment, { loading: deleteCommentLoading }] = useDeleteCommentMutation();
   const dispatch = useStoreDispatch();
@@ -25,7 +25,7 @@ const ModalCommentActions = () => {
   const selectedActions = isCommentOwner ? meActions : publicActions;
 
   const handleDeleteComment = async () => {
-    if (!selectedComment) return;
+    if (deleteCommentLoading) return;
 
     const response = await deleteComment({
       variables: {
@@ -52,15 +52,24 @@ const ModalCommentActions = () => {
     >
       <ul
         className={clsx(
-          'text-center rounded-lg w-100 max-w-full text-sm divide-y-2 border-line',
+          'text-center w-100 mx-auto max-w-full text-sm divide-y-2 border-line',
           'bg-white',
         )}
       >
-        {selectedActions.map(({ title, hasConfirm, action }) => (
+        {selectedActions.map(({ actionId, title, hasConfirm, action }) => (
           <li
             key={title}
             onClick={action}
-            className={clsx('py-4', 'cursor-pointer', hasConfirm && ['font-bold', 'text-base-red'])}
+            className={clsx(
+              'py-4',
+              'cursor-pointer',
+              hasConfirm && [
+                'font-bold',
+                deleteCommentLoading && actionId === 'delete'
+                  ? 'text-base-red/40'
+                  : 'text-base-red',
+              ],
+            )}
           >
             {title}
           </li>

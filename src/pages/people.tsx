@@ -22,6 +22,7 @@ import Header from '~/components/Header';
 import Meta from '~/layouts/Meta';
 import PeopleItem from '~/features/people/PeopleItem';
 import PeopleEmpty from '~/features/people/PeopleEmpty';
+import Container from '~/components/Container';
 
 interface PeopleProps {
   nextPage: number | null;
@@ -84,11 +85,11 @@ const People = ({ nextPage }: PeopleProps) => {
   return (
     <Meta title='Instagram'>
       <Header />
-      <main ref={containerObserverRef} className='w-container-w mx-auto px-32 mt-header-h pt-10'>
+      <Container ref={containerObserverRef} className='px-2 md:px-10 lg:px-32 mt-header-h pt-10'>
         {body}
         <div ref={observerRef} />
         {getSuggestionsLoading && <SpinnerRing className='mx-auto mt-5' />}
-      </main>
+      </Container>
     </Meta>
   );
 };

@@ -22,7 +22,7 @@ const CreatorForm = ({ caption, onChangeCaption }: CreatorFormProps) => {
   const { currentUser } = useAuthSelector();
 
   return (
-    <div className='lg:w-2/5 border-l border-line'>
+    <div className='lg:w-2/5 border-l border-line border-t lg:border-t-0'>
       <div className='px-3 py-4'>
         <div className='flex items-center'>
           <Skeleton
