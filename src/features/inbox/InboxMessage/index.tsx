@@ -5,14 +5,18 @@ import MessageHeader from './MessageHeader';
 import MessagePlaceholder from './MessagePlaceholder';
 import MessageContent from './MessageContent';
 
-const InboxMessage = () => {
+interface InboxMessageProps {
+  onHideMessages: () => void;
+}
+
+const InboxMessage = ({ onHideMessages }: InboxMessageProps) => {
   const { selectedConversation } = useConversationSelector();
 
   if (selectedConversation == null) return <MessagePlaceholder />;
 
   return (
     <>
-      <MessageHeader />
+      <MessageHeader onHideMessages={onHideMessages} />
       <MessageContent />
       <MessageFooter />
     </>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import clsx from 'clsx';
 
 import { LIMITS } from '~/constants';
@@ -13,7 +14,11 @@ import IconNewMessage from '~/components/Icon/IconNewMessage';
 import SidebarConversation from './SidebarConversation';
 import SidebarLoading from './SidebarLoading';
 
-const InboxSidebar = () => {
+interface InboxSidebarProps {
+  onShowMessages: () => void;
+}
+
+const InboxSidebar = ({ onShowMessages }: InboxSidebarProps) => {
   const { isIntersecting, containerObserverRef, observerRef } = useIntersectionObserver({
     rootMargin: '200px',
   });
@@ -74,6 +79,7 @@ const InboxSidebar = () => {
         <div ref={containerObserverRef} className='overflow-y-auto'>
           {conversations.map((conversation) => (
             <SidebarConversation
+              onShowMessages={onShowMessages}
               conversationSelector={conversationSelector}
               key={conversation._id}
               currentUser={currentUser}

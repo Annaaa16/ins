@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 import { ROUTES } from '~/constants';
 
+import Container from '../Container';
 import HeaderMiddle from './HeaderMiddle';
 import HeaderRight from './HeaderRight';
 
@@ -21,17 +22,21 @@ const Header = () => {
         'bg-white',
       )}
     >
-      <div className={clsx('grid grid-cols-3 items-center mx-auto w-container-w h-header-h py-3')}>
+      <Container
+        className={clsx(
+          'grid md:grid-cols-3 items-center justify-center h-header-h py-3 px-4 lg:px-0',
+        )}
+      >
         <img
           onClick={() => router.push(ROUTES.HOME)}
-          className={clsx('h-8', 'cursor-pointer')}
+          className={clsx('hidden md:block h-8', 'cursor-pointer')}
           src={logo.src}
           alt='Logo'
           draggable={false}
         />
         <HeaderMiddle />
         <HeaderRight />
-      </div>
+      </Container>
     </header>
   );
 };

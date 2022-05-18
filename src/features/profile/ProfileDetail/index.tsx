@@ -76,11 +76,11 @@ const ProfileDetail = ({ user }: ProfileDetailProps) => {
 
   return (
     <>
-      <div className='col-span-1'>
+      <div className='md:col-span-1 col-span-3'>
         <div
           className={clsx(
             'relative',
-            'w-36 h-36 mt-4 ml-7 overflow-hidden rounded-full',
+            'w-36 h-36 mt-4 mx-auto md:ml-7 overflow-hidden rounded-full',
             isMe && !isLoading && 'cursor-pointer',
           )}
         >
@@ -99,6 +99,7 @@ const ProfileDetail = ({ user }: ProfileDetailProps) => {
             </>
           )}
         </div>
+
         {isMe && (
           <input
             ref={fileInputRef}
@@ -109,12 +110,14 @@ const ProfileDetail = ({ user }: ProfileDetailProps) => {
           />
         )}
       </div>
-      <div className='col-span-2'>
-        <div className='flex items-center'>
+
+      <div className='col-span-3 md:col-span-2'>
+        <div className='flex flex-col md:flex-row justify-center md:justify-start items-center gap-x-5 flex-wrap mt-4 md:mt-0'>
           <h1 className='text-4xl'>{user.username}</h1>
           <DetailActions user={user} />
         </div>
-        <div className='flex gap-x-5 text-base mt-5'>
+
+        <div className='flex gap-x-5 justify-center md:justify-start text-base mt-5'>
           <span>
             <span className='font-medium'>{user.postCounts}</span> posts
           </span>

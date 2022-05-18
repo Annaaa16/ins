@@ -45,7 +45,7 @@ const HeaderMiddle = () => {
   });
 
   return (
-    <div className={clsx('relative', 'ml-auto w-[268px] h-full')}>
+    <div className={clsx('relative', 'hidden md:block ml-auto w-[268px] h-full')}>
       <div className={clsx('flex items-center px-4 py-1 h-full rounded-md', 'bg-gray-100')}>
         <FontAwesomeIcon icon={faMagnifyingGlass} className={clsx('mr-3', 'text-zinc-400')} />
         <input

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import clsx from 'clsx';
 
 import { withRoute } from '~/hocs';
@@ -7,6 +9,8 @@ import InboxSidebar from '~/features/inbox/InboxSidebar';
 import InboxMessage from '~/features/inbox/InboxMessage';
 
 const Inbox = () => {
+  const [isShowMessages, setIsShowMessages] = useState<boolean>(false);
+
   return (
     <>
       <Header />
@@ -17,12 +21,22 @@ const Inbox = () => {
             'bg-white',
           )}
         >
-          <aside className='w-full lg:w-2/5 flex flex-col border-r h-full border-line'>
-            <InboxSidebar />
+          <aside
+            className={clsx(
+              'w-full md:w-2/6 lg:w-2/5 flex flex-col border-r h-full border-line',
+              isShowMessages ? 'hidden md:flex' : 'flex',
+            )}
+          >
+            <InboxSidebar onShowMessages={() => setIsShowMessages(true)} />
           </aside>
 
-          <div className='flex flex-col w-full lg:w-3/5'>
-            <InboxMessage />
+          <div
+            className={clsx(
+              'flex flex-col w-full md:w-4/6 lg:w-3/5',
+              isShowMessages ? 'flex' : 'hidden md:flex',
+            )}
+          >
+            <InboxMessage onHideMessages={() => setIsShowMessages(false)} />
           </div>
         </section>
       </main>

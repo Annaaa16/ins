@@ -35,23 +35,23 @@ const HeaderRight = () => {
     <div className='flex items-center justify-end gap-x-5'>
       <IconHome
         onClick={() => router.push(ROUTES.HOME)}
-        className={clsx('cursor-pointer')}
+        className={clsx('flex-shrink-0', 'cursor-pointer')}
         active={router.pathname === ROUTES.HOME}
       />
       <IconMessenger
         onClick={() => router.replace(ROUTES.INBOX, undefined, { shallow: true })}
-        className={clsx('cursor-pointer')}
+        className={clsx('flex-shrink-0', 'cursor-pointer')}
         active={router.pathname === ROUTES.INBOX}
       />
       <IconCreate
         onClick={() => showModal(MODAL_TYPES.POST_CREATOR)}
-        className={clsx('cursor-pointer')}
+        className={clsx('flex-shrink-0', 'cursor-pointer')}
         active={modalTypes.includes(MODAL_TYPES.POST_CREATOR)}
       />
-      <IconCompass className={clsx('cursor-pointer')} active={false} />
-      <IconHeart className={clsx('cursor-pointer')} active={false} />
+      <IconCompass className={clsx('flex-shrink-0', 'cursor-pointer')} active={false} />
+      <IconHeart className={clsx('flex-shrink-0', 'cursor-pointer')} active={false} />
 
-      <div className={clsx('relative', 'cursor-pointer')}>
+      <div className={clsx('relative', 'flex-shrink-0', 'cursor-pointer')}>
         <Skeleton
           ref={avatarRef}
           objectFit='cover'

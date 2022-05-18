@@ -69,7 +69,7 @@ const ProfilePosts = ({ userId }: ProfilePostsProps) => {
     );
 
   return (
-    <div className='grid grid-cols-3 gap-7 mt-10'>
+    <div className='grid grid-cols-3 gap-2 md:gap-3 lg:gap-7 mt-10'>
       {posts.map((post) => (
         <div
           key={post._id}
@@ -77,14 +77,9 @@ const ProfilePosts = ({ userId }: ProfilePostsProps) => {
             dispatch(postActions.setSelectedPost(post));
             showModal(MODAL_TYPES.POST_DETAIL);
           }}
-          className={clsx('relative', 'btn group h-[293px]')}
+          className={clsx('relative', 'btn group h-36 md:h-64 lg:h-[293px]')}
         >
-          <Skeleton
-            className={clsx('h-[293px]')}
-            objectFit='cover'
-            src={post.photo ?? photo.src}
-            alt='Post'
-          />
+          <Skeleton objectFit='cover' src={post.photo ?? photo.src} alt='Post' />
           <button
             className={clsx(
               'absolute inset-0',

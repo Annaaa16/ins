@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import TimeAgo from 'react-timeago';
 import clsx from 'clsx';
 
 // types
@@ -19,12 +20,14 @@ interface SidebarConversationProps {
   currentUser: UserFragment | null;
   conversation: ConversationWithOnlineStatus;
   conversationSelector: ConversationSliceState;
+  onShowMessages: () => void;
 }
 
 const SidebarConversation = ({
   conversation,
   currentUser,
   conversationSelector,
+  onShowMessages,
 }: SidebarConversationProps) => {
   const { selectedConversation, messages } = conversationSelector;
 
@@ -75,6 +78,8 @@ const SidebarConversation = ({
   };
 
   const handleSelectConversation = async () => {
+    onShowMessages();
+
     // Prevent click on same conversation
     if (selectedConversation?._id === conversationId) return;
 
@@ -129,7 +134,11 @@ const SidebarConversation = ({
               {lastMessage.text}
             </span>
             <FontAwesomeIcon className='w-0.5 h-0.5 mx-1.5' icon={faCircle} />
-            <span className={clsx('flex-1', 'text-base-gray')}>41s</span>
+            <TimeAgo
+              live={false}
+              date={lastMessage.createdAt}
+              className={clsx('flex-shrink-0 text-sm-1', 'text-base-gray')}
+            />
           </div>
         )}
       </div>
