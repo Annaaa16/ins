@@ -12,4 +12,9 @@ module.exports = {
     DEFAULT: 'rgb(0 0 0 / 0.65)',
     light: 'rgb(0 0 0 / 0.55)',
   },
+  toast: {
+    success: '#44d788',
+    error: '#fa461c',
+    warning: '#ffbb01',
+  },
 };

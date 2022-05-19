@@ -47,4 +47,34 @@ module.exports = {
       'background-position-x': '100%',
     },
   },
+  'toast-in': {
+    '0%': {
+      transform: 'translateX(100%)',
+      // opacity: 0,
+    },
+    '50%': {
+      transform: 'translateX(-20px)',
+    },
+    '85%': {
+      transform: 'translateX(15px)',
+    },
+    '100%': {
+      transform: 'translateX(0)',
+      // opacity: 1,
+    },
+  },
+  'toast-out': {
+    '0%': {
+      transform: 'translateX(50px)',
+      // opacity: 0,
+    },
+    '70%': {
+      transform: 'translateX(-50px)',
+      // opacity: 0,
+    },
+    '100%': {
+      transform: 'translateX(100%)',
+      // opacity: 1,
+    },
+  },
 };
