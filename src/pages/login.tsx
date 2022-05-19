@@ -10,6 +10,7 @@ import { ROUTES } from '~/constants';
 import { loginSchema } from '~/helpers/formSchemas';
 import { LoginInput, useLoginMutation } from '~/types/generated';
 import { withRoute } from '~/hocs';
+import { toast } from '~/store/toast';
 import toErrorMap from '~/helpers/toErrorMap';
 
 import { SpinnerRing } from '~/components/Spinner';
@@ -65,6 +66,7 @@ const Login = () => {
         message,
       });
     } else {
+      toast({ messageType: 'loginSuccess', status: 'success' });
       router.push(ROUTES.HOME);
     }
   };

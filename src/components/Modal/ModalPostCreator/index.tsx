@@ -8,6 +8,8 @@ import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
 import { useAuthSelector, usePostSelector } from '~/redux/selectors';
 import { authActions } from '~/redux/slices/authSlice';
+import { isEmptyInput } from '~/helpers/string';
+import { toast } from '~/store/toast';
 
 import ModalWrapper from '../ModalWrapper';
 import CreatorForm from './CreatorForm';
@@ -38,6 +40,12 @@ const ModalPostCreator = () => {
   };
 
   const handleCreatePostSubmit = async () => {
+    if (isEmptyInput(caption) && !preview && !oldPhoto) {
+      toast({ messageType: 'fieldMissing', status: 'warning' });
+
+      return;
+    }
+
     const response = await createPost({
       variables: {
         createPostInput: {
@@ -52,6 +60,7 @@ const ModalPostCreator = () => {
     if (!data?.success) return;
 
     reset();
+    toast({ messageType: 'sharePostSuccess', status: 'success' });
 
     // At profile page
     if (selectedUser != null && currentUser!._id !== selectedUser._id) return;
@@ -78,10 +87,11 @@ const ModalPostCreator = () => {
 
     const data = response.data?.updatePost;
 
-    if (data?.success) {
-      dispatch(postActions.updatePost(data.post!));
-      reset();
-    }
+    if (!data?.success) return;
+
+    dispatch(postActions.updatePost(data.post!));
+    reset();
+    toast({ messageType: 'updatePostSuccess', status: 'success' });
   };
 
   return (

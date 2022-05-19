@@ -7,6 +7,7 @@ import { useAuthSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
 import { authActions } from '~/redux/slices/authSlice';
+import { toast } from '~/store/toast';
 
 type FollowUser = (action: FollowAction, actionDone?: Callback) => Promise<void>;
 
@@ -19,7 +20,7 @@ interface UseFollowUserReturn {
   handleFollowActions: (actionDone?: Callback) => void;
 }
 
-export const useFollowUser = (selectedUser: UserFragment, postId?: string): UseFollowUserReturn => {
+export const useFollowUser = (selectedUser: UserFragment): UseFollowUserReturn => {
   const { showModal } = useModalContext();
   const currentUser = useAuthSelector().currentUser!;
 
@@ -31,7 +32,8 @@ export const useFollowUser = (selectedUser: UserFragment, postId?: string): UseF
   const followUser: FollowUser = async (action, actionDone) => {
     if (followUserLoading) return;
 
-    const followType = action === 'follow' ? FollowType.Follow : FollowType.Unfollow;
+    const isFollow = action === 'follow';
+    const followType = isFollow ? FollowType.Follow : FollowType.Unfollow;
 
     const response = await followUserMutate({
       variables: {
@@ -43,6 +45,11 @@ export const useFollowUser = (selectedUser: UserFragment, postId?: string): UseF
     if (!response.data?.followUser.success) return;
 
     if (actionDone != null) actionDone();
+
+    toast({
+      messageType: isFollow ? 'followUserSuccess' : 'unfollowUserSuccess',
+      status: 'success',
+    });
 
     dispatch(
       authActions.followUser({
