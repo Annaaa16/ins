@@ -3,3 +3,5 @@ export const isEmptyInput = (str: string | undefined): boolean => {
 
   return str.trim() === '';
 };
+
+export const isImageFormat = (file: File) => file['type'].startsWith('image');

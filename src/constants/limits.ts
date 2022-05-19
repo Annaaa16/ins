@@ -5,4 +5,4 @@ export const LIMITS = {
   CONVERSATIONS: 10,
   MESSAGES: 15,
   SUGGESTED_PEOPLE: 15,
-};
+} as const;
