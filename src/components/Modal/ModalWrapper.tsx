@@ -48,7 +48,7 @@ const ModalWrapper = ({
       <div
         className={clsx(
           'relative',
-          'm-auto w-full lg:w-auto max-w-modal-w max-h-modal-h rounded-xl overflow-y-auto scrollbar-none',
+          'm-auto max-w-modal-w max-h-modal-h rounded-xl overflow-y-auto scrollbar-none',
           'animate-zoomIn',
           className,
         )}
