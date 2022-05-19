@@ -85,7 +85,7 @@ const People = ({ nextPage }: PeopleProps) => {
   return (
     <Meta title='Instagram'>
       <Header />
-      <Container ref={containerObserverRef} className='px-2 md:px-10 lg:px-32 mt-header-h pt-10'>
+      <Container ref={containerObserverRef} className='px-2 md:px-10 lg:px-32 mt-header-h py-10'>
         {body}
         <div ref={observerRef} />
         {getSuggestionsLoading && <SpinnerRing className='mx-auto mt-5' />}

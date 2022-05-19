@@ -7,6 +7,7 @@ import { useStoreDispatch } from '~/redux/store';
 import { postActions } from '~/redux/slices/postSlice';
 import { useFollowUser } from '~/hooks';
 import { authActions } from '~/redux/slices/authSlice';
+import { toast } from '~/store/toast';
 
 import PostActions from '~/helpers/modalActions/post';
 import ModalWrapper from './ModalWrapper';
@@ -25,6 +26,7 @@ const ModalPostActions = () => {
   const currentUserId = currentUser._id;
   const isPostOwner = currentUserId === selectedPost!.user._id;
   const isShowingModalPostDetail = modalTypes.includes(MODAL_TYPES.POST_DETAIL);
+  const isLoading = followUserLoading || deletePostLoading;
 
   const handleDeletePost = async () => {
     if (!isPostOwner) return;
@@ -40,6 +42,8 @@ const ModalPostActions = () => {
     hideModal([MODAL_TYPES.POST_ACTIONS, MODAL_TYPES.POST_DETAIL]);
 
     if (!response.data?.deletePost.success) return;
+
+    toast({ messageType: 'deletePostSuccess', status: 'success' });
 
     dispatch(
       postActions.deletePost({
@@ -70,10 +74,10 @@ const ModalPostActions = () => {
 
   return (
     <ModalWrapper
-      canClose={!deletePostLoading || !followUserLoading}
+      canClose={!isLoading}
       hideCloseButton={isShowingModalPostDetail}
       closeHandler={() => {
-        if (isShowingModalPostDetail || deletePostLoading) return;
+        if (isLoading || isShowingModalPostDetail) return;
 
         dispatch(postActions.setSelectedPost(null));
       }}

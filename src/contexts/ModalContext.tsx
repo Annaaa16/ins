@@ -12,6 +12,7 @@ import ModalPostDetail from '~/components/Modal/ModalPostDetail';
 import ModalCommentActions from '~/components/Modal/ModalCommentActions';
 import ModalNewMessage from '~/components/Modal/ModalNewMessage';
 import ModalUnfollow from '~/components/Modal/ModalUnfollow';
+import ToastContainer from '~/components/Toast/ToastContainer';
 
 interface ModalInitState {
   modalTypes: ModalType[];
@@ -74,6 +75,8 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
     <ModalContext.Provider value={{ modalTypes, showModal, hideModal }}>
       {children}
       {modalTypes.map((type) => MODALS[type])}
+
+      <ToastContainer />
     </ModalContext.Provider>
   );
 };

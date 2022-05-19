@@ -7,6 +7,8 @@ import fetch from 'isomorphic-unfetch';
 import isEqual from 'lodash/isEqual';
 import merge from 'deepmerge';
 
+import { toast } from '~/store/toast';
+
 const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
 interface ApolloStateProps {
@@ -23,7 +25,10 @@ type ApolloCache = ApolloClient<NormalizedCacheObject>;
 let apolloClient: ApolloCache;
 
 const errorLink = onError((errors) => {
-  if (errors) console.log('Error link =>', errors);
+  if (errors) {
+    toast({ messageType: 'serverError', status: 'error' });
+    console.log('Error link =>', errors);
+  }
 });
 
 const createApolloClient = (headers: IncomingHttpHeaders | null = null): ApolloCache => {

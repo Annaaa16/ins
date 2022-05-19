@@ -21,6 +21,7 @@ const PeopleItem = ({ user }: PeopleItemProps) => {
   return (
     <li className='flex items-center'>
       <Skeleton
+        objectFit='cover'
         onClick={onVisitProfile}
         className={clsx('w-11 h-11 mr-3', 'cursor-pointer')}
         rounded

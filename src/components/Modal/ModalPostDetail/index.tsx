@@ -2,17 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import TimeAgo from 'react-timeago';
 import clsx from 'clsx';
 
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import { LIMITS } from '~/constants';
 import { useCreateCommentMutation, useGetCommentsLazyQuery } from '~/types/generated';
-import { useAuthSelector, useCommentSelector, usePostSelector } from '~/redux/selectors';
+import { useCommentSelector, usePostSelector } from '~/redux/selectors';
 import { useStoreDispatch } from '~/redux/store';
-import { useFollowUser, useIntersectionObserver } from '~/hooks';
+import { useFollowUser, useIntersectionObserver, useUser } from '~/hooks';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { postActions } from '~/redux/slices/postSlice';
 import { displayLikeCounts } from '~/helpers/format';
+import { removeSubTree, subTrees } from '~/helpers/redux';
 
 import { SpinnerRing } from '~/components/Spinner';
 import Skeleton from '~/components/Skeleton';
@@ -20,6 +22,7 @@ import Actions from '~/components/Actions';
 import CommentField from '~/components/CommentField';
 import DetailComment from './DetailComment';
 import ModalWrapper from '../ModalWrapper';
+import PostPhotoError from '~/components/Post/PostPhotoError';
 
 import avatar from '~/assets/avatar.png';
 
@@ -29,19 +32,26 @@ const ModalPostDetail = () => {
   // Fix duplicate requests
   const calledCursorsRef = useRef<Array<string | null>>([]);
 
-  const { showModal } = useModalContext();
+  const { showModal, hideModal } = useModalContext();
   const { selectedPost } = usePostSelector();
   const { comments } = useCommentSelector();
-  const currentUser = useAuthSelector().currentUser!;
 
   const [getComments, { loading: getCommentsLoading }] = useGetCommentsLazyQuery();
   const [createComment, { loading: createCommentLoading }] = useCreateCommentMutation();
+  const { visitProfile, currentUser } = useUser();
   const { observerRef, containerObserverRef, isIntersecting } = useIntersectionObserver({
     rootMargin: '300px',
   });
   const dispatch = useStoreDispatch();
 
-  const { _id: postId, user, photo: postPhoto, reactions, caption: postCaption } = selectedPost!;
+  const {
+    _id: postId,
+    user,
+    photo: postPhoto,
+    reactions,
+    caption: postCaption,
+    createdAt,
+  } = selectedPost!;
 
   const { isFollowed, followUserLoading, handleFollowActions } = useFollowUser(user);
   const hasFollowBtn = !isFollowed && currentUser._id !== user._id;
@@ -75,6 +85,13 @@ const ModalPostDetail = () => {
       setCaption('');
     }
   };
+
+  const handleVisitProfile = (username: string) =>
+    visitProfile(username, () => {
+      hideModal(MODAL_TYPES.POST_DETAIL);
+      dispatch(postActions.setSelectedPost(null));
+      removeSubTree(subTrees.selectedPost);
+    });
 
   // Fetch comments
   useEffect(() => {
@@ -124,17 +141,24 @@ const ModalPostDetail = () => {
     <ModalWrapper
       modalType={MODAL_TYPES.POST_DETAIL}
       closeHandler={() => dispatch(postActions.setSelectedPost(null))}
-      className={clsx('flex lg:w-[1150px] h-screen')}
+      className={clsx('flex w-modal-w lg:w-[1150px] h-screen')}
     >
       {postPhoto != null && (
         <Skeleton
+          placeholderError={PostPhotoError}
           objectFit='cover'
           className={clsx('hidden lg:block w-3/5 min-h-full border-r border-line', 'bg-white')}
           src={postPhoto}
         />
       )}
 
-      <div className={clsx('flex flex-col w-full lg:w-2/5 text-sm-1 h-full', 'bg-white')}>
+      <div
+        className={clsx(
+          'flex flex-col w-full lg:w-2/5 text-sm-1 h-full',
+          'bg-white',
+          postPhoto == null && 'rounded-lg mx-auto',
+        )}
+      >
         <div className='flex items-center px-4 py-3 border-b border-line flex-shrink-0'>
           <Skeleton
             src={user.avatar ?? avatar.src}
@@ -162,20 +186,31 @@ const ModalPostDetail = () => {
         <div ref={containerObserverRef} className='px-4 overflow-y-auto'>
           <div className='group flex items-center py-2'>
             <Skeleton
+              onClick={() => handleVisitProfile(user.username)}
               src={user.avatar ?? avatar.src}
               rounded
               className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
               objectFit='cover'
             />
             <div className='leading-normal'>
-              <span className={clsx('font-medium mr-1', 'cursor-pointer select-none')}>
+              <span
+                onClick={() => handleVisitProfile(user.username)}
+                className={clsx('font-medium mr-1', 'cursor-pointer select-none')}
+              >
                 {user.username}
               </span>
               <p className='inline'>{postCaption}</p>
+              <TimeAgo
+                className={clsx('block mt-0.5 text-xs', 'text-base-gray')}
+                live={false}
+                date={createdAt}
+              />
             </div>
           </div>
+
           {commentsData.map((comment) => (
             <DetailComment
+              onVisitProfile={handleVisitProfile}
               key={comment._id}
               postId={postId}
               comment={comment}

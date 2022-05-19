@@ -22,7 +22,7 @@ const createPost = (Base: ClassType) => {
       @Arg('createPostInput') { caption, base64Photo }: CreatePostInput,
       @Ctx() { req: { userId } }: Context,
     ): Promise<PostMutationResponse> {
-      if (isEmptyInput(caption) || !base64Photo)
+      if (isEmptyInput(caption) && !base64Photo)
         return Promise.resolve({
           code: 400,
           success: false,
@@ -34,7 +34,9 @@ const createPost = (Base: ClassType) => {
       });
 
       return respond(async () => {
-        const photo = await uploadPhoto(base64Photo);
+        let photo: string | null = null;
+
+        if (!isEmptyInput(base64Photo)) photo = await uploadPhoto(base64Photo);
 
         const newPost = await Post.create({
           caption,

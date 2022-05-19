@@ -122,7 +122,7 @@ const SidebarConversation = ({
           {receiver.username}
         </div>
         {lastMessage && (
-          <div className={clsx('flex items-center mt-0.5')}>
+          <div className={clsx('flex items-center mt-1')}>
             <span
               className={clsx(
                 'truncate',

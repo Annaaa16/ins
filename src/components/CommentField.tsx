@@ -31,13 +31,13 @@ const CommentField = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className={clsx('flex items-center px-4 py-3 border-t-1 border-line', className)}
+      className={clsx('flex items-center px-4 border-t-1 border-line', className)}
     >
       <IconEmoji className={clsx('mr-4', 'cursor-pointer')} />
       <input
         value={caption}
         onChange={(e) => onSetCaption(e.target.value)}
-        className={clsx('text-sm w-full', 'placeholder:text-base-gray')}
+        className={clsx('text-sm w-full py-4', 'placeholder:text-base-gray')}
         placeholder='Add a comment...'
       />
       {loading ? (

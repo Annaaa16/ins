@@ -10,6 +10,7 @@ import { ROUTES } from '~/constants';
 import { registerSchema } from '~/helpers/formSchemas';
 import { useRegisterMutation, RegisterInput } from '~/types/generated';
 import { withRoute } from '~/hocs';
+import { toast } from '~/store/toast';
 import toErrorMap from '~/helpers/toErrorMap';
 
 import { SpinnerRing } from '~/components/Spinner';
@@ -59,6 +60,7 @@ const Register = () => {
         message,
       });
     } else {
+      toast({ messageType: 'registerSuccess', status: 'success' });
       router.push(ROUTES.LOGIN);
     }
   };

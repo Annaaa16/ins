@@ -1,15 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import TimeAgo from 'react-timeago';
 import clsx from 'clsx';
 
-import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
 import { CommentFragment } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { displayLikeCounts } from '~/helpers/format';
-import { useComment, useUser } from '~/hooks';
-import { postActions } from '~/redux/slices/postSlice';
-import { removeSubTree, subTrees } from '~/helpers/redux';
+import { useComment } from '~/hooks';
 
 import IconHeart from '~/components/Icon/IconHeart';
 import Skeleton from '~/components/Skeleton';
@@ -20,23 +18,20 @@ interface DetailCommentProps {
   comment: CommentFragment;
   postId: string;
   onShowActionsModal: () => void;
+  onVisitProfile: (username: string) => void;
 }
 
-const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentProps) => {
+const DetailComment = ({
+  comment,
+  postId,
+  onShowActionsModal,
+  onVisitProfile,
+}: DetailCommentProps) => {
   const { user, caption } = comment;
 
-  const { hideModal } = useModalContext();
-
-  const { visitProfile } = useUser();
   const dispatch = useStoreDispatch();
 
-  const onVisitProfile = () => {
-    visitProfile(user.username, () => {
-      hideModal(MODAL_TYPES.POST_DETAIL);
-      dispatch(postActions.setSelectedPost(null));
-      removeSubTree(subTrees.selectedPost);
-    });
-  };
+  const handleVisitProfile = () => onVisitProfile(user.username);
 
   const onSelectOptions = () => {
     dispatch(commentActions.setSelectedComment(comment));
@@ -48,7 +43,7 @@ const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentPro
   return (
     <div className='group flex py-2'>
       <Skeleton
-        onClick={onVisitProfile}
+        onClick={handleVisitProfile}
         src={user.avatar ?? avatar.src}
         rounded
         className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
@@ -56,14 +51,14 @@ const DetailComment = ({ comment, postId, onShowActionsModal }: DetailCommentPro
       />
       <div className='leading-normal'>
         <span
-          onClick={onVisitProfile}
+          onClick={handleVisitProfile}
           className={clsx('font-medium mr-1', 'cursor-pointer select-none')}
         >
           {user.username}
         </span>
         <p className='inline'>{caption}</p>
         <div className={clsx('flex items-center gap-x-3 mt-2', 'text-base-gray')}>
-          <button>2d</button>
+          <TimeAgo live={false} date={comment.createdAt} />
           <button className={clsx('font-medium', 'cursor-pointer')}>
             {displayLikeCounts(comment.reactions, 'like')}
           </button>

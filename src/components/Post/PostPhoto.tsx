@@ -7,13 +7,14 @@ import { usePost, useDoubleTab } from '~/hooks';
 
 import Skeleton from '../Skeleton';
 import IconHeart from '../Icon/IconHeart';
+import PostPhotoError from './PostPhotoError';
 
-const PostPhoto = (props: PostFragment) => {
+const PostPhoto = (post: PostFragment) => {
   const [isHearted, setIsHearted] = useState<boolean>(false);
 
-  const { photo } = props;
+  const { photo, caption } = post;
 
-  const { isLiked, reactPost } = usePost(props);
+  const { isLiked, reactPost } = usePost(post);
   const [doubleTab] = useDoubleTab();
 
   const handleReactPost = () => {
@@ -26,7 +27,7 @@ const PostPhoto = (props: PostFragment) => {
     doubleTab(callback);
   };
 
-  if (!photo) return null;
+  if (!photo) return <h2 className={clsx('px-4 text-2xl')}>{caption}</h2>;
 
   return (
     <div className={'relative'} onClick={handleReactPost}>
@@ -39,7 +40,7 @@ const PostPhoto = (props: PostFragment) => {
           />
         )}
       </div>
-      <Skeleton src={photo} alt='Thumbnail' draggable={false} />
+      <Skeleton placeholderError={PostPhotoError} src={photo} alt='Thumbnail' draggable={false} />
     </div>
   );
 };
