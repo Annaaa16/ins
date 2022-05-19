@@ -24,6 +24,7 @@ import SpinnerLogo from '../Spinner/SpinnerLogo';
 import Skeleton from '../Skeleton';
 import ModalWrapper from './ModalWrapper';
 import SpinnerRing from '../Spinner/SpinnerRing';
+import EmptyResult from '../EmptyResult';
 
 import avatar from '~/assets/avatar.png';
 
@@ -115,7 +116,9 @@ const ModalNewMessage = () => {
       className={clsx('flex flex-col w-100 h-[500px] text-sm', 'bg-white')}
     >
       <div className='flex-between flex-shrink-0 px-2 py-2.5'>
-        <IconClose className={clsx('p-1', 'text-base-black', 'cursor-pointer')} />
+        <button onClick={() => hideModal(MODAL_TYPES.NEW_MESSAGE)} className='btn'>
+          <IconClose className={clsx('p-1', 'text-base-black')} />
+        </button>
         <span>New Message</span>
         <div className='w-8 flex justify-center'>
           {createConversationLoading ? (
@@ -184,11 +187,14 @@ const ModalNewMessage = () => {
         <div className='flex-center flex-grow w-full'>
           <SpinnerLogo className='w-16 h-16' />
         </div>
+      ) : searchedUsers.length === 0 ? (
+        <EmptyResult />
       ) : (
         <ul className='py-3 px-4 space-y-4 overflow-y-auto'>
           {searchedUsers.map((user) => (
             <li key={user._id} className='flex items-center'>
               <Skeleton
+                objectFit='cover'
                 className='w-11 h-11 mr-3'
                 rounded
                 src={user.avatar ?? avatar.src}

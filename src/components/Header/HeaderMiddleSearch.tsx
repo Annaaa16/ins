@@ -2,11 +2,10 @@ import clsx from 'clsx';
 
 import { BaseUserFragment } from '~/types/generated';
 import { getNameInMail } from '~/helpers/format';
+import { useUser } from '~/hooks';
 
 import Skeleton from '../Skeleton';
-import IconNotFound from '../Icon/IconNotFound';
-
-import { useUser } from '~/hooks';
+import EmptyResult from '../EmptyResult';
 
 import avatar from '~/assets/avatar.png';
 
@@ -17,16 +16,7 @@ interface HeaderMiddleSearchProps {
 const HeaderMiddleSearch = ({ users }: HeaderMiddleSearchProps) => {
   const { visitProfile } = useUser();
 
-  if (users.length === 0)
-    return (
-      <div className={clsx('flex-center flex-col text-center w-full h-full px-10', 'text-gray')}>
-        <IconNotFound className='w-2/6' />
-        <h3 className='font-bold text-base mt-3'>We didn&apos;t find any results</h3>
-        <p className={clsx('text-sm mt-1 leading-5', 'text-base-gray')}>
-          Make sure everything is spelled correctly or try different keywords.
-        </p>
-      </div>
-    );
+  if (users.length === 0) return <EmptyResult />;
 
   return (
     <ul className='w-full h-full'>
