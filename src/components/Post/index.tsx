@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import clsx from 'clsx';
 
@@ -12,7 +12,7 @@ import PostHeader from './PostHeader';
 import PostPhoto from './PostPhoto';
 import CommentField from '../CommentField';
 
-const PostFragment = (props: PostFragment) => {
+const Post = (props: PostFragment) => {
   const { _id: postId } = props;
 
   const [caption, setCaption] = useState<string>('');
@@ -30,16 +30,16 @@ const PostFragment = (props: PostFragment) => {
 
     const data = response.data?.createComment;
 
-    if (data?.success && data.comment) {
-      dispatch(
-        postActions.increaseCommentCounts({
-          postId,
-        }),
-      );
-      setCaption('');
+    if (!data?.success) return;
 
-      dispatch(commentActions.addDisplayedComment({ postId, comment: data.comment }));
-    }
+    dispatch(
+      postActions.increaseCommentCounts({
+        postId,
+      }),
+    );
+    setCaption('');
+
+    dispatch(commentActions.addDisplayedComment({ postId, comment: data.comment! }));
   };
 
   return (
@@ -57,4 +57,4 @@ const PostFragment = (props: PostFragment) => {
   );
 };
 
-export default PostFragment;
+export default memo(Post);
