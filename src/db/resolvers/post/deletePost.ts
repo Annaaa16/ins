@@ -32,8 +32,9 @@ const deletePost = (Base: ClassType) => {
 
         const { deletePhoto } = cloudinaryHandler();
 
-        await deletePhoto(deletedPost.photo);
         await Comment.deleteMany({ postId });
+
+        if (deletedPost.photo != null) await deletePhoto(deletedPost.photo);
 
         return {
           code: 200,
