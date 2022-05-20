@@ -7,20 +7,17 @@ import { withRoute } from '~/hocs';
 import Header from '../components/Header';
 import InboxSidebar from '~/features/inbox/InboxSidebar';
 import InboxMessage from '~/features/inbox/InboxMessage';
+import Container from '~/components/Container';
+import Meta from '~/layouts/Meta';
 
 const Inbox = () => {
   const [isShowMessages, setIsShowMessages] = useState<boolean>(false);
 
   return (
-    <>
+    <Meta title='Inbox'>
       <Header />
-      <main className='inbox-height mt-header-h py-4'>
-        <section
-          className={clsx(
-            'flex border max-w-full h-full border-line mx-auto w-container-w',
-            'bg-white',
-          )}
-        >
+      <Container className='inbox-height py-4'>
+        <section className={clsx('flex border max-w-full h-full border-line', 'bg-white')}>
           <aside
             className={clsx(
               'w-full md:w-2/6 lg:w-2/5 flex flex-col border-r h-full border-line',
@@ -39,8 +36,8 @@ const Inbox = () => {
             <InboxMessage onHideMessages={() => setIsShowMessages(false)} />
           </div>
         </section>
-      </main>
-    </>
+      </Container>
+    </Meta>
   );
 };
 
