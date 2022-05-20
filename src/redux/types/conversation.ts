@@ -7,6 +7,8 @@ export interface ConversationWithOnlineStatus extends ConversationFragment {
   members: UserWithOnlineStatus[];
 }
 
+export type Loading = 'getMessages';
+
 export interface ConversationSliceState {
   messages: {
     [conversationId: string]: {
@@ -20,6 +22,7 @@ export interface ConversationSliceState {
   cursor: string | null;
   hasMore: boolean;
   onlineUserIds: string[];
+  loadings: Loading[];
 }
 
 export interface AddFetchedConversationsReducer {

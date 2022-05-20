@@ -9,8 +9,10 @@ import clsx from 'clsx';
 import { ROUTES } from '~/constants';
 import { ForgotPasswordMutationVariables, useForgotPasswordMutation } from '~/types/generated';
 import { withRoute } from '~/hocs';
+import { toast } from '~/store/toast';
 import toErrorMap from '~/helpers/toErrorMap';
 
+import { SpinnerRing } from '~/components/Spinner';
 import FormDivider from '~/components/FormDivider';
 import FormField from '~/components/FormField';
 import Meta from '~/layouts/Meta';
@@ -27,12 +29,12 @@ const ForgotPassword = () => {
     formState: { errors },
   } = useForm<ForgotPasswordMutationVariables>();
 
-  const [forgotPassword] = useForgotPasswordMutation();
+  const [forgotPassword, { loading: forgotPasswordLoading }] = useForgotPasswordMutation();
 
   const isTyped = watch('usernameOrEmail');
 
   const handleResetSubmit = async ({ usernameOrEmail }: ForgotPasswordMutationVariables) => {
-    if (!isTyped) return;
+    if (!isTyped || forgotPasswordLoading) return;
 
     const response = await forgotPassword({
       variables: {
@@ -47,6 +49,7 @@ const ForgotPassword = () => {
 
       setError(field, { message });
     } else if (data?.linkReset) {
+      toast({ messageType: 'getLinkResetSuccess', status: 'success' });
       setLinkReset(data.linkReset);
     }
   };
@@ -67,12 +70,13 @@ const ForgotPassword = () => {
         <button
           type='submit'
           className={clsx(
-            'btn text-sm w-full py-2 mt-2',
+            'btn text-sm w-full gap-x-2 h-auth-btn-h mt-2',
             'text-white bg-primary',
-            !isTyped && 'btn--disabled',
+            !isTyped && !forgotPasswordLoading && 'btn--disabled',
+            forgotPasswordLoading && 'btn--pending',
           )}
         >
-          Send Link Reset
+          {forgotPasswordLoading ? <SpinnerRing className='text-white' /> : 'Send Link Reset'}
         </button>
       </form>
     );

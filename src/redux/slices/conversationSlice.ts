@@ -6,6 +6,7 @@ import {
   AddFetchedConversationsReducer,
   AddFetchedMessagesReducer,
   ConversationSliceState,
+  Loading,
   UpdateRealMessageReducer,
 } from '../types/conversation';
 import { UserWithOnlineStatus } from '../types/shared';
@@ -20,6 +21,7 @@ const initialState: ConversationSliceState = {
   hasMore: true,
   selectedConversation: null,
   onlineUserIds: [],
+  loadings: [],
 };
 
 const updateLastMessage = (
@@ -190,12 +192,23 @@ const conversationSlice = createSlice({
       updateLastMessage(state, conversationId, socketMessage);
     },
 
-    readMessage(state, { payload: { conversationId } }: PayloadAction<{ conversationId: string }>) {
+    readMessage: (
+      state,
+      { payload: { conversationId } }: PayloadAction<{ conversationId: string }>,
+    ) => {
       const messages = state.messages[conversationId]?.data;
 
       if (messages == null) return;
 
       messages[messages.length - 1].seen = true;
+    },
+
+    addLoading: (state, { payload }: PayloadAction<Loading>) => {
+      if (!state.loadings.includes(payload)) state.loadings.push(payload);
+    },
+
+    removeLoading: (state, { payload }: PayloadAction<Loading>) => {
+      state.loadings = state.loadings.filter((loading) => loading !== payload);
     },
   },
   extraReducers: {

@@ -20,7 +20,7 @@ const MessageFooter = () => {
   const [message, setMessage] = useState<string>('');
 
   const { conversationHandler } = useSocketContext();
-  const { conversations, selectedConversation } = useConversationSelector();
+  const { conversations, selectedConversation, loadings } = useConversationSelector();
   const { currentUser } = useAuthSelector();
 
   const [createMessage] = useCreateMessageMutation();
@@ -30,7 +30,7 @@ const MessageFooter = () => {
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (isEmptyInput(message) || currentUser == null) return;
+    if (isEmptyInput(message) || currentUser == null || loadings.includes('getMessages')) return;
 
     const conversationId = selectedConversation!._id;
 

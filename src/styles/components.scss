@@ -20,6 +20,14 @@
       @apply opacity-50 
       cursor-default pointer-events-none;
     }
+
+    &--pending {
+      @apply cursor-default pointer-events-none;
+
+      &:active {
+        @apply opacity-100;
+      }
+    }
   }
 }
 

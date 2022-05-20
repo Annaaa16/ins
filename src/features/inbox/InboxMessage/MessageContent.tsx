@@ -3,9 +3,10 @@ import { useEffect, useRef } from 'react';
 import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
 
 import MessageContentText from './MessageContentText';
+import MessageContentLoading from './MessageContentLoading';
 
 const MessageContent = () => {
-  const { messages, selectedConversation } = useConversationSelector();
+  const { messages, selectedConversation, loadings } = useConversationSelector();
   const { currentUser } = useAuthSelector();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,6 +20,8 @@ const MessageContent = () => {
   }, [messages]);
 
   if (selectedConversation == null) return null;
+
+  if (loadings.includes('getMessages')) return <MessageContentLoading />;
 
   const selectedMessages = messages[selectedConversation._id]?.data ?? [];
 

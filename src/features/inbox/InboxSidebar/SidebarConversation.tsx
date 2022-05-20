@@ -89,10 +89,15 @@ const SidebarConversation = ({
 
     dispatch(conversationActions.setSelectedConversation(conversation));
 
-    const hasMessagesCache =
-      messages[conversationId] != null && messages[conversationId]!.data.length > 0;
+    const hasMessagesCache = messages[conversationId] != null;
 
-    if (!hasMessagesCache) handleFetchMessages();
+    if (!hasMessagesCache) {
+      dispatch(conversationActions.addLoading('getMessages'));
+
+      await handleFetchMessages();
+
+      dispatch(conversationActions.removeLoading('getMessages'));
+    }
   };
 
   return (
