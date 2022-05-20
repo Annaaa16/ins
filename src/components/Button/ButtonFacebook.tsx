@@ -8,17 +8,26 @@ import clsx from 'clsx';
 
 import { FACEBOOK_CLIENT_ID, ROUTES } from '~/constants';
 import { useLoginFacebookMutation } from '~/types/generated';
+import { toast } from '~/store/toast';
+import { useStoreDispatch } from '~/redux/store';
+import { userActions } from '~/redux/slices/userSlice';
+import { useUserSelector } from '~/redux/selectors';
 
 interface ButtonFacebookProps {
+  disabled?: boolean;
   className?: string;
 }
 
-const ButtonFacebook = ({ className }: ButtonFacebookProps) => {
-  const [loginFacebook] = useLoginFacebookMutation();
+const ButtonFacebook = ({ disabled, className }: ButtonFacebookProps) => {
+  const { isLoggedIn } = useUserSelector();
 
+  const [loginFacebook] = useLoginFacebookMutation();
   const router = useRouter();
+  const dispatch = useStoreDispatch();
 
   const handleFacebookResponse = async (fbResponse: ReactFacebookLoginInfo) => {
+    if (disabled || isLoggedIn) return;
+
     const response = await loginFacebook({
       variables: {
         accessToken: fbResponse.accessToken,
@@ -26,9 +35,12 @@ const ButtonFacebook = ({ className }: ButtonFacebookProps) => {
       },
     });
 
-    const data = response.data?.loginFacebook;
+    if (!response.data?.loginFacebook.success) return;
 
-    if (data && !data.errors) router.push(ROUTES.HOME);
+    dispatch(userActions.setLoggedIn(true));
+    toast({ messageType: 'loginSuccess', status: 'success' });
+
+    router.push(ROUTES.HOME);
   };
 
   return (
@@ -43,6 +55,7 @@ const ButtonFacebook = ({ className }: ButtonFacebookProps) => {
           className={clsx(
             'btn text-sm w-full gap-x-2 h-auth-btn-h',
             'text-white bg-primary',
+            disabled && 'btn--disabled',
             className,
           )}
         >

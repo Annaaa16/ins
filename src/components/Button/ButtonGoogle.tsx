@@ -7,21 +7,28 @@ import clsx from 'clsx';
 
 import { GOOGLE_CLIENT_ID, ROUTES } from '~/constants';
 import { useLoginGoogleMutation } from '~/types/generated';
+import { toast } from '~/store/toast';
+import { useStoreDispatch } from '~/redux/store';
+import { userActions } from '~/redux/slices/userSlice';
+import { useUserSelector } from '~/redux/selectors';
 
 interface ButtonGoogleProps {
+  disabled?: boolean;
   className?: string;
 }
 
 // TODO: Fix auto request when in incognito mode
-const ButtonGoogle = ({ className }: ButtonGoogleProps) => {
-  const [loginGoogle] = useLoginGoogleMutation();
+const ButtonGoogle = ({ disabled, className }: ButtonGoogleProps) => {
+  const { isLoggedIn } = useUserSelector();
 
+  const [loginGoogle] = useLoginGoogleMutation();
   const router = useRouter();
+  const dispatch = useStoreDispatch();
 
   const handleGoogleResponse = async (
     ggResponse: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => {
-    if (ggResponse.code) return;
+    if (ggResponse.code || disabled || isLoggedIn) return;
 
     const response = await loginGoogle({
       variables: {
@@ -30,9 +37,11 @@ const ButtonGoogle = ({ className }: ButtonGoogleProps) => {
       },
     });
 
-    const data = response.data?.loginGoogle;
-
-    if (data && !data.errors) router.push(ROUTES.HOME);
+    if (response.data?.loginGoogle.success) {
+      dispatch(userActions.setLoggedIn(true));
+      toast({ messageType: 'loginSuccess', status: 'success' });
+      router.push(ROUTES.HOME);
+    }
   };
 
   return (
@@ -48,6 +57,7 @@ const ButtonGoogle = ({ className }: ButtonGoogleProps) => {
           className={clsx(
             'btn text-sm w-full gap-x-2 h-auth-btn-h',
             'text-white bg-base-red',
+            disabled && 'btn--disabled',
             className,
           )}
         >

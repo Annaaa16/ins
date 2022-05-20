@@ -3,12 +3,14 @@ import { HYDRATE } from 'next-redux-wrapper';
 
 import postReducer from './slices/postSlice';
 import authReducer from './slices/authSlice';
+import userReducer from './slices/userSlice';
 import commentReducer from './slices/commentSlice';
 import conversationReducer from './slices/conversationSlice';
 
 export const combinedReducers = combineReducers({
   post: postReducer,
   auth: authReducer,
+  user: userReducer,
   comment: commentReducer,
   conversation: conversationReducer,
 });

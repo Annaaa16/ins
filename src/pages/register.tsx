@@ -11,6 +11,7 @@ import { registerSchema } from '~/helpers/formSchemas';
 import { useRegisterMutation, RegisterInput } from '~/types/generated';
 import { withRoute } from '~/hocs';
 import { toast } from '~/store/toast';
+import { useUserSelector } from '~/redux/selectors';
 import toErrorMap from '~/helpers/toErrorMap';
 
 import { SpinnerRing } from '~/components/Spinner';
@@ -24,6 +25,8 @@ import ButtonGoogle from '~/components/Button/ButtonGoogle';
 import { logo } from '~/assets/images';
 
 const Register = () => {
+  const { isLoggedIn } = useUserSelector();
+
   const [registerUser, { loading: registerUserLoading }] = useRegisterMutation();
 
   const {
@@ -76,8 +79,8 @@ const Register = () => {
             Sign up to see photos and videos from your friends.
           </h1>
 
-          <ButtonFacebook className='mt-3' />
-          <ButtonGoogle className='mt-3' />
+          <ButtonFacebook disabled={isLoggedIn} className='mt-3' />
+          <ButtonGoogle disabled={isLoggedIn} className='mt-3' />
 
           <FormDivider className='my-3' />
 

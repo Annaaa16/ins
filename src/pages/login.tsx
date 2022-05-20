@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
@@ -11,6 +11,9 @@ import { loginSchema } from '~/helpers/formSchemas';
 import { LoginInput, useLoginMutation } from '~/types/generated';
 import { withRoute } from '~/hocs';
 import { toast } from '~/store/toast';
+import { useUserSelector } from '~/redux/selectors';
+import { useStoreDispatch } from '~/redux/store';
+import { userActions } from '~/redux/slices/userSlice';
 import toErrorMap from '~/helpers/toErrorMap';
 
 import { SpinnerRing } from '~/components/Spinner';
@@ -25,8 +28,9 @@ import LoginScreenshot from '~/features/login/LoginScreenshot';
 import { logo } from '~/assets/images';
 
 const Login = () => {
-  const [loginUser, { loading: loginUserLoading }] = useLoginMutation();
+  const { isLoggedIn } = useUserSelector();
 
+  const [loginUser, { loading: loginUserLoading }] = useLoginMutation();
   const {
     register,
     handleSubmit,
@@ -37,10 +41,12 @@ const Login = () => {
   } = useForm<LoginInput>({
     resolver: yupResolver(loginSchema),
   });
-
   const router = useRouter();
+  const dispatch = useStoreDispatch();
 
   const handleLoginSubmit = async ({ password, username }: LoginInput) => {
+    if (isLoggedIn) return;
+
     const response = await loginUser({
       variables: {
         loginInput: {
@@ -66,7 +72,9 @@ const Login = () => {
         message,
       });
     } else {
+      dispatch(userActions.setLoggedIn(true));
       toast({ messageType: 'loginSuccess', status: 'success' });
+
       router.push(ROUTES.HOME);
     }
   };
@@ -97,6 +105,7 @@ const Login = () => {
                 className={clsx(
                   'btn text-sm w-full gap-x-2 h-auth-btn-h mt-2',
                   'text-white bg-primary',
+                  isLoggedIn && 'btn--disabled',
                   loginUserLoading && ['cursor-default pointer-events-none'],
                 )}
               >
@@ -106,8 +115,8 @@ const Login = () => {
 
             <FormDivider className='my-3' />
 
-            <ButtonFacebook className='mt-6' />
-            <ButtonGoogle className='mt-3' />
+            <ButtonFacebook disabled={loginUserLoading || isLoggedIn} className='mt-6' />
+            <ButtonGoogle disabled={loginUserLoading || isLoggedIn} className='mt-3' />
 
             <NextLink href={ROUTES.FORGOT_PASSWORD}>
               <a className={clsx('block text-sm-1 w-full text-center mt-7', 'text-primary')}>

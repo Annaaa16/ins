@@ -6,6 +6,8 @@ import { Callback } from '~/types/utils';
 import { ROUTES } from '~/constants';
 import { useLogoutMutation, UserFragment } from '~/types/generated';
 import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
+import { useStoreDispatch } from '~/redux/store';
+import { userActions } from '~/redux/slices/userSlice';
 
 type VisitProfile = (username: string, callback?: Callback) => void;
 
@@ -22,6 +24,7 @@ export const useUser = (): UseUserReturn => {
 
   const [logoutMutate] = useLogoutMutation();
   const router = useRouter();
+  const dispatch = useStoreDispatch();
 
   const visitProfile: VisitProfile = async (username, callback) => {
     await router.push(username);
@@ -32,7 +35,10 @@ export const useUser = (): UseUserReturn => {
   const logout = async () => {
     const response = await logoutMutate();
 
-    if (response.data?.logout.success) router.push(ROUTES.LOGIN);
+    if (response.data?.logout.success) {
+      dispatch(userActions.setLoggedIn(false));
+      router.push(ROUTES.LOGIN);
+    }
   };
 
   const checkOnline = (userId: string) =>
