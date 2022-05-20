@@ -13,6 +13,7 @@ import { useIntersectionObserver } from '~/hooks';
 import IconNewMessage from '~/components/Icon/IconNewMessage';
 import SidebarConversation from './SidebarConversation';
 import SidebarLoading from './SidebarLoading';
+import SidebarEmpty from './SidebarEmpty';
 
 interface InboxSidebarProps {
   onShowMessages: () => void;
@@ -30,7 +31,7 @@ const InboxSidebar = ({ onShowMessages }: InboxSidebarProps) => {
   const [getConversations, { loading: getConversationsLoading }] = useGetConversationsLazyQuery();
   const dispatch = useStoreDispatch();
 
-  const { conversations, hasMore } = conversationSelector;
+  const { conversations, cursor, hasMore } = conversationSelector;
 
   useEffect(() => {
     if (!isIntersecting || !hasMore) return;
@@ -39,7 +40,7 @@ const InboxSidebar = ({ onShowMessages }: InboxSidebarProps) => {
       const response = await getConversations({
         variables: {
           limit: LIMITS.CONVERSATIONS,
-          cursor: null,
+          cursor: cursor,
         },
       });
 
@@ -55,7 +56,33 @@ const InboxSidebar = ({ onShowMessages }: InboxSidebarProps) => {
         );
       }
     })();
-  }, [isIntersecting, hasMore, getConversations, dispatch]);
+  }, [isIntersecting, hasMore, cursor, getConversations, dispatch]);
+
+  let body = null;
+
+  if (getConversationsLoading)
+    body = (
+      <>
+        <SidebarLoading />
+        <SidebarLoading />
+        <SidebarLoading />
+      </>
+    );
+  else if (conversations.length === 0 && !getConversationsLoading) body = <SidebarEmpty />;
+  else
+    body = (
+      <>
+        {conversations.map((conversation) => (
+          <SidebarConversation
+            onShowMessages={onShowMessages}
+            conversationSelector={conversationSelector}
+            key={conversation._id}
+            currentUser={currentUser}
+            conversation={conversation}
+          />
+        ))}
+      </>
+    );
 
   return (
     <>
@@ -69,27 +96,10 @@ const InboxSidebar = ({ onShowMessages }: InboxSidebarProps) => {
         />
       </div>
 
-      {getConversationsLoading ? (
-        <>
-          <SidebarLoading />
-          <SidebarLoading />
-          <SidebarLoading />
-        </>
-      ) : (
-        <div ref={containerObserverRef} className='overflow-y-auto'>
-          {conversations.map((conversation) => (
-            <SidebarConversation
-              onShowMessages={onShowMessages}
-              conversationSelector={conversationSelector}
-              key={conversation._id}
-              currentUser={currentUser}
-              conversation={conversation}
-            />
-          ))}
-
-          <div ref={observerRef} />
-        </div>
-      )}
+      <div ref={containerObserverRef} className='overflow-y-auto'>
+        {body}
+        <div ref={observerRef} />
+      </div>
     </>
   );
 };
