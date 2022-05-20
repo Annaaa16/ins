@@ -6,6 +6,7 @@ interface SkeletonProps extends ImgHTMLAttributes<HTMLImageElement> {
   rounded?: boolean;
   online?: boolean;
   objectFit?: 'contain' | 'cover';
+  profile?: boolean;
   placeholderError?: ReactNode | string;
 }
 
@@ -20,7 +21,10 @@ const isImageLoaded = (src: string) => {
 };
 
 const Skeleton = forwardRef<any, SkeletonProps>(
-  ({ alt, src, rounded, className, objectFit, online, placeholderError, ...rest }, forwardRef) => {
+  (
+    { alt, src, rounded, className, objectFit, online, placeholderError, profile, ...rest },
+    forwardRef,
+  ) => {
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
 
@@ -74,9 +78,10 @@ const Skeleton = forwardRef<any, SkeletonProps>(
           {online && (
             <div
               className={clsx(
-                'absolute -bottom-0.5 -right-0.5',
-                'w-4 h-4 border-3 border-white rounded-full',
+                'absolute',
+                'border-3 border-white rounded-full',
                 'bg-base-green',
+                profile ? ['bottom-0 right-5', 'w-6 h-6'] : ['-bottom-0.5 -right-0.5', 'w-4 h-4'],
               )}
             />
           )}

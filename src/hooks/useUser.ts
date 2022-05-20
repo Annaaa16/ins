@@ -5,7 +5,7 @@ import { Callback } from '~/types/utils';
 
 import { ROUTES } from '~/constants';
 import { useLogoutMutation, UserFragment } from '~/types/generated';
-import { useAuthSelector } from '~/redux/selectors';
+import { useAuthSelector, useConversationSelector } from '~/redux/selectors';
 
 type VisitProfile = (username: string, callback?: Callback) => void;
 
@@ -13,10 +13,12 @@ interface UseUserReturn {
   currentUser: UserFragment;
   visitProfile: VisitProfile;
   logout: () => Promise<void>;
+  checkOnline: (userId: string) => boolean;
 }
 
 export const useUser = (): UseUserReturn => {
   const currentUser = useAuthSelector().currentUser!;
+  const { onlineUserIds } = useConversationSelector();
 
   const [logoutMutate] = useLogoutMutation();
   const router = useRouter();
@@ -33,5 +35,10 @@ export const useUser = (): UseUserReturn => {
     if (response.data?.logout.success) router.push(ROUTES.LOGIN);
   };
 
-  return { currentUser, visitProfile, logout };
+  const checkOnline = (userId: string) =>
+    onlineUserIds.includes(userId) &&
+    currentUser._id !== userId &&
+    currentUser.following.some((followingUser) => followingUser._id === userId);
+
+  return { currentUser, visitProfile, logout, checkOnline };
 };

@@ -18,7 +18,7 @@ const PostHeader = (post: PostFragment) => {
 
   const { showModal } = useModalContext();
 
-  const { visitProfile } = useUser();
+  const { visitProfile, checkOnline } = useUser();
   const { isFollowed, followUserLoading, currentUser, followUser } = useFollowUser(user);
   const dispatch = useStoreDispatch();
 
@@ -30,6 +30,7 @@ const PostHeader = (post: PostFragment) => {
     <div className='flex-between py-3 px-4'>
       <div className='flex items-center'>
         <Skeleton
+          online={checkOnline(user._id)}
           onClick={onVisitProfile}
           rounded
           objectFit='cover'

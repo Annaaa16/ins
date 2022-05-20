@@ -7,7 +7,7 @@ import { CommentFragment } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { displayLikeCounts } from '~/helpers/format';
-import { useComment } from '~/hooks';
+import { useComment, useUser } from '~/hooks';
 
 import IconHeart from '~/components/Icon/IconHeart';
 import Skeleton from '~/components/Skeleton';
@@ -29,6 +29,7 @@ const DetailComment = ({
 }: DetailCommentProps) => {
   const { user, caption } = comment;
 
+  const { checkOnline } = useUser();
   const dispatch = useStoreDispatch();
 
   const handleVisitProfile = () => onVisitProfile(user.username);
@@ -43,6 +44,7 @@ const DetailComment = ({
   return (
     <div className='group flex py-2'>
       <Skeleton
+        online={checkOnline(user._id)}
         onClick={handleVisitProfile}
         src={user.avatar ?? avatar.src}
         rounded

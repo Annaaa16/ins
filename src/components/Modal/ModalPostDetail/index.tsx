@@ -38,7 +38,7 @@ const ModalPostDetail = () => {
 
   const [getComments, { loading: getCommentsLoading }] = useGetCommentsLazyQuery();
   const [createComment, { loading: createCommentLoading }] = useCreateCommentMutation();
-  const { visitProfile, currentUser } = useUser();
+  const { visitProfile, checkOnline, currentUser } = useUser();
   const { observerRef, containerObserverRef, isIntersecting } = useIntersectionObserver({
     rootMargin: '300px',
   });
@@ -161,6 +161,7 @@ const ModalPostDetail = () => {
       >
         <div className='flex items-center px-4 py-3 border-b border-line flex-shrink-0'>
           <Skeleton
+            online={checkOnline(user._id)}
             src={user.avatar ?? avatar.src}
             rounded
             className={clsx('w-8 h-8 mr-3', 'cursor-pointer')}
@@ -186,6 +187,7 @@ const ModalPostDetail = () => {
         <div ref={containerObserverRef} className='px-4 overflow-y-auto'>
           <div className='group flex items-center py-2'>
             <Skeleton
+              online={checkOnline(user._id)}
               onClick={() => handleVisitProfile(user.username)}
               src={user.avatar ?? avatar.src}
               rounded

@@ -6,10 +6,10 @@ import clsx from 'clsx';
 import { UserWithPostCount } from '~/redux/types/auth';
 import { useAddAvatarMutation, useUpdateAvatarMutation } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
-import { useAuthSelector } from '~/redux/selectors';
 import { authActions } from '~/redux/slices/authSlice';
 import { postActions } from '~/redux/slices/postSlice';
 import { commentActions } from '~/redux/slices/commentSlice';
+import { useUser } from '~/hooks';
 
 import { SpinnerLogo } from '~/components/Spinner';
 import Skeleton from '~/components/Skeleton';
@@ -24,13 +24,12 @@ interface ProfileDetailProps {
 const ProfileDetail = ({ user }: ProfileDetailProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { currentUser } = useAuthSelector();
-
+  const { currentUser, checkOnline } = useUser();
   const [addAvatar, { loading: addAvatarLoading }] = useAddAvatarMutation();
   const [updateAvatar, { loading: updateAvatarLoading }] = useUpdateAvatarMutation();
   const dispatch = useStoreDispatch();
 
-  const isMe = currentUser!._id === user._id;
+  const isMe = currentUser._id === user._id;
   const isLoading = addAvatarLoading || updateAvatarLoading;
 
   const handleAvatar = (file?: File) => {
@@ -43,7 +42,7 @@ const ProfileDetail = ({ user }: ProfileDetailProps) => {
       let avatar: string | null = null;
 
       // Add avatar
-      if (currentUser!.avatar == null) {
+      if (currentUser.avatar == null) {
         const response = await addAvatar({
           variables: {
             base64Photo: reader.result as string,
@@ -56,7 +55,7 @@ const ProfileDetail = ({ user }: ProfileDetailProps) => {
       } else {
         const response = await updateAvatar({
           variables: {
-            oldPhotoUrl: currentUser!.avatar as string,
+            oldPhotoUrl: currentUser.avatar as string,
             base64Photo: reader.result as string,
           },
         });
@@ -69,8 +68,8 @@ const ProfileDetail = ({ user }: ProfileDetailProps) => {
       if (avatar == null) return;
 
       dispatch(authActions.setAvatar({ avatar }));
-      dispatch(postActions.updateAvatar({ currentUserId: currentUser!._id, avatar }));
-      dispatch(commentActions.updateAvatar({ currentUserId: currentUser!._id, avatar }));
+      dispatch(postActions.updateAvatar({ currentUserId: currentUser._id, avatar }));
+      dispatch(commentActions.updateAvatar({ currentUserId: currentUser._id, avatar }));
     };
   };
 
@@ -80,11 +79,14 @@ const ProfileDetail = ({ user }: ProfileDetailProps) => {
         <div
           className={clsx(
             'relative',
-            'w-36 h-36 mt-4 mx-auto md:ml-7 overflow-hidden rounded-full',
+            'w-36 h-36 mt-4 mx-auto md:ml-7',
             isMe && !isLoading && 'cursor-pointer',
           )}
         >
           <Skeleton
+            rounded
+            profile
+            online={checkOnline(user._id)}
             onClick={() => {
               if (isMe) fileInputRef.current?.click();
             }}
