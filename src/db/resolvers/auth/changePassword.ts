@@ -2,7 +2,7 @@ import { Arg, ClassType, Mutation, Resolver } from 'type-graphql';
 import bcrypt from 'bcrypt';
 
 // types
-import { UserMutationResponse } from '~/db/types/responses/user';
+import { BaseResponse } from '~/db/types/shared';
 
 // models
 import { User, Token } from '~/db/models';
@@ -13,12 +13,12 @@ import hashData from '~/helpers/hashData';
 const changePassword = (Base: ClassType) => {
   @Resolver()
   class ChangePassword extends Base {
-    @Mutation((_returns) => UserMutationResponse)
+    @Mutation((_returns) => BaseResponse)
     async changePassword(
       @Arg('token') token: string,
       @Arg('userId') userId: string,
       @Arg('newPassword') newPassword: string,
-    ): Promise<UserMutationResponse> {
+    ): Promise<BaseResponse> {
       return respond(async () => {
         const tokenRecord = await Token.findOne({ userId });
 
@@ -55,7 +55,6 @@ const changePassword = (Base: ClassType) => {
           code: 200,
           success: true,
           message: 'User password reset successfully',
-          user: existingUser,
         };
       });
     }

@@ -4,19 +4,20 @@ import NextLink from 'next/link';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { toast } from '~/store/toast';
 import clsx from 'clsx';
 
 import { ROUTES } from '~/constants';
 import { useChangePasswordMutation } from '~/types/generated';
 import { changePasswordSchema } from '~/helpers/formSchemas';
 import { withRoute } from '~/hocs';
-import toErrorMap from '~/helpers/toErrorMap';
 
 import Meta from '~/layouts/Meta';
 import FormField from '~/components/FormField';
 
 // images
 import { logo } from '~/assets/images';
+import { SpinnerRing } from '~/components/Spinner';
 
 interface ChangePasswordInput {
   password: string;
@@ -37,7 +38,7 @@ const ChangePassword = () => {
 
   const router = useRouter();
 
-  const [changePassword] = useChangePasswordMutation();
+  const [changePassword, { loading: changePasswordLoading }] = useChangePasswordMutation();
 
   const handleChangePasswordSubmit = async ({ confirmPassword }: ChangePasswordInput) => {
     const response = await changePassword({
@@ -50,10 +51,17 @@ const ChangePassword = () => {
 
     const data = response.data?.changePassword;
 
-    if (data?.errors) {
-      const { message } = toErrorMap(data.errors);
+    if (data == null) return;
 
-      setServerErrorMessage(message);
+    const responseMessage = data.message;
+
+    if (data.success) {
+      toast({ messageType: 'changePasswordSuccess', status: 'success' });
+
+      router.push(ROUTES.LOGIN);
+    } else if (responseMessage != null) {
+      toast({ content: responseMessage, status: 'error' });
+      setServerErrorMessage(responseMessage);
     }
   };
 
@@ -80,9 +88,9 @@ const ChangePassword = () => {
 
         <button
           type='submit'
-          className={clsx('btn text-sm w-full py-2 mt-2', 'text-white bg-primary')}
+          className={clsx('btn text-sm w-full gap-x-2 h-auth-btn-h mt-2', 'text-white bg-primary')}
         >
-          Change Password
+          {changePasswordLoading ? <SpinnerRing className='text-white' /> : 'Change Password'}
         </button>
       </form>
     );
