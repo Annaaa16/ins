@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
 
+import { DOMAIN } from '~/constants';
+
 const sendEmail = async (to: string, token: string, userId: string): Promise<string> => {
   const testAccount = await nodemailer.createTestAccount();
 
@@ -21,7 +23,7 @@ const sendEmail = async (to: string, token: string, userId: string): Promise<str
     to,
     subject: '💬 Change password 🚀',
     text: 'Hello my friend 👋',
-    html: `<a href='http://localhost:3000/change-password?token=${token}&userId=${userId}'>Click here to change your password</a>`,
+    html: `<a href='${DOMAIN}/change-password?token=${token}&userId=${userId}'>Click here to change your password</a>`,
   });
 
   return nodemailer.getTestMessageUrl(info) as string;

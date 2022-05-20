@@ -8,6 +8,7 @@ import isEqual from 'lodash/isEqual';
 import merge from 'deepmerge';
 
 import { toast } from '~/store/toast';
+import { DOMAIN, __prod__ } from '~/constants';
 
 const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
@@ -45,7 +46,7 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null): ApolloC
   };
 
   const httpLink = new HttpLink({
-    uri: 'http://localhost:3000/api/graphql',
+    uri: DOMAIN + '/api/graphql',
     fetchOptions: {
       mode: 'cors',
     },
@@ -58,6 +59,16 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null): ApolloC
     ssrMode: typeof window === 'undefined',
     link: from([errorLink, httpLink]),
     cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'no-cache',
+        errorPolicy: 'ignore',
+      },
+      query: {
+        fetchPolicy: 'no-cache',
+        errorPolicy: 'all',
+      },
+    },
   });
 };
 
