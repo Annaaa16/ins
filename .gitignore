@@ -34,8 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-# others
+# custom
 .vscode
 .env
 *.txt
-README.md
+TODO.md
