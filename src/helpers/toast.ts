@@ -48,5 +48,7 @@ export const toastMessages = {
   unfollowUserSuccess: 'Unfollow user successfully!',
   fieldMissing: 'Field is missing!',
   invalidImage: 'Invalid image, please choose another one',
+  changePasswordSuccess: 'Change password successfully',
+  getLinkResetSuccess: 'Get link reset successful',
   serverError: 'Server got an error, please try again later',
 } as const;

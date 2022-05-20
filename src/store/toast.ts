@@ -9,7 +9,8 @@ import { toastMessages } from '~/helpers/toast';
 
 type AddToast = (param: {
   status: Toast['status'];
-  messageType: keyof typeof toastMessages;
+  messageType?: keyof typeof toastMessages;
+  content?: string;
 }) => void;
 
 type CreateToastStore = () => {
@@ -21,10 +22,10 @@ type CreateToastStore = () => {
 const createToastStore: CreateToastStore = () => {
   let setToastsState: Dispatch<SetStateAction<Toast[]>> = () => {};
 
-  const addToast: AddToast = ({ messageType, status }) => {
+  const addToast: AddToast = ({ content, messageType, status }) => {
     setToastsState((prevToasts) => [
       ...prevToasts,
-      { id: nanoid(16), content: toastMessages[messageType], status },
+      { id: nanoid(16), content: content ?? toastMessages[messageType!], status },
     ]);
   };
 
