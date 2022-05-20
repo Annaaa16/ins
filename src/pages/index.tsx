@@ -10,10 +10,11 @@ import Header from '~/components/Header';
 import HomeFeed from '~/features/home/HomeFeed';
 import HomeWidget from '~/features/home/HomeWidget';
 import Container from '~/components/Container';
+import Meta from '~/layouts/Meta';
 
 const Home: NextPage = () => {
   return (
-    <>
+    <Meta title='Instagram'>
       <Header />
       <Container className='grid grid-cols-3 pt-7'>
         <section className='col-span-3 lg:col-span-2 pb-10 space-y-10'>
@@ -23,7 +24,7 @@ const Home: NextPage = () => {
           <HomeWidget />
         </section>
       </Container>
-    </>
+    </Meta>
   );
 };
 
