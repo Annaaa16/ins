@@ -1,8 +1,12 @@
-<h1 align='center'>Instagram Noob 🤔💭</h1>
+<h1 align='center'><strong>Instagram Noob ⚡</strong></h1>
 
 <p>A social network app cloned from Instagram built with Next.Js, Socket.IO and a lots of other new stuff.</p>
 
-## Main technologies 📝
+### **Live Demo:** https://instagram-noob.herokuapp.com
+
+<br />
+
+## **Main technologies 📝**
 
 - Front-End
   - ReactJs
@@ -22,9 +26,7 @@
   - Nodemailer
   - Cloudinary
 
-<br />
-
-## Features 🚀
+## **Features 🚀**
 
 - Authentication
   - Sign in with Google, Facebook, Credential
@@ -48,9 +50,7 @@
 - Infinite scroll
 - Skeleton loading
 
-<br />
-
-## Previews 🔨
+## **Previews 📁**
 
 ![image](https://user-images.githubusercontent.com/70432453/169486622-116a2c27-bd0e-4a74-96c5-407e12b4131d.png)
 
@@ -62,9 +62,7 @@
 
 ![image](https://user-images.githubusercontent.com/70432453/169489742-3f4b5df6-9760-49d5-bea3-6114cc7fda7a.png)
 
-<br />
-
-## Install ⚙
+## **Install 🔨**
 
 1. Clone Project
 
