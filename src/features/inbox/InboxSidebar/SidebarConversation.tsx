@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
-import TimeAgo from 'react-timeago';
 import clsx from 'clsx';
 
 // types
@@ -11,6 +10,7 @@ import { useGetMessagesLazyQuery, useReadMessageMutation, UserFragment } from '~
 import { useStoreDispatch } from '~/redux/store';
 import { conversationActions } from '~/redux/slices/conversationSlice';
 import { useSocketContext } from '~/contexts/SocketContext';
+import { calculateElapsedTime } from '~/helpers/time';
 
 import Skeleton from '~/components/Skeleton';
 
@@ -139,11 +139,9 @@ const SidebarConversation = ({
               {lastMessage.text}
             </span>
             <FontAwesomeIcon className='w-0.5 h-0.5 mx-1.5' icon={faCircle} />
-            <TimeAgo
-              live={false}
-              date={lastMessage.createdAt}
-              className={clsx('flex-shrink-0 text-sm-1', 'text-base-gray')}
-            />
+            <span className={clsx('flex-shrink-0 text-sm-1', 'text-base-gray')}>
+              {calculateElapsedTime(lastMessage.createdAt)}
+            </span>
           </div>
         )}
       </div>

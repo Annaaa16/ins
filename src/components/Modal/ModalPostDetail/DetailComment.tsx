@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import TimeAgo from 'react-timeago';
 import clsx from 'clsx';
 
 import { CommentFragment } from '~/types/generated';
@@ -8,6 +7,7 @@ import { useStoreDispatch } from '~/redux/store';
 import { commentActions } from '~/redux/slices/commentSlice';
 import { displayLikeCounts } from '~/helpers/format';
 import { useComment, useUser } from '~/hooks';
+import { calculateElapsedTime } from '~/helpers/time';
 
 import IconHeart from '~/components/Icon/IconHeart';
 import Skeleton from '~/components/Skeleton';
@@ -60,7 +60,7 @@ const DetailComment = ({
         </span>
         <p className='inline'>{caption}</p>
         <div className={clsx('flex items-center gap-x-3 mt-2', 'text-base-gray')}>
-          <TimeAgo live={false} date={comment.createdAt} />
+          <span>{calculateElapsedTime(comment.createdAt)}</span>
           <button className={clsx('font-medium', 'cursor-pointer')}>
             {displayLikeCounts(comment.reactions, 'like')}
           </button>

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import TimeAgo from 'react-timeago';
 import clsx from 'clsx';
 
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
@@ -15,6 +14,7 @@ import { commentActions } from '~/redux/slices/commentSlice';
 import { postActions } from '~/redux/slices/postSlice';
 import { displayLikeCounts } from '~/helpers/format';
 import { removeSubTree, subTrees } from '~/helpers/redux';
+import { calculateElapsedTime } from '~/helpers/time';
 
 import { SpinnerRing } from '~/components/Spinner';
 import Skeleton from '~/components/Skeleton';
@@ -202,11 +202,9 @@ const ModalPostDetail = () => {
                 {user.username}
               </span>
               <p className='inline'>{postCaption}</p>
-              <TimeAgo
-                className={clsx('block mt-0.5 text-xs', 'text-base-gray')}
-                live={false}
-                date={createdAt}
-              />
+              <span className={clsx('block mt-0.5 text-xs', 'text-base-gray')}>
+                {calculateElapsedTime(createdAt)}
+              </span>
             </div>
           </div>
 
