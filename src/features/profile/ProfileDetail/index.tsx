@@ -96,7 +96,7 @@ const ProfileDetail = ({ user }: ProfileDetailProps) => {
           />
           {isLoading && (
             <>
-              <div className={clsx('absolute inset-0', 'bg-modal-light')} />
+              <div className={clsx('absolute inset-0', 'rounded-full', 'bg-modal-light')} />
               <SpinnerLogo className={clsx('absolute inset-0', 'w-2/5 m-auto')} />
             </>
           )}

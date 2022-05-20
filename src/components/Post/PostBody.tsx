@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import TimeAgo from 'react-timeago';
 import clsx from 'clsx';
 
 import { MODAL_TYPES, useModalContext } from '~/contexts/ModalContext';
@@ -9,6 +8,7 @@ import { displayLikeCounts } from '~/helpers/format';
 import { postActions } from '~/redux/slices/postSlice';
 import { useStoreDispatch } from '~/redux/store';
 import { useCommentSelector } from '~/redux/selectors';
+import { calculateElapsedTime } from '~/helpers/time';
 
 import PostComment from './PostComment';
 import Actions from '../Actions';
@@ -59,11 +59,11 @@ const PostBody = (post: PostFragment) => {
           ))}
         </div>
 
-        <TimeAgo
-          live={false}
+        <span
           className={clsx('uppercase text-xs-1', 'text-base-gray', 'cursor-pointer select-none')}
-          date={post.updatedAt}
-        />
+        >
+          {calculateElapsedTime(post.updatedAt)}
+        </span>
       </div>
     </div>
   );
