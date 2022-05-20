@@ -83,8 +83,6 @@ const SidebarConversation = ({
     // Prevent click on same conversation
     if (selectedConversation?._id === conversationId) return;
 
-    await readLastMessage();
-
     conversationHandler.setCurrentRoomId(conversationId);
 
     dispatch(conversationActions.setSelectedConversation(conversation));
@@ -98,6 +96,8 @@ const SidebarConversation = ({
 
       dispatch(conversationActions.removeLoading('getMessages'));
     }
+
+    readLastMessage();
   };
 
   return (
