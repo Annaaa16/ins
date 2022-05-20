@@ -2,7 +2,7 @@ import clsx from 'clsx';
 
 import { useAutoFocus } from '~/hooks';
 import { useAuthSelector } from '~/redux/selectors';
-import { getNameInMail } from '~/helpers/format';
+import { commaBetweenNumbers, getNameInMail } from '~/helpers/format';
 
 import Skeleton from '~/components/Skeleton';
 import IconEmoji from '~/components/Icon/IconEmoji';
@@ -15,6 +15,8 @@ interface CreatorFormProps {
   caption: string;
   onChangeCaption: (text: string) => void;
 }
+
+const MAX_CHARS = 2200;
 
 const CreatorForm = ({ caption, onChangeCaption }: CreatorFormProps) => {
   const { focusRef } = useAutoFocus();
@@ -37,7 +39,9 @@ const CreatorForm = ({ caption, onChangeCaption }: CreatorFormProps) => {
         <textarea
           ref={focusRef}
           value={caption}
-          onChange={(e) => onChangeCaption(e.target.value)}
+          onChange={(e) => {
+            onChangeCaption(e.target.value.substring(0, MAX_CHARS));
+          }}
           className={clsx('w-full mt-3 resize-none text-sm', 'placeholder:text-base')}
           placeholder='Write a caption...'
           name=''
@@ -46,7 +50,9 @@ const CreatorForm = ({ caption, onChangeCaption }: CreatorFormProps) => {
         ></textarea>
         <div className='flex-between'>
           <IconEmoji className={clsx('fill-base-gray', 'cursor-pointer')} />
-          <span className={clsx('text-sm-1', 'text-base-gray')}>0/2,200</span>
+          <span className={clsx('text-sm-1', 'text-base-gray')}>
+            {commaBetweenNumbers(caption.length)}/{commaBetweenNumbers(MAX_CHARS)}
+          </span>
         </div>
       </div>
 
