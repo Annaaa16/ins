@@ -7,7 +7,7 @@ interface ContainerProps {
 
 const Container = forwardRef<any, ContainerProps>(({ className, children }, forwardRef) => {
   return (
-    <main ref={forwardRef} className={`mx-auto lg:w-container-w ${className}`}>
+    <main ref={forwardRef} className={`mx-auto mt-header-h lg:w-container-w ${className}`}>
       {children}
     </main>
   );

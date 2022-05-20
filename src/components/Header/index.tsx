@@ -24,7 +24,7 @@ const Header = () => {
     >
       <Container
         className={clsx(
-          'grid md:grid-cols-3 items-center justify-center h-header-h py-3 px-4 lg:px-0',
+          'grid md:grid-cols-3 items-center justify-center h-header-h py-3 px-4 lg:px-0 mt-0',
         )}
       >
         <img

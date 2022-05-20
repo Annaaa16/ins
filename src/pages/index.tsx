@@ -15,7 +15,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Header />
-      <Container className='grid grid-cols-3 mt-header-h pt-7'>
+      <Container className='grid grid-cols-3 pt-7'>
         <section className='col-span-3 lg:col-span-2 pb-10 space-y-10'>
           <HomeFeed />
         </section>

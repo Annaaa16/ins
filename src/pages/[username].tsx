@@ -31,7 +31,7 @@ const Profile = () => {
   return (
     <Meta title={selectedUser!.username}>
       <Header />
-      <Container className={clsx('mt-header-h pt-9 pb-20')}>
+      <Container className={clsx('pt-9 pb-20')}>
         <section className='grid grid-cols-3'>
           <ProfileDetail user={selectedUser} />
         </section>
