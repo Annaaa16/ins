@@ -27,6 +27,7 @@ const ModalUnfollow = () => {
       )}
     >
       <Skeleton
+        objectFit='cover'
         className='w-[90px] h-[90px] mx-auto'
         src={selectedUser!.avatar ?? avatar.src}
         rounded

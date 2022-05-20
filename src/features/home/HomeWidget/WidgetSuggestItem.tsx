@@ -26,6 +26,7 @@ const WidgetSuggestItem = ({ user }: WidgetSuggestItemProps) => {
         src={avatar.src}
         rounded
         alt='Avatar'
+        objectFit='cover'
       />
       <div className='min-w-0'>
         <div

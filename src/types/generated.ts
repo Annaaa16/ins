@@ -162,7 +162,7 @@ export type MessageMutationResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   addAvatar: AvatarMutationResponse;
-  changePassword: UserMutationResponse;
+  changePassword: BaseResponse;
   createComment: CommentMutationResponse;
   createConversation: ConversationMutationResponse;
   createMessage: MessageMutationResponse;
@@ -693,35 +693,10 @@ export type ChangePasswordMutationVariables = Exact<{
 export type ChangePasswordMutation = {
   __typename?: 'Mutation';
   changePassword: {
-    __typename?: 'UserMutationResponse';
+    __typename?: 'BaseResponse';
     code: number;
     success: boolean;
     message?: string | null;
-    user?: {
-      __typename?: 'User';
-      _id: string;
-      email: string;
-      username: string;
-      account: string;
-      avatar?: string | null;
-      followers: Array<{
-        __typename?: 'User';
-        _id: string;
-        email: string;
-        username: string;
-        account: string;
-        avatar?: string | null;
-      }>;
-      following: Array<{
-        __typename?: 'User';
-        _id: string;
-        email: string;
-        username: string;
-        account: string;
-        avatar?: string | null;
-      }>;
-    } | null;
-    errors?: Array<{ __typename?: 'FieldError'; field: string; message: string }> | null;
   };
 };
 
@@ -1806,10 +1781,11 @@ export const UserMutationResponseFragmentDoc = gql`
 export const ChangePasswordDocument = gql`
   mutation ChangePassword($newPassword: String!, $userId: String!, $token: String!) {
     changePassword(newPassword: $newPassword, userId: $userId, token: $token) {
-      ...userMutationResponse
+      code
+      success
+      message
     }
   }
-  ${UserMutationResponseFragmentDoc}
 `;
 export type ChangePasswordMutationFn = Apollo.MutationFunction<
   ChangePasswordMutation,
