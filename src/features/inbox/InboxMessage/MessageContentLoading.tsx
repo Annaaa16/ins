@@ -2,7 +2,7 @@ import clsx from 'clsx';
 
 const MessageContentLoading = () => {
   return (
-    <div className='w-full p-2 space-y-2'>
+    <div className='w-full space-y-2'>
       <div
         className={clsx('w-2/6 h-5 rounded-sm', 'bg-[length:200%] bg-skeleton', 'animate-skeleton')}
       />

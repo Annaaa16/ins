@@ -60,7 +60,8 @@ const SidebarConversation = ({
       variables: {
         conversationId,
         cursor: null,
-        limit: LIMITS.MESSAGES,
+        // limit: LIMITS.MESSAGES,
+        limit: 100,
       },
     });
 
