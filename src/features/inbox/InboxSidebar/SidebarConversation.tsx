@@ -5,7 +5,6 @@ import clsx from 'clsx';
 // types
 import { ConversationSliceState, ConversationWithOnlineStatus } from '~/redux/types/conversation';
 
-import { LIMITS } from '~/constants';
 import { useGetMessagesLazyQuery, useReadMessageMutation, UserFragment } from '~/types/generated';
 import { useStoreDispatch } from '~/redux/store';
 import { conversationActions } from '~/redux/slices/conversationSlice';
