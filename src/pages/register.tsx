@@ -87,7 +87,12 @@ const Register = () => {
           <form className='flex flex-col gap-y-3' onSubmit={handleSubmit(handleRegisterSubmit)}>
             <FormField register={register('email')} placeholder='Email' errors={errors} />
             <FormField register={register('username')} placeholder='Username' errors={errors} />
-            <FormField register={register('password')} placeholder='Password' errors={errors} />
+            <FormField
+              register={register('password')}
+              placeholder='Password'
+              errors={errors}
+              type='password'
+            />
 
             <button
               className={clsx(

@@ -1,3 +1,5 @@
+import { InputHTMLAttributes } from 'react';
+
 import { UseFormRegisterReturn } from 'react-hook-form';
 import clsx from 'clsx';
 
@@ -5,13 +7,16 @@ interface FormFieldProps {
   register: UseFormRegisterReturn;
   placeholder: string;
   className?: string;
+  type?: InputHTMLAttributes<HTMLInputElement>['type'];
   errors: {
     [x: string]: any;
   };
 }
 
-const FormField = ({ register, errors, placeholder, className }: FormFieldProps) => {
+const FormField = ({ register, errors, placeholder, type = 'text', className }: FormFieldProps) => {
   const errorMessage = errors[register.name]?.message;
+
+  <input type='checkbox' />;
 
   return (
     <div>
@@ -19,7 +24,7 @@ const FormField = ({ register, errors, placeholder, className }: FormFieldProps)
         <input
           {...register}
           className={clsx('w-full px-2 py-2 text-sm', 'placeholder:text-sm-1')}
-          type='text'
+          type={type}
           placeholder={placeholder}
         />
       </div>

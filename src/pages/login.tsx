@@ -98,7 +98,12 @@ const Login = () => {
               onSubmit={handleSubmit(handleLoginSubmit)}
             >
               <FormField register={register('username')} placeholder='Username' errors={errors} />
-              <FormField register={register('password')} placeholder='Password' errors={errors} />
+              <FormField
+                register={register('password')}
+                placeholder='Password'
+                errors={errors}
+                type='password'
+              />
 
               <button
                 type='submit'

@@ -79,11 +79,17 @@ const ChangePassword = () => {
         className='flex flex-col gap-y-3 mt-10'
         onSubmit={handleSubmit(handleChangePasswordSubmit)}
       >
-        <FormField register={register('password')} placeholder='New Password' errors={errors} />
+        <FormField
+          register={register('password')}
+          placeholder='New Password'
+          errors={errors}
+          type='password'
+        />
         <FormField
           register={register('confirmPassword')}
           placeholder='Confirm Password'
           errors={errors}
+          type='password'
         />
 
         <button
