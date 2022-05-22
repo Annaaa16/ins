@@ -141,7 +141,7 @@ const ModalPostDetail = () => {
     <ModalWrapper
       modalType={MODAL_TYPES.POST_DETAIL}
       closeHandler={() => dispatch(postActions.setSelectedPost(null))}
-      className={clsx('flex w-modal-w lg:w-[1150px] h-screen')}
+      className={clsx('flex w-modal-w h-screen', postPhoto == null ? 'w-max' : 'lg:w-[1150px]')}
     >
       {postPhoto != null && (
         <Skeleton
@@ -154,9 +154,9 @@ const ModalPostDetail = () => {
 
       <div
         className={clsx(
-          'flex flex-col w-full lg:w-2/5 text-sm-1 h-full',
+          'flex flex-col text-sm-1 h-full',
           'bg-white',
-          postPhoto == null && 'rounded-lg mx-auto',
+          postPhoto == null ? 'lg:w-max rounded-lg mx-auto' : 'lg:w-2/5',
         )}
       >
         <div className='flex items-center px-4 py-3 border-b border-line flex-shrink-0'>
